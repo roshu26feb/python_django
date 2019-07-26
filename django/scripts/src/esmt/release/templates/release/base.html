@@ -1,0 +1,42 @@
+{% extends "base/base.html" %}
+{% load  static %}
+{% block css_js %}
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+    <script type="text/javascript" src="{% url 'delivery_db:jsi18n' %}"></script>
+
+    <script type="text/javascript" src="/static/admin/js/core.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script type="text/javascript" src="/static/admin/js/actions.js"></script>
+    <script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+    <script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+    <script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+    <script src="{% static 'releases/js/jquery-ui.min.js' %}"></script> 
+
+    <!--link rel="stylesheet" href="{% static 'delivery_db/css/boostrap-select.min.css' %}" /-->
+    <link rel="stylesheet" href="{% static 'base/css/select2.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'releases/css/jquery-ui.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'delivery_db/css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'releases/css/styles.css' %}" />
+    <!--script src="{% static 'delivery_db/js/bootstrap-select.min.js' %}"></script-->    
+    <script src="{% static 'base/js/select2.min.js' %}"></script> 
+    <script src="{% static 'releases/js/controller.js' %}"></script>
+{% endblock %}
+{% block sub_navbar %}
+<nav class="navbar navbar-inverse" role="navigation" id="submenu">
+     <ul class="nav navbar-nav" id="releases">
+        <li {% if request.resolver_match.url_name in 'releasesrelease_addrelease_version_add' %} class='active' {% endif %}><a href="{% url 'release:releases' %}">Releases</a></li>
+        <li {% if request.resolver_match.url_name in 'rtlmanage_rtl' %} class='active' {% endif %}><a href="{% url 'release:rtl' %}">Route to Live</a></li>
+    </ul>
+</nav>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid" ng-controller="releaseCtrl">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}
+

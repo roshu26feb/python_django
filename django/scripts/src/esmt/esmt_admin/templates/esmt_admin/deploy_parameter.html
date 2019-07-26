@@ -1,0 +1,87 @@
+{% extends 'esmt_admin/base.html' %}
+{% load macros %}
+{% load static %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% load i18n static %}
+{% usemacro nextview "esmt_admin:parameter_add" "Add Parameter" "parameter-add-form-id" %}
+
+<div class="accord container" style="border-top:70px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px; font-size:11px;" ng-init="getApiDetails('parameter');" ng-cloak>
+  <div class="row">
+    <span class="col-sm-12 jumbotron" style="margin-bottom:20px;">
+        <h3 class="lead text-center" style="margin:0px 5px">List of Deployment Parameters</h3>
+    </span>
+  </div>
+  <div class="col-sm-12 text-center" ng-init="onLoading()">
+    {% usemacro loading %}
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Parameter" "parameter_name" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+        {% usemacro columnSort "Mandatory" "mandatory" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+        {% usemacro columnSort "Parameter Type" "parameter_type.parameter_type" %}
+    </span>
+    <span class="col-sm-4 accord-title-mod bg-primary">
+      {% usemacro columnSort "Values" "parameter_values.parameter_value" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "Link Type" "linked_element.link_name" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "Linked To" "linked_element.link_value" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "Active" "active" %}
+    </span>
+  </div>
+  <div class="row" ng-show="show" ng-cloak style="font-size:11px;">
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Parameter Name" "searchCol.parameter_name" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Mandatory" "searchCol.mandatory" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Parameter Type" "searchCol.parameter_type.parameter_type" %}
+    </span>
+      <span class="col-sm-4" style="padding:0px;">
+      {% usemacro columnFilter "Search Parameter Value" "searchCol.parameter_values.parameter_value" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search link" "searchCol.linked_element.link_name" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Linked To" "searchCol.linked_element.link_value" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Active" "searchCol.active" %}
+    </span>
+ </div>
+ </div>
+ <div class="accord container" style="margin-top:135px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto; font-size:11px;" ng-cloak>
+   <ul class="accordion"  style="padding:0px; margin:0px;">
+     <li style="padding:0px; margin:0px;">
+       <a ng-repeat="parameter in apiResponse.parameters | orderBy:sortType:sortReverse | filter:searchCol" class="row" href="javascript:void(0);"
+         style="padding-left:0px;z-index=0; margin:0px;">
+         <div class="row" ng-init="updateLink(parameter.linked_element)">
+           <span class="col-sm-2 accord-text-mod">(~ parameter.parameter_name ~)</span>
+           <span class="col-sm-1 accord-text-mod">(~ parameter.mandatory ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ parameter.parameter_type.parameter_type ~)</span>
+            <span class="col-sm-4 accord-text-mod"><span ng-repeat="values in parameter.parameter_values">(~ values.parameter_value ~)<br></span></span>
+            <span class="col-sm-1 accord-text-mod">(~ parameter.linked_element.link_name ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ parameter.linked_element.link_value ~)</span>
+            <span class="col-sm-1 accord-text-mod" >(~ parameter.active ~)</span>
+             
+           <span class="col-sm-1 text-center"><button type="submit" class="btn btn-sm btn-primary"  style="font-size:10px;" id="param-(~ parameter.parameter_id ~)" ng-click="callUpdate(parameter.parameter_id)" value="Edit">Edit</button></span>
+         </div>
+       </a>
+     </li>
+   </ul>
+ </div>
+ <div ng-init="searchCol.active='true'"></div>
+{% endblock %}

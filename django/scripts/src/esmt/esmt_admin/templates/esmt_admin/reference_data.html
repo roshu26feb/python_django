@@ -1,0 +1,126 @@
+{% extends 'esmt_admin/base.html' %}
+{% block page_content %}
+
+<div style="padding-bottom:20px; margin-top:70px;">
+    <h3>Reference Data</h3>
+</div>
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="row" style="margin: 0px 15px;" ng-if="apiResponse" ng-cloak>
+        <fieldset>
+           <legend>(~ ref_data | titleCase ~)</legend>
+            <div class="fieldWrapper" >
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-6 table-responsive" style="margin-top: 2px;">
+                        <table class="table table-bordered table-condensed" id="id_value">
+                            <thead class="bg-warning">
+                               <tr>
+                                   <th ng-repeat="th in refDataHead">(~ th.head ~)</th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-if="ref_data == 'component_type'" ng-repeat="dt in apiResponse.component_types">
+                                    <td>(~ dt.component_type_id ~) </td>
+                                    <td>(~ dt.component_type_description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'parameter_type'" ng-repeat="dt in apiResponse.parameter_types">
+                                    <td>(~ dt.parameter_type_id ~) </td>
+                                    <td>(~ dt.parameter_type ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'host_type'" ng-repeat="dt in apiResponse.host_types">
+                                    <td>(~ dt.host_type_id ~) </td>
+                                    <td>(~ dt.host_name ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'infrastructure_type'" ng-repeat="dt in apiResponse.infrastructure_types">
+                                    <td>(~ dt.infrastructure_type_id ~) </td>
+                                    <td>(~ dt.infrastructure_type_name ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'disk_type'" ng-repeat="dt in apiResponse.disk_types">
+                                    <td>(~ dt.disk_type_id ~) </td>
+                                    <td>(~ dt.disk_type_description ~) </td>
+                                    <td>(~ dt.min_size || "Null" ~) </td>
+                                    <td>(~ dt.max_size || "Null" ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'method_creation_type'" ng-repeat="dt in apiResponse.method_creation_types">
+                                    <td>(~ dt.method_creation_type_id ~) </td>
+                                    <td>(~ dt.name ~) </td>
+                                    <td>(~ dt.description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'deployment_type'" ng-repeat="dt in apiResponse.deployment_types">
+                                    <td>(~ dt.deployment_type_id ~) </td>
+                                    <td>(~ dt.deployment_type_description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'artefact_type'" ng-repeat="dt in apiResponse.artefact_store_types">
+                                    <td>(~ dt.artefact_store_type_id ~) </td>
+                                    <td>(~ dt.artefact_store_type_desc ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'environment_subscription_type'" ng-repeat="dt in apiResponse.environment_subscription_types">
+                                    <td>(~ dt.environment_subscription_type_id ~) </td>
+                                    <td>(~ dt.environment_subscription_type_name ~) </td>
+                                </tr>
+                                 <tr ng-if="ref_data == 'environment_type'" ng-repeat="dt in apiResponse.environment_types">
+                                    <td>(~ dt.environment_type_id ~) </td>
+                                    <td>(~ dt.environment_subscription_type.environment_subscription_type_name ~) </td>
+                                    <td>(~ dt.environment_type_name ~) </td>
+                                    <td>(~ dt.environment_type_short_name ~) </td>
+                                    <td>(~ dt.identifier || "Null" ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'environment_data_type'" ng-repeat="dt in apiResponse.environment_data_types">
+                                    <td>(~ dt.environment_data_type_id ~) </td>
+                                    <td>(~ dt.environment_data_type_name ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'status'" ng-repeat="dt in apiResponse.statuss">
+                                    <td>(~ dt.status_id ~) </td>
+                                    <td>(~ dt.status_type ~) </td>
+                                    <td>(~ dt.status_description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'environment_use'" ng-repeat="dt in apiResponse.environment_uses">
+                                    <td>(~ dt.environment_use_id ~) </td>
+                                    <td>(~ dt.environment_use_name ~) </td>
+                                    <td>(~ dt.environment_use_short_name ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'system_network_set'" ng-repeat="dt in apiResponse.system_network_sets">
+                                    <td>(~ dt.system_network_set_id ~) </td>
+                                    <td>(~ dt.system_network_set_name ~) </td>
+                                    <td>(~ dt.system_network_set_short_name ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'system_element_type'" ng-repeat="dt in apiResponse.system_element_types">
+                                    <td>(~ dt.system_element_type_id ~) </td>
+                                    <td>(~ dt.system_element_type_name ~) </td>
+                                    <td>(~ dt.system_element_type_short_name ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'host_region'" ng-repeat="dt in apiResponse.host_regions">
+                                    <td>(~ dt.host_region_id ~) </td>
+                                    <td>(~ dt.host_region_name ~) </td>
+                                    <td>(~ dt.host_region_description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'host_site'" ng-repeat="dt in apiResponse.host_sites">
+                                    <td>(~ dt.host_site_id ~) </td>
+                                    <td>(~ dt.host_site_name ~) </td>
+                                    <td>(~ dt.host_site_description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'host_subscription'" ng-repeat="dt in apiResponse.host_subscriptions">
+                                    <td>(~ dt.host_subscription_id ~) </td>
+                                    <td>(~ dt.host_subscription_key ~) </td>
+                                    <td>(~ dt.host_subscription_description ~) </td>
+                                </tr>
+                                <tr ng-if="ref_data == 'network_set'" ng-repeat="dt in apiResponse.network_sets">
+                                    <td>(~ dt.network_set_id ~) </td>
+                                    <td>(~ dt.network_set_name ~) </td>
+                                    <td>(~ dt.subnet ~) </td>
+                                    <td>(~ dt.ip_range_start ~) </td>
+                                    <td>(~ dt.ip_range_end ~) </td>                                 
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</form>
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+{% endblock %}

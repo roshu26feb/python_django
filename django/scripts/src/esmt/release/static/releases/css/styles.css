@@ -1,0 +1,72 @@
+body{
+    padding-top: 150px;
+}
+.hidtable {
+    #position: absolute;
+    top: 0;
+    left: 0;
+    cursor:move;
+    background:white;
+    border-style:dotted;
+    z-index:4;
+}
+.coverhidtable {
+    #position: absolute;
+    top: 0;
+    left: 0;
+    cursor:move;
+    background:white;
+    color:white;
+    z-index:4;
+}
+.acttable {
+    #position: absolute;
+    top: 0;
+    left: 0;
+    cursor:move;
+    z-index:5;
+    background:white;
+}
+.drag {
+    background:orange;
+    color:white;
+    cursor:move;
+}
+.over {
+    background: red;
+    color:white;
+}
+#deploy .nav-tabs > li > a {
+  border-radius: 4px 4px 0 0 ;
+}
+
+##deploy .tab-content {
+  color : white;
+  background-color: #ddd;
+  padding : 5px 15px;
+}
+.selected {
+  background-color: #ddd;
+}
+#deploy-form .control-label{
+    text-align: left;
+}
+select.multiselect-hidden {
+visibility: hidden;
+position: absolute;
+max-height: 27px;
+}
+/* related to form system_component*/
+legend.cust-border {
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    border-bottom:none;
+    margin-bottom:10px;
+}
+fieldset.cust-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}

@@ -1,0 +1,83 @@
+{% extends 'release/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "releases:releases" "Back" %}
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Create Release</h3>
+</div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="fieldWrapper" ng-init="getSystems()">
+        <div class="form-group required" ng-cloak>
+            <label class="col-sm-2 control-label" for="id_system_name">System Name</label>
+            <div class="col-sm-3">
+                <select class="form-control" ng-model="system" ng-options="c.system_name for c in systems | orderBy: 'system_name' " id="id_system_name" required>
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label" for="id_system_version_name">System Version</label>
+            <div class="col-sm-3">
+                <select ng-disabled="!system" class="form-control" ng-model="system_comp" ng-options="cv.system_version_name for cv in (system.system_versions|formatDate|orderBy:'creation_date':true) track by cv.system_version_id" ng-change="releaseItems(system_comp)" id="id_system_version_name" required>
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="fieldWrapper">
+        <div class="form-group required">
+            <label for="id_remarks" class="col-sm-2 control-label">Remarks</label>
+            <div class="col-sm-6">
+                <textarea  class="form-control" placeholder="Enter Remarks if any here.." id="id_remarks"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!--div class="fieldWrapper" ng-if="system_comp" ng-cloak>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label">Release Items</label>
+            <div class="col-sm-9">
+                <table class="table table-bordered table-condensed" >
+                    <thead class="bg-warning">
+                        <tr>
+                            <th>Inc</th>
+                            <th>Component Name</th>
+                            <th>Component Version</th>
+                            <th>Component Type</th>
+                            <th>Logical Instance Name</th>
+                            <th>Copy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="comp_ver in system_comps">
+                            <td><input type="checkbox" name="{{ comp_ver.sys_comp_name }}" value="(~ comp_ver.sys_comp_id ~)"></td>
+                            <td>(~ comp_ver.comp_name ~) </td>
+                            <td>(~ comp_ver.comp_ver ~) </td>
+                            <td>(~ comp_ver.comp_type ~) </td>
+                            <td><input type="text" name="{{ comp_ver.logical_name }}" class="form-control" placeholder="Logical Instance Name"></td>
+                            <td><span class="glyphicon glyphicon-duplicate" ng-click="copySysComp($index)"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div-->
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" class="btn btn-primary" value="Save">Submit</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New Component Successfully Created ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+{% endblock %}

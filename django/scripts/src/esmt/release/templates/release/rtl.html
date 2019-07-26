@@ -1,0 +1,61 @@
+{% extends 'release/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "release:manage_rtl" "Manage RTL" "manage-rtl-form" %}
+
+ <div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" >
+
+
+    <div class="row">
+        <span class="col-sm-1"> </span>
+        <span class="col-sm-9 jumbotron" style="margin-bottom:20px;"><h3 class="lead text-center" style="margin:0px 5px">Route To live </h3></span>
+    </div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . " ng-init="get_release()" >
+    {% csrf_token %}
+    <div class="fieldWrapper" ng-cloak>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="id_release_name">Release name</label>
+            <div class="col-sm-offset-2 col-sm-4">
+                <select name="release_id" class="rel-sel form-control" ng-model="release"
+                        ng-options="rel.release_name for rel in (releases|orderBy:'release_name':false) track by rel.release_id"
+                        id="id_release_name" ng-change="groupRTL(release)">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-if="release" ng-cloak>
+        <div class="col-sm-11 table-responsive" style="margin-top: 2px; padding: 0px;">
+            <table class="table table-bordered table-striped" >
+                <thead class="bg-primary">
+                    <col>
+                    <colgroup span="2"></colgroup>
+                    <colgroup span="2"></colgroup>
+                    <tr>
+                        <th rowspan="2" class="text-center">Environment Use</th>
+                        <th rowspan="2" class="text-center">System</th>
+                        <th rowspan="2" class="text-center">Environment</th>
+                        <th ng-if="release.release_versions.length>0" colspan="(~ release.release_versions.length~)" scope="colgroup" class="text-center">Release Version</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" ng-repeat="rel_ver in release.release_versions">(~ rel_ver.release_version_name~)</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="rtl in grpRtl track by $index">
+                    <tr ng-repeat="env in rtl.env track by $index">
+                        <td ng-if="$first" rowspan="3" scope="rowgroup" class="text-center">(~ rtl.name ~)</td>
+                        <td scope="col">(~ env.system_name ~)</td>
+                        <td scope="row">(~ env.env_name ~)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+</div>
+{% endblock %}
+

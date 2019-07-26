@@ -1,0 +1,145 @@
+{% extends 'release/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "release:release_version_add" "Add Release or Version" "release-version-form" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="get_release()" >
+    <div class="row">
+        <span class="col-sm-1"></span>
+        <span class="col-sm-9 jumbotron" style="margin-bottom:20px;"><h3 class="lead text-center" style="margin:0px 5px">Releases</h3></span>
+    </div>
+    <div class="row text-center"  ng-init="onLoading()">
+        <span class="col-sm-1"></span>
+        <span class="col-sm-9">{% usemacro loading %}</span>
+    </div>
+    <div class="row" ng-show="show" ng-cloak>
+        <span class="col-sm-1"></span>
+        <span class="col-sm-3 accord-title-mod bg-primary">
+           {% usemacro columnSort "Release Name" "release_name" %}
+        </span>
+         <span class="col-sm-2 accord-title-mod bg-primary">
+            {% usemacro columnSort "Release Owner" "release_owner" %}
+        </span>
+        <span class="col-sm-4 accord-title-mod bg-primary">
+            {% usemacro columnSort "Release Summary" "release_summary" %}
+        </span>
+    </div>
+    <div class="row" ng-show="show" ng-cloak>
+        <span class="col-sm-1"></span>
+        <span class="col-sm-3" style="padding:0px;">
+            {% usemacro columnFilter "Search Release Name" "searchCol.release_name" %}
+        </span>
+        <span class="col-sm-2" style="padding:0px;">
+            {% usemacro columnFilter "Search Release Owner" "searchCol.release_owner" %}
+        </span>
+        <span class="col-sm-4" style="padding:0px;">
+            {% usemacro columnFilter "Search Release Summary" "searchCol.release_summary" %}
+        </span>
+    </div>
+</div>
+
+<div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+    <ul class="accordion">
+       <li>
+           <a ng-repeat-start="release in releases | orderBy:sortType:sortReverse | filter:searchCol" class="accordion-toggle" href="javascript:void(0);"
+             style="padding-left:0px;z-index=0; margin:0px;">
+               <div class="row">
+                   <span class="col-sm-1 text-right accord-icon" id="release-(~ release.release_id ~)" ng-if="release.release_versions.length > 0">
+                       <i class="indicator glyphicon glyphicon-plus-sign top-5"></i>
+                   </span>
+                   <span class="col-sm-1" ng-if="!release.release_versions.length > 0"></span>
+                   <span class="col-sm-3 accord-text">(~ release.release_name ~)</span>
+                   <span class="col-sm-2 accord-text">(~ release.release_owner ~)</span>
+                   <span class="col-sm-4 accord-text">(~ release.release_summary ~)</span>
+               </div>
+           </a>
+           <ul class="inner">
+               <li ng-if="release.release_versions.length > 0">
+                   <div class="row">
+                        <span class="col-sm-1"></span>
+                        <span class="col-sm-3 accord-title bg-info">
+                            <strong>Release Version </strong>
+                        </span>
+                        <span class="col-sm-2 accord-title bg-info">
+                            <strong>Number of systems</strong>
+                        </span>
+                        <span class="col-sm-3 accord-title bg-info">
+                            <strong>Release Date</strong>
+                        </span>
+                        <span class="col-sm-2 accord-title bg-info">
+                            <strong>Status</strong>
+                        </span>
+                   </div>
+                   <a ng-repeat-start="release_ver in release.release_versions" class="accordion-toggle"  style="padding-left:0px;z-index=0; margin:0px;">
+                      <div class="row">
+                          <span class="col-sm-1 text-right accord-icon" id="rel-ver-(~ release_ver.release_version_id ~)" ng-if="release_ver.release_items.length >0"><i class="indicator glyphicon glyphicon-plus-sign top-5"></i></span>
+                          <span class="col-sm-1" ng-if="!release_ver.release_items.length >0"></span>
+                          <span class="col-sm-3 text-left accord-inner-text">(~ release_ver.release_version_name ~)</span>
+                          <span class="col-sm-2 text-left accord-inner-text">(~ release_ver.release_items.length ~)</span>
+                          <span class="col-sm-3 text-left accord-inner-text">(~ release_ver.target_release_date ~)</span>
+                          <span class="col-sm-2 text-left accord-inner-text">(~ release_ver.release_version_status.status_description ~)</span>
+                      </div>
+                   </a>
+                   <ul class="inner">
+                        <li  ng-if="release_ver.release_items.length > 0">
+                            <div class="row">
+                                <span class="col-sm-1"></span>
+                                <span class="col-sm-2 accord-title bg-info">
+                                    <strong>System Name</strong>
+                                </span>
+                                <span class="col-sm-2 accord-title bg-info">
+                                    <strong>System Version</strong>
+                                </span>
+                                <span class="col-sm-3 accord-title bg-info">
+                                    <strong>Release Note</strong>
+                                </span>
+                            </div>
+                            <a ng-repeat-start="rel_item in release_ver.release_items" class="accordion-toggle"  style="padding-left:0px;z-index=130; margin:0px;">
+                                <div class="row">
+                                   <span class="col-sm-1 text-right accord-icon" ng-if="rel_item.system_version.system_elements.length >0"><i class="indicator glyphicon
+glyphicon-plus-sign top-5"></i></span>
+                                   <span class="col-sm-1" ng-if="!rel_item.system_version.system_elements.length >0"></span>
+                                    <span class="col-sm-2 text-left accord-inner-text">(~ rel_item.system_version.system_name ~)</span>
+                                    <span class="col-sm-2 text-left accord-inner-text">(~ rel_item.system_version.system_version_name ~)</span>
+                                    <span class="col-sm-3 text-left accord-inner-text">(~ rel_item.release_note_url ~)</span>
+                                </div>
+                            </a>
+                            <ul class="inner">
+                                <li  ng-if="rel_item.system_version.system_elements.length > 0">
+                                    <div class="row">
+                                        <div class="col-sm-1"></div>
+                                        <div class="col-sm-11 table-responsive" style="margin-top: 2px;">
+                                            <table class="table table-bordered table-condensed" >
+                                                <thead class="bg-warning">
+                                                   <tr>
+                                                       <th>System Element Name</th>
+                                                       <th>Number Of Components</th>
+                                                       <th>Request Deployment</th>
+                                                   </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="sys_element in rel_item.system_version.system_elements">
+                                                        <td>(~ sys_element.system_element_name ~) </td>
+                                                        <td>(~ sys_element.system_element_components.length ~) </td>
+                                                        <td><button type="submit" class="btn btn-primary" ng-click="requestDeployment(sys_element.system_element_id)" value="Request Deployment">Request Deployment</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div  ng-repeat-end style="display:hidden;"></div>
+                        </li>
+                   </ul>
+                   <div  ng-repeat-end style="display:hidden;"></div>
+               </li>
+           </ul>
+           <div ng-repeat-end></div>
+       </li>
+    </ul>
+</div>
+{% endblock %}
+

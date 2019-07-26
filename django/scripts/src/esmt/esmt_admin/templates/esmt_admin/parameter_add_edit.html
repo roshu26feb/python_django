@@ -1,0 +1,138 @@
+{% extends 'esmt_admin/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "esmt_admin:deploy_parameter" "Back" "parameter-list-id" top="220px"%}
+
+<div style="padding-bottom:20px; margin-top:70px;">
+    <h3 style="text-align:center;">{% if parameter_id %}Update Parameter{% else %}Add Parameter{% endif %}</h3>
+</div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . " {% if parameter_id %} ng-init="getParameterById({{parameter_id}})" {% endif %}> 
+    {% csrf_token %}
+    <div class="row" style="margin: 0px 15px;" ng-cloak>
+        <fieldset>
+            <legend></legend>
+            <div class="fieldWrapper">
+                <div class="form-group required">{% usemacro renderFormField form.parameter_name "col-sm-6" %}</div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group required">{% usemacro renderFormField form.parameter_internal_name "col-sm-6" %}</div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group required">{% usemacro renderFormField form.mandatory "col-sm-4" %}</div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group required">{% usemacro renderFormField form.active "col-sm-4" %}</div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group required">{% usemacro renderFormField form.parameter_type "col-sm-6" %}</div>
+            </div>
+        <div ng-if="freeText">
+            <div class="fieldWrapper">
+                <div class="form-group required">
+                    <label class="control-label col-sm-2"> Length of Free Text: </label>
+                    <div class="col-sm-6">
+                        <input type="number" name="value-0" autocomplete="off" ng-model="textSize" class="form-control" required placeholder="Text Length" min="1" title="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="number">
+            <div class="fieldWrapper">
+                <div class="form-group required">
+                    <label class="control-label col-sm-2">Number Limit: </label>
+                    <div class="col-sm-3">
+                        <input type="number" name="value-0" ng-model="numMin"  autocomplete="off" class="form-control" required placeholder="Min" max="(~numMax~)" onkeydown="javascript: return event.keyCode == 69 ? false : true" title="" />
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="number" name="value-1" ng-model="numMax" autocomplete="off" class="form-control" required placeholder="Max" min="(~numMin~)" title="" onkeydown="javascript: return event.keyCode == 69 ? false : true" title="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+         </fieldset>
+    </div>
+    <div class="row" style="margin: 0px 15px;" ng-cloak>
+        <fieldset>
+           <legend>Links To:</legend>
+           <div class="fieldWrapper">
+               <div class="form-group required">
+                   <div class="col-sm-8 table-responsive" style="margin-top: 2px;">
+                       <table class="table table-bordered table-condensed" id="id_parameters">
+                           <thead class="bg-warning">
+                           <tr>
+                               <th>Link</th>
+                               <th>Link Items</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                               <!-- <td>
+                                    <select name="link" class="form-control" ng-model="p.link" ng-options="l.value for l in links track by l.key" ng-change="getLinkedItemsChoice(p.link.key)" required>
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="linked_item" class="form-control" ng-model="p.linked_item" ng-options="li.value for li in linkedItems track by li.key" required>
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </td> -->
+
+                               <td class="control-label " style="text-align: left;">
+                                    <label>Component Type</label>
+                                </td>
+                                <td>
+                                    <select name="component_type_id" class="form-control" ng-model="component_type_id" ng-options="li.value for li in linkedItems track by li.key" ng-change="getLinkedItemsComponentTypeFA(component_type_id)" required>
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </td>
+                           
+                            </tr>
+
+                            <tr>
+                               <td>
+                                    <label>Component</label>
+                                </td>
+                                <td>
+                                    <!-- <select name="component_id" ng-model="p.linked_item" ng-options="ci.value for ci in CompItems track by ci.key" class="form-control"> -->
+                                    <select name="component_id" ng-model="p.linked_item" ng-options="ci.value for ci in CompItems.slice().reverse() track by ci.key" class="form-control">
+                                        <option value="">-- Select --</option>
+                                    </select>
+                                </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </fieldset>
+    </div>
+    <div ng-show="paramValues.length>0" class="row" style="margin: 0px 15px;" ng-cloak>
+        <fieldset>
+            <legend>Values :</legend>
+            <div class="fieldWrapper"  ng-repeat="paramValue in paramValues">
+                <div class="form-group form-group-sm required">
+                    <div class="col-sm-6">
+                        <input type="text" name="value-(~ $index ~)" ng-model="paramValue.value" autocomplete="off" class="form-control" required placeholder="Values" maxlength="255" title="" />
+                    </div>
+                    <div class="col-sm-2">
+                       <span ng-show="paramValues.length >1" class="remove lead text-danger"  ng-click="removeParamValue($index)"><span class="glyphicon glyphicon-minus-sign" style="padding-right:5px;"></span></span>
+                       <span ng-show="$last" class="addComp lead text-success" ng-click="addNewParamValue($index)"><i class="text-success glyphicon
+glyphicon-plus-sign"></i></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" id="btn-parameter-add-save" class="btn btn-primary" value="Save">{% if parameter_id %}Update{% else %}Save{% endif %}</button>
+        </div>
+    </div>
+</form>
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+{% endblock %}

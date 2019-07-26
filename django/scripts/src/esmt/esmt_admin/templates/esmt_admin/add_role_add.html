@@ -1,0 +1,25 @@
+{% extends 'esmt_admin/base.html' %}
+{% load bootstrap3 %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>User Management</h3>
+</div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" class="btn btn-primary" value="Add">Save</button>
+        </div>
+    </div>
+</form>
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+{% endblock %}

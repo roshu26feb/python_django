@@ -1,0 +1,28 @@
+{% extends "base/admin_base.html" %}
+{% load static %}
+{% block css_js %}
+<link rel="stylesheet" href="{% static 'esmt_admin/css/style.css' %}" />
+<link rel="stylesheet" href="{% static 'delivery_db/css/styles.css' %}" />
+<link rel="stylesheet" href="{% static 'delivery_db/css/boostrap-select.min.css' %}" />
+<script src="{% static 'delivery_db/js/bootstrap-select.min.js' %}"></script>
+
+<script src="{% static 'esmt_admin/js/controller.js' %}"></script>
+{% endblock %}
+{% block title %}Environment Management Tool - Admin{% endblock %}
+{% block level_3_navbar %}
+{% if request.resolver_match.url_name in 'deploy_parameterparameter_addreference_dataparameter_update' %}
+<nav class="navbar navbar-purple" role="navigation" id="level-3">
+    <ul class="nav navbar-nav" id="esmt_admin">
+        <li {% if request.resolver_match.url_name in 'deploy_parameterparameter_addparameter_update' %} class='active' {% endif %}><a href="{% url 'esmt_admin:deploy_parameter' %}">Deployment
+Parameters</a></li>
+        <li {% if request.resolver_match.url_name == 'reference_data' %} class='active' {% endif %}><a href="{% url 'esmt_admin:reference_data' %}">Reference Data</a></li>
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+{% block content %}
+    <div class="container" ng-controller="esmtAdminCtrl" data-ng-init="init()">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}

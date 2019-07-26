@@ -1,0 +1,45 @@
+{% extends 'esmt_admin/base.html' %}
+{% load bootstrap3 %}
+{% load macros %}
+{% load static %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "esmt_admin:user_role_add" "Add or Edit User" "user-role-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px; font-size:11px;" ng-init="getUser()" ng-cloak>
+    <div class="row">
+      <span class="col-sm-11 jumbotron" style="margin-bottom:20px;">
+          <h3 class="lead text-center" style="margin:0px 5px">User Management</h3>
+      </span>
+    </div>
+    <div class="row">
+        {% if users %}
+        <div class="col-sm-11 table-responsive" style="margin-top: 2px; padding: 0px;">
+            <table class="table table-bordered table-striped" >
+                <thead class="bg-primary">
+                    <tr>
+                        <th style="text-align: center;">User Name</th>
+                        {% for role in roles %}
+                        <th style="text-align: center;">{{role}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td class="bg-info" style="text-align: center;"> {{ user.user_display_name }}</td>
+                        {% for role in roles %}
+                        <td style="text-align: center;">{% for user_role in user.user_roles %}{% if role == user_role.role.role_name %}<i class="text-success glyphicon glyphicon-ok"></i>{% endif %}{% endfor %}</td>
+                        {% endfor%}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="col-sm-11 alert alert-danger" role="alert" style="text-align:center;">No Users Found</div>        
+        {% endif %}
+    </div>
+ </div>
+{% endblock %}
+

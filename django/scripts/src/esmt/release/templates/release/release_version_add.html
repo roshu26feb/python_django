@@ -1,0 +1,96 @@
+{% extends 'release/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro nextview "release:release_add" "Add Release" "release-form-id" %}
+{% usemacro prevview "release:releases" "Back" "release-list-id" %}
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Create Release Version</h3>
+</div>
+
+<form class="container form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . " ng-init="getSystems()">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+        <div class="fieldWrapper" ng-show="releaseById.release_versions.length > 0" ng-cloak>
+        <div class="form-group">
+            <label class="col-sm-offset-2 col-sm-4"><strong>Clone from Version</strong></label>
+        </div>
+    </div>
+    <div class="fieldWrapper" ng-show="releaseById.release_versions.length > 0" ng-cloak>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-4">
+                <select name="release_ver" class="form-control" ng-model="release_version"
+                        ng-options="rv.release_version_name for rv in releaseById.release_versions|formatDate|orderBy:'creation_date':true"
+                        id="id_dd1" ng-change="removeReleaseItem(-1);showAdd=False">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <div ng-disabled="!release_version" class="col-sm-offset-2 btn btn-success" style="margin-bottom:10px;" ng-click="addReleaseItem(release_version); showAdd = true">Clone</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" ng-show="releaseById.release_versions.length <= 0 && showAdd && releaseItems.length <= 0" style="padding-left:15px;" ng-cloak>
+        <div class="col-sm-offset-2 btn btn-success" style="margin-bottom:10px;" ng-click="addReleaseItem(); showAdd = !showAdd">Add System</div>
+    </div>
+    <div class="form-group" ng-show="releaseItems.length>0 && !showAdd" style="padding-left:15px;" ng-cloak>
+        <div id="rm-cmp" class="col-sm-offset-2 btn btn-danger" ng-click="removeReleaseItem(-1);  showAdd = !showAdd">Remove System</div>
+    </div>
+    <div ng-show="releaseItems.length>0" class="row" style="margin: 0px 15px;" ng-cloak>
+        <fieldset class="cust-border">
+            <legend class="cust-border">System</legend>
+            <div class="row" style="margin-left:5px;">
+                <div class="col-sm-3 jumbotron">System Name</div>
+                <div class="col-sm-3 jumbotron">System Version</div>
+                <div class="col-sm-4 jumbotron">Release Note URL</div>
+            </div>
+            <div class="fieldWrapper"  ng-repeat="ri in releaseItems">
+                <div class="form-group form-group-sm required" style="margin-left:5px;">
+                    <div class="col-sm-3 dd-width">
+                        {{ri.system}}
+                        <select name="comp_type" class="form-control" ng-model="ri.system" ng-options="s.system_name for s in systems track by s.system_id" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 dd-width">
+                        {{ri.system_version}}
+                        <select ng-disabled="!ri.system" name="system_version_id-(~ $index ~)" class="form-control" ng-model="ri.system_version" ng-options="sv.system_version_name for sv in
+ri.system.system_versions track by sv.system_version_id" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" name="release_note_url-(~ $index ~)" autocomplete="off" class="form-control" required placeholder="Release Note URL" maxlength="255"
+ng-model="ri.rel_note_url" title="" />
+                    </div>
+
+                    <div class="col-sm-2">
+                     <span ng-show="releaseItems.length >1" class="remove lead text-danger"  ng-click="removeReleaseItem($index)"><span class="glyphicon glyphicon-minus-sign"
+style="padding-right:5px;"></span></span>
+                     <span ng-show="$last" class="addComp lead text-success" ng-click="addNewReleaseItem($index)"><i class="text-success glyphicon glyphicon-plus-sign"></i></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" id="btn-release-version-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New Release Successfully Created - ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+
+{% endblock %}
+
+
