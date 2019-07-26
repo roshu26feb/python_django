@@ -1,0 +1,87 @@
+{% extends 'delivery_db/base.html' %}
+{% load env_filters %}
+{% block page_content %}
+ <ul>
+    <li><a href="{% url 'delivery_db:systems' %}">back</a></li>
+ </ul>
+<div style="padding-bottom:20px">
+    <h3>List Systems</h3>
+</div>
+<div class="container" style="margin-top:30px;">
+    <div class="row">
+        <div class="col-md-9">
+            <ul id="tree1">
+                {% for key, system_list  in systems.items %}
+                {% for system in system_list %}
+                <li><a href="#">{{ system|dict_val:"system_name" }}</a>
+                    <ul>
+                        {% for system_version in system|dict_val:"system_versions" %}
+                        <li>System Version
+                            <ul>
+                                <li>
+                                    <table class="table table-bordered table-condensed" >
+                                         <thead style="background-color:grey;color:white;">
+                                            <tr>
+                                              <th>System Version</th>
+                                              <th>Created Date</th>
+                                            </tr>
+                                         </thead>
+                                         <tbody>
+                                            <tr>
+                                              <td>{{system_version|dict_val:"system_version_name"}} </td>
+                                              <td>{{system_version|dict_val:"creation_date"}} </td>
+                                            </tr>
+                                         </tbody>
+                                    </table>
+                                </li>
+                                {% for components in system_version|dict_val:"system__version_components" %}
+                                <li>System Components
+                                    <ul>
+                                        <li>
+                                            <table class="table table-bordered table-condensed" >
+                                                 <thead style="background-color:grey;color:white;">
+                                                    <tr>
+                                                        <th>Component Version Name</th>
+                                                        <th>Component Name</th>
+                                                        <th>Component Short Name</th>
+                                                        <th>Component Type</th>
+                                                        <th>Artefact Store URL</th>
+                                                        <th>Artefact Store Type</th>
+                                                        <th>Code Repository URL</th>
+                                                        <th>Tag</th>
+                                                        <th>Stable Flag</th>
+                                                        <th>Creation Date</th>
+                                                    </tr>
+                                                 </thead>
+                                                 <tbody>
+                                                    <tr>
+                                                        <td>{{components|dict_val:"component_version_name"}} </td>
+                                                        <td>{{components|dict_val:"component_name"}} </td>
+                                                        <td>{{components|dict_val:"component_short_name"}} </td>
+                                                        <td>{{components|dict_val:"component_type"}} </td>
+                                                        <td>{{components|dict_val:"artefact_store_url"}} </td>
+                                                        <td>{{components|dict_val:"artefact_store_type"}} </td>
+                                                        <td>{{components|dict_val:"code_repository_url"}} </td>
+                                                        <td>{{components|dict_val:"tag"}} </td>
+                                                        <td>{{components|dict_val:"stable_flag"}} </td>
+                                                        <td>{{components|dict_val:"creation_date"}} </td>
+                                                    </tr>
+                                                 </tbody>
+                                            </table>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

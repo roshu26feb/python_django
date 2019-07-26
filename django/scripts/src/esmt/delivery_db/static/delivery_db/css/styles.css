@@ -1,0 +1,159 @@
+body{
+    padding-top: 150px;
+}
+.st{
+    font-size: 11px;
+}
+.zplr{
+    padding-left: 0px;
+    padding-right: 0px;  
+}
+
+.jumbotron {
+  margin-bottom:15px;
+  font-weight:bold;
+  white-space: nowrap;
+  text-align: center;
+}
+.accord-title{
+    border: 1px solid grey;
+    padding: 5px; 
+    text-align:center;
+    margin:2px;
+    border-radius:5px;"
+}
+.accord-icon {
+     padding: 5px;
+}
+.accord-text, .table-data {
+     margin: 2px;
+     padding: 5px;
+     border-left: 6px solid green;
+     background:#E5F7E4;
+}
+.accord-inner-text {
+     margin: 2px;
+     padding: 5px;
+     border-left: 6px solid #828282;
+     background: #EDEDED;
+}
+.accord-inner-text-mod {
+     padding: 5px;
+     border-left: 3px solid #828282;
+     background: #EDEDED;
+     margin-bottom:2px;
+}
+.accord-title-mod{
+    border-left: 1px solid white;
+    padding: 5px;
+    text-align:center;
+    white-space: nowrap;
+    margin-bottom:2px;
+}
+.accord-text-mod{
+     padding: 5px;
+     border-left: 3px solid green;
+     background:#E5F7E4;
+     margin-bottom: 2px; 
+}
+.table-head {
+     margin: 2px;
+     padding: 5px;
+     border-bottom: 4px solid #00688B;
+     background:#00BFFF;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul.inner {
+        padding-left: 1em;
+        overflow: hidden;
+        display: none;
+}
+
+ul>li {
+         #margin: .5em 0;
+}
+
+ul>li a.accordion-toggle {
+    width: 100%;
+    display: block;
+    #background: rgba(0,0,0,0.78);
+    #color: #fefefe;
+    #padding: .75em;
+    border-radius: 0.15em;
+    transition: background .3s ease;
+    text-decoration: none;
+}
+ul>li a.accordion-toggle:hover {
+   #background: rgba(0, 0, 0, 0.9);
+}
+
+/* related to form system_component*/
+legend.cust-border {
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    border-bottom:none;
+    margin-bottom:10px;
+}
+fieldset.cust-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+.dd-width{
+    padding-left:2px;
+    padding-right:0px;
+}
+.top-5{
+    top:5px;
+}
+.comp-title{
+    background-color: #337ab7;
+    color: white;
+    border-left: 15px solid white;
+    border-right: 15px solid white;
+    padding: 2px auto;
+    margin-bottom: 10px;
+    text-align: center;
+    text-weight:bold;
+   -moz-box-shadow:    inset 0 0 10px #204d74;
+   -webkit-box-shadow: inset 0 0 10px #204d74;
+   box-shadow:         inset 0 0 10px #204d74;
+   line-height:30px;
+}
+
+
+/*Map Instance*/
+
+button:disabled {opacity: 0.3;}
+.bootstrap-select.btn-group .dropdown-menu {z-index: 9999;}
+ul#id_available_infra_config li, ul#id_available_application li {
+    display: inline-block;
+    width: 30%;
+}
+
+
+.system-version-add-alert{
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+   border-radius: 4px;
+   color: #a94442;
+   background-color: #f2dede;
+   border-color: #ebccd1;
+   box-sizing: border-box;
+}
+
+.cancel-alert{
+    float:right;
+}

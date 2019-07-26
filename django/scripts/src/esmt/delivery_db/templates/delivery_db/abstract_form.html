@@ -1,0 +1,12 @@
+{% load bootstrap3 %}
+{% for field in form %}
+    <div class="fieldWrapper">
+{% bootstrap_form_errors form layout='inline' %}        
+        {{ field.errors }}
+        {% if field.field.required %}
+        {% bootstrap_field field form_group_class="form-group required" label_class="col-sm-2" field_class="col-sm-4" %}
+        {% else %}
+        {% bootstrap_field field form_group_class="form-group" label_class="col-sm-2" field_class="col-sm-4" %}
+        {% endif %}
+    </div>
+{% endfor %}

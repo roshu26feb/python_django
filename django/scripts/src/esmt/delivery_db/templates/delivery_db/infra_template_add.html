@@ -1,0 +1,57 @@
+{% extends 'delivery_db/base.html' %}
+{% load bootstrap3 %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "delivery_db:infrastructure" "Back" "infra-list-id" %}
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Add Infrastructure Template</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+    
+    <div class="fieldWrapper" ng-if="infrastructure_type != 2"ng-cloak>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="id_cpu">CPU</label>
+            <div class="col-sm-4">
+                <input name="cpu" class="form-control" max-length="255" required="true" min="1" type="number"
+                        id="id_cpu">
+                </input>
+            </div>
+        </div>
+        </div>
+        <div class="fieldWrapper" ng-if="infrastructure_type != 2" ng-cloak>
+            <div class="form-group required">
+            <label class="col-sm-2 control-label" for="id_memory">Memory</label>
+            <div class="col-sm-4">
+                <input name="memory_size" class="form-control" max_length="255" required="true" min="1" type="number"
+                        id="id_memory">
+                </input>
+            </div>
+           </div>
+        </div>
+    <div class="fieldWrapper" ng-if="infrastructure_type != 2" ng-cloak>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="id_max_no_disk">Max no.of Disks</label>
+            <div class="col-sm-4">
+                <input name="max_no_disk" class="form-control" max-length="255" required="true" min="0" type="number"
+                        id="id_max_no_disk">
+                </input>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" id="btn-infra-template-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+{% endblock %}

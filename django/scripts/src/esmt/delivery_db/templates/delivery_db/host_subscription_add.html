@@ -1,0 +1,77 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro prevview "delivery_db:host_subscription" "Back" "host-subs-list-id" %}
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Add Host Subscription</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . " ng-init="getEnvType()">
+    {% csrf_token %}
+     <div class="fieldWrapper" ng-init="getApiDetails('host_region');" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_host_region">Host Region</label>
+                <div class="col-sm-4">
+                    <select name="host_region" class="form-control" ng-model="hostRegion"
+                        ng-options="hr.host_region_name for hr in apiResponse['host_regions'] track by hr.host_region_id"
+                        id="id_host_region">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+           </div>
+        </div>
+
+
+     <div class="fieldWrapper" ng-init="getSystemNetworkSet()" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_system_network_set">System Network Set</label>
+                <div class="col-sm-4">
+                    <select name="system_network_set" class="form-control" ng-model="SysNetworkSet"
+                        ng-options="s.system_network_set_name for s in system_network_sets track by s.system_network_set_id"
+                        id="id_system_network_set">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+           </div>
+        </div>
+
+     <div class="fieldWrapper" ng-init="getEnvSubType()"ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_env_sub">Environment Subscription</label>
+                <div class="col-sm-4">
+                    <select name="environment_sub" class="form-control" ng-model="EnvSub"
+                        ng-options="es.environment_subscription_type_name for es in environment_subscriptions track by es.environment_subscription_type_id"
+                        id="id_env_sub">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+           </div>
+        </div>
+     <div class="fieldWrapper" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_env_type">Environment Type</label>
+                <div class="col-sm-4">
+                    <select name="environment_type" class="form-control" ng-model="EnvType"
+                        ng-options="et.environment_type_name for et in environment_types track by et.environment_type_id"
+                        id="id_env_type">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+           </div>
+        </div>
+
+    {% include 'delivery_db/abstract_form.html' %}
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" id="btn-host-subscription-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+
+{% endblock %}

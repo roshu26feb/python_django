@@ -1,0 +1,169 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+
+{% usemacro nextview "delivery_db:instance_add" "Add Instance" "instance-add-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getInstances()">
+    <div class="row">
+        <span class="col-sm-12 jumbotron" style="margin-bottom:20px;border-left:25px solid white;"><h3 class="lead text-center" style="margin:0px 5px;">List of Instances</h3></span>
+    </div>
+    <div class="row text-center" ng-init="onLoading()">
+        <span class="col-sm-12">{% usemacro loading %}</span>
+    </div>
+    <div class="row st" ng-show="show" ng-cloak>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-1 zplr"></span>
+                <span class="col-sm-5 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Instance Name" "instance_name" %}
+                </span>
+                <span class="col-sm-6 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Host Instance Name" "hostinstance_name" %}
+                </span>
+            </span>
+        </span>
+        <span class="col-sm-1 accord-title-mod bg-primary">
+            {% usemacro columnSort "IP" "assigned_ip" %}
+        </span>
+        <span class="col-sm-1 accord-title-mod bg-primary">
+            {% usemacro columnSort "State" "instance_state" %}
+        </span>
+        <span class="col-sm-1 accord-title-mod bg-primary">
+            {% usemacro columnSort "Host Type" "infrastructure_template.host_type.host_name" %}
+        </span>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-6 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Template Description" "infrastructure_template.host_template_description" %}
+                </span>
+                <span class="col-sm-6 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Infra Template Name" "infrastructure_template.infra_template_name" %}
+                </span>
+            </span>
+        </span> 
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-3 accord-title-mod bg-primary">
+                    {% usemacro columnSort "No. CPU" "infrastructure_template.cpu" %}
+                </span>
+                <span class="col-sm-4 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Memory Size" "infrastructure_template.memory_size" %}
+                </span>
+                <span class="col-sm-3 accord-title-mod bg-primary">
+                    {% usemacro columnSort "No. Disks" "infrastructure_template.memory_size" %}
+                </span>
+            </span>
+        </span>
+    </div>
+    <div class="row st" ng-show="show" ng-cloak>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-1 zplr"></span>
+                <span class="col-sm-5" style="padding:0px;">
+                    {% usemacro columnFilter "Search Instance Name" "searchCol.instance_name" %}
+                </span>
+                <span class="col-sm-6" style="padding:0px;">
+                    {% usemacro columnFilter "Search Host Name" "searchCol.host_instance_name" %}
+                </span>
+            </span>
+        </span>
+        <span class="col-sm-1" style="padding:0px;">
+            {% usemacro columnFilter "Search IP" "searchCol.assigned_ip" %}
+        </span>
+        <span class="col-sm-1" style="padding:0px;">
+            {% usemacro columnFilter "Search State" "searchCol.instance_state" %}
+        </span>
+        <span class="col-sm-1" style="padding:0px;">
+            {% usemacro columnFilter "Search Host Type" "searchCol.infrastructure_template.host_type.host_name" %}
+        </span>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-6" style="padding:0px;">
+                    {% usemacro columnFilter "Search Template desc" "searchCol.infrastructure_template.host_template_description" %}
+                </span>
+                <span class="col-sm-6" style="padding:0px;">
+                    {% usemacro columnFilter "Search Infra Template" "searchCol.infrastructure_template.infra_template_name" %}
+                </span>
+            </span>
+        </span> 
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-3" style="padding:0px;">
+                    {% usemacro columnFilter "Search No. CPU" "searchCol.infrastructure_template.cpu" %}
+                </span>
+                <span class="col-sm-4" style="padding:0px;">
+                    {% usemacro columnFilter "Search Memory Size" "searchCol.infrastructure_template.memory_size" %}
+                </span>
+                <span class="col-sm-3" style="padding:0px;">
+                    {% usemacro columnFilter "Search Disk" "searchCol.infrastructure_template.max_no_disk" %}
+                </span>
+            </span>
+        </span>
+    </div>
+</div>
+<div class="accord container st" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+    <ul class="accordion"  style="padding:0px; margin:0px;">
+        <li style="padding:0px; margin:0px;">
+            <a ng-repeat-start="instance in instances | orderBy:sortType:sortReverse | filter:searchCol" class="row accordion-toggle" href="javascript:void(0);"
+    style="padding-left:0px;z-index=0; margin:0px;">
+                <div class="row">
+
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-1 text-right accord-icon zplr" id="instance-(~ instance.instance_id ~)"><i class="indicator glyphicon glyphicon-plus-sign top-5"></i></span>
+                <span class="col-sm-5 accord-text-mod">(~ instance.instance_name ~)</span>
+                <span class="col-sm-6 accord-text-mod">(~ instance.host_instance_name ~)</span>
+            </span>
+        </span>
+                <span class="col-sm-1 accord-text-mod">(~ instance.assigned_ip ~)</span>
+                <span class="col-sm-1 accord-text-mod">(~ instance.instance_state ~)</span>
+                <span class="col-sm-1 accord-text-mod">(~ instance.infrastructure_template.host_type.host_name ~)</span>
+                <span class="col-sm-3 zplr">
+                    <span class="row" style="margin:0px;">
+                        <span class="col-sm-6 accord-text-mod">(~ instance.infrastructure_template.host_template_description ~)</span>
+                        <span class="col-sm-6 accord-text-mod">(~ instance.infrastructure_template.infra_template_name ~)</span>
+                    </span>
+                </span>
+                <span class="col-sm-3 zplr">
+                    <span class="row" style="margin:0px;">
+                        <span class="col-sm-3 accord-text-mod">(~ instance.infrastructure_template.cpu ~)</span>
+                        <span class="col-sm-4 accord-text-mod">(~ instance.infrastructure_template.memory_size ~)</span>
+                        <span class="col-sm-3 accord-text-mod">(~ instance.infrastructure_template.max_no_disk ~)</span>
+                        <span class="col-sm-2 text-left accord-icon"><button id="update-inst-(~ instance.instance_id ~)" ng-click="callUpdate(instance.instance_id)" class="glyphicon glyphicon-edit"></button></span>
+                    </span>
+                </span> 
+                </div>
+            </a>
+            <ul class="inner">
+                <li>
+                    <div class="row">
+                        <div class="col-sm-9 table-responsive" style="margin-top: 2px;">
+                            <table class="table table-bordered table-condensed" >
+                                <thead class="bg-info">
+                                   <tr>
+                                       <th>Disk</th>
+                                       <th>Disk Size</th>
+                                       <th>Disk Size Type</th>
+                                   </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="inst_disk in instance.instance_disks">
+                                        <td>(~ inst_disk.disk_type.disk_type_description ~) </td>
+                                        <td>(~ inst_disk.disk_size ~) </td>
+                                        <td>(~ inst_disk.disk_size_type ~) </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div ng-repeat-end></div>
+        </li>
+    </ul>
+</div>
+<div ng-init="searchCol.instance_state='UP'"></div>
+{% endblock %}
+

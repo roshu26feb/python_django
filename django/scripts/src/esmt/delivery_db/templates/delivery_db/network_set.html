@@ -1,0 +1,90 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "delivery_db:network_set_add" "Add Network Set" "network-set-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getApiDetails('network_set')" ng-cloak>
+  <div class="row">
+    <span class="col-sm-12 jumbotron" style="margin-bottom:20px;">
+        <h3 class="lead text-center" style="margin:0px 5px">List of Network Sets</h3>
+    </span>
+  </div>
+  <div class="col-sm-12 text-center" ng-init="onLoading()">
+    {% usemacro loading %}
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Network Set Name" "network_set_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Subscription" "host_subscription.host_subscription_key" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Site" "host_site.host_site_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+      {% usemacro columnSort "Environment Type" "environment_type.environment_type_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+      {% usemacro columnSort "System Element Type" "system_element_type.system_element_type_name" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "IP Start" "ip_range_start" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "IP End" "ip_range_end" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "Subnet" "subnet" %}
+    </span>
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Network Set Name" "searchCol.network_set_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Subscription" "searchCol.host_subscription.host_subscription_key" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Site" "searchCol.host_site.host_site_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Env Type" "searchCol.environment_type.environment_type_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search System Element Type " "searchCol.system_element_type.system_element_type_name" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search IP start" "searchCol.ip_range_start" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search IP End" "searchCol.ip_range_end" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Subnet" "searchCol.subnet" %}
+    </span>
+
+ </div>
+ </div>
+ <div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+   <ul class="accordion"  style="padding:0px; margin:0px;">
+     <li style="padding:0px; margin:0px;">
+       <a ng-repeat="network_set in apiResponse.network_sets | orderBy:sortType:sortReverse | filter:searchCol" class="row" href="javascript:void(0);"
+         style="padding-left:0px;z-index=0; margin:0px;">
+         <div class="row">
+           <span class="col-sm-2 accord-text-mod">(~ network_set.network_set_name ~)</span>
+           <span class="col-sm-2 accord-text-mod">(~ network_set.host_subscription.host_subscription_key ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ network_set.host_site.host_site_name ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ network_set.environment_type.environment_type_name ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ network_set.system_element_type.system_element_type_name ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ network_set.ip_range_start ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ network_set.ip_range_end ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ network_set.subnet ~)</span>
+
+         </div>
+       </a>
+     </li>
+   </ul>
+ </div>
+{% endblock %}

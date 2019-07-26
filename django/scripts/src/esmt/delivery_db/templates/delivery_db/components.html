@@ -1,0 +1,99 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro nextview "delivery_db:component_version_add" "Add Component Or Version" "component-version-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getComponents()">
+    <div class="row">
+        <span class="col-sm-1"></span>
+        <span class="col-sm-9 jumbotron" style="margin-bottom:20px;"><h3 class="lead text-center" style="margin:0px 5px">List of Components</h3></span>
+    </div>
+    <div class="row text-center"  ng-init="onLoading()">
+        <div class="col-sm-10">{% usemacro loading %}</div>
+    </div>
+    <div class="row" ng-show="show" ng-cloak>
+        <span class="col-sm-1"></span>
+        <span class="col-sm-3 accord-title bg-primary">
+          {% usemacro columnSort "Component Name" "component_name" %}
+        </span>
+        <span class="col-sm-3 accord-title bg-primary">
+          {% usemacro columnSort "Short Name" "component_short_name" %}
+        </span>
+        <span class="col-sm-3 accord-title bg-primary">
+          {% usemacro columnSort "Component Type" "component_type.component_type_description" %}
+        </span>
+    </div>
+    <div class="row" ng-show="show" ng-cloak>
+        <span class="col-sm-1"></span>
+        <span class="col-sm-3" style="padding:0px;">
+          {% usemacro columnFilter "Search Component" "searchCol.component_name" %}
+        </span>
+        <span class="col-sm-3" style="padding:0px; margin-left:5px;">
+         {% usemacro columnFilter "Search Short Name" "searchCol.component_short_name" %}
+        </span>
+        <span class="col-sm-3" style="padding:0px; margin-left:5px;">
+          {% usemacro columnFilter "Search Component Type" "searchCol.component_type.component_type_description" %}
+        </span>
+    </div>
+</div>
+<div class="accord container" style="margin-top:80px; margin-left:0px; padding-top:66px; z-index:5; overflow:auto;" ng-cloak>
+    <ul class="accordion">
+        <li>
+            <a ng-repeat-start="component in components | orderBy:sortType:sortReverse | filter:searchCol" class="accordion-toggle" href="javascript:void(0);"
+    style="z-index=0; margin:0px;">
+              <div class="row">    
+                <span class="col-sm-1 text-right accord-icon" id="component-(~ component.component_id ~)" ng-if="component.component_versions.length>0"><i class="indicator glyphicon glyphicon-plus-sign top-5"></i></span>
+                <span class="col-sm-1" ng-if="!component.component_versions.length > 0"></span>
+                <span class="col-sm-3 accord-text">(~ component.component_name ~)</span>
+                <span class="col-sm-3 accord-text" style="margin-left:5px;">(~ component.component_short_name ~)</span>
+                <span class="col-sm-3 accord-text" style="margin-left:5px;">(~ component.component_type.component_type_description ~)</span>
+              </div>
+            </a>
+            <ul ng-repeat-end class="inner">
+                <li  ng-if="component.component_versions.length > 0">
+                    <div class="row accordion-toggle">
+                        <div  class="col-sm-1"></div>
+                        <div class="col-sm-11 table-responsive" style="margin-top: 2px;">
+                            <table class="table table-bordered table-condensed" >
+                                <thead class="bg-warning">
+                                    <tr>
+                                        <th>Component Version Name</th>
+                                        <th  ng-init="sortType1='creation_date'; sortReverse1 = !sortReverse1">Creation Date</th>
+                                        <th>Artefact Store URL</th>
+                                        <th>Artefact Store Type</th>
+                                        <th>Source Code Repo URL</th>
+                                        <th>Source Tag Ref</th>
+                                        <th>Test Set URI</th>
+                                        <th>Stable Flag</th>
+                                        <th>Linked CI</th>
+                                        <th>Deployment Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="component_version in component.component_versions | filter: filterByDate | orderBy:sortType1:sortReverse1 | limitTo:10">
+                                        <td>(~ component_version.component_version_name ~) </td>
+                                        <td>(~ component_version.creation_date | date: 'yyyy-MM-dd HH:mm:ss Z':'+0000' ~) </td>
+                                        <td>(~ component_version.artefact_store_url ~) </td>
+                                        <td>(~ component_version.artefact_store_type.artefact_store_type_desc ~) </td>
+                                        <td>(~ component_version.source_code_repository_url ~) </td>
+                                        <td>(~ component_version.source_tag_reference ~) </td>
+                                        <td>(~ component_version.test_set_url ~) </td>
+                                        <td>(~ component_version.stable_flag ~) </td>
+                                        <td>(~ component.linked_ci_flag ~)</td>
+                                        <td>(~ component.deployment_type.deployment_type_description ~)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+

@@ -1,0 +1,61 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "delivery_db:host_type_add" "Add Host Type" "host-type-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getApiDetails('host_type')" ng-cloak>
+  <div class="row">
+    <span class="col-sm-12 jumbotron" style="margin-bottom:20px;">
+        <h3 class="lead text-center" style="margin:0px 5px">List of Host Types</h3>
+    </span>
+  </div>
+  <div class="col-sm-12 text-center" ng-init="onLoading()">
+    {% usemacro loading %}
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Name" "host_name" %}
+    </span>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Region" "host_regions.host_region_name" %}
+    </span>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Infrastructure Template" "infrastructure_templates.infra_template_name" %}
+    </span>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Disk Type" "disk_types.disk_type_description" %}
+    </span>
+    
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Name" "searchCol.host_name" %}
+    </span>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Region" "searchCol.host_regions.host_region_name" %}
+    </span>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Infrastructure Template" "searchCol.infrastructure_templates.infra_template_name" %}
+    </span>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Disk Type" "searchCol.disk_types.disk_type_description" %}
+    </span>
+  </div>
+ </div>
+ <div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+   <ul class="accordion"  style="padding:0px; margin:0px;">
+     <li style="padding:0px; margin:0px;">
+       <a ng-repeat="host_type in apiResponse.host_types | orderBy:sortType:sortReverse | filter:searchCol" class="row" href="javascript:void(0);"
+         style="padding-left:0px;z-index=0; margin:0px;">
+         <div class="row">
+           <span class="col-sm-3 accord-text-mod">(~ host_type.host_name ~)</span>
+           <span class="col-sm-3 accord-text-mod"><span ng-repeat="host_region in host_type.host_regions">(~ host_region.host_region_name ~)<br></span></span>
+           <span class="col-sm-3 accord-text-mod"><span ng-repeat="infra_template in host_type.infrastructure_templates">(~ infra_template.infra_template_name ~)<br></span></span>
+           <span class="col-sm-3 accord-text-mod"><span ng-repeat="disk_type in host_type.disk_types">(~ disk_type.disk_type_description ~)<br></span></span>
+         </div>
+       </a>
+     </li>
+   </ul>
+ </div>
+{% endblock %}

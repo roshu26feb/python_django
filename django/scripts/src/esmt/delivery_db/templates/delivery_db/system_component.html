@@ -1,0 +1,91 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "delivery_db:system_add" "Add System" %}
+{% usemacro prevview "delivery_db:systems" "Back" %}
+
+<div style="margin-top:50px; padding-bottom:20px;">
+    <h3>System Components</h3>
+</div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . " ng-init="getApiDetails('component_type')">
+    {% csrf_token %}
+    <div class="fieldWrapper" ng-init="getSystems()">
+        <div class="form-group required">
+            <label class="col-md-2 control-label" for="id_system_name">System Name</label>
+            <div class="col-md-4">
+                <select name="system_name" data-live-search="true" class="form-control" id="id_system_name" ng-model="system" ng-options="s.system_name for s in system track by s.system_id"
+required>
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="fieldWrapper">
+        <div class="form-group required">
+            <label class="col-md-2 control-label" for="id_system_version">System Name</label>
+            <div class="col-md-4">
+                <select ng-disabled="!system" name="system_version" data-live-search="true" class="form-control" id="id_system_version" ng-model="system.system_version_name" ng-options="sv.system_version_name for sv in system.system_versions track by sv.system_version_id" required>
+                    <option value="">-- Select --</option>  
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin: 0px 15px;" ng-init="getComponents()">   
+    <fieldset class="cust-border">
+        <legend class="cust-border">Components</legend>
+        <div class="row">
+            <div class="col-sm-2 comp-title">Component Type</div>
+            <div class="col-sm-3 comp-title">Component Name</div>
+            <div class="col-sm-4 comp-title">Component Version</div>
+        </div>        
+        <div class="fieldWrapper"  ng-repeat="sc in system_comp">
+            <div class="form-group required">
+                <div class="col-sm-2">
+                    <select name="(~ sc.name ~)" class="form-control" ng-model="searchType" ng-options="ct.component_type_description for ct in apiResponse.component_type_description" required>
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <select ng-disabled="!searchType" name="comp" class="form-control" ng-model="component" ng-options="c.component_name for c in components | filter:{component_type:{component_type_description:searchType.component_type_description}}" required>
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                <select ng-disabled="!component" name="(~ sc.comp_ver ~)" class="form-control" ng-model="comp_ver" ng-options="cv.component_version_name for cv in component.component_versions track by cv.component_version_id" required>
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>                
+                <div class="col-sm-2">
+                 <a ng-show="comp_ver" class="lead text-primary" ng-href="(~ comp_ver.artefact_store_url ~)"><span class="glyphicon glyphicon-link" style="padding:0px 5px;" ></a>
+                 <a href="#" class="remove lead text-danger"  ng-click="removeComp($index)"><span ng-if="!$first" class="glyphicon glyphicon-minus-sign" style="padding-right:5px;"></span></a>
+                 <a href="#" class="addComp lead text-success" ng-click="addNewComp()"><span class="glyphicon glyphicon-plus-sign"></span></a>
+                </div>
+   <p>(~ searchType.component_type_description ~)<p></hr>
+  <p>(~ component.component_name ~)</p></hr>
+  <p>(~ comp_ver.component_version_name ~)</p>
+            </div>
+        </div>
+   </fieldset>
+     
+</div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">System Component Successfully Created ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+
+{% endblock %}
+
+
+

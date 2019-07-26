@@ -1,0 +1,75 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "delivery_db:host_subscription_add" "Add Host Subscription" "host-subs-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getApiDetails('host_subscription')" ng-cloak>
+  <div class="row">
+    <span class="col-sm-12 jumbotron" style="margin-bottom:20px;">
+        <h3 class="lead text-center" style="margin:0px 5px">List of Host Subscriptions</h3>
+    </span>
+  </div>
+  <div class="col-sm-12 text-center" ng-init="onLoading()">
+    {% usemacro loading %}
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Subscription Key" "host_subscription_key" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Subscription Description" "host_subscription_description" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Region" "host_region.host_region_description" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+      {% usemacro columnSort "System Network Set" "system_network_set.system_network_set_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+      {% usemacro columnSort "Environment Subscription Type" "environment_subscription_type.environment_subscription_type_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+      {% usemacro columnSort "Environment Type" "environment_type.environment_type_name" %}
+    </span>
+
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Subscription Key" "searchCol.host_subscription_key" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Subscription Desc" "searchCol.host_subscription_description" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Region" "searchCol.host_region.host_region_description" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search System Network Set" "searchCol.system_network_set.system_network_set_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Env Subscription Type " "searchCol.environment_subscription_type.environment_subscription_type_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Environment Type" "searchCol.environment_type.environment_type_name" %}
+    </span>
+  </div>
+ </div>
+ <div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+   <ul class="accordion"  style="padding:0px; margin:0px;">
+     <li style="padding:0px; margin:0px;">
+       <a ng-repeat="host_subs in apiResponse.host_subscriptions | orderBy:sortType:sortReverse | filter:searchCol" class="row" href="javascript:void(0);"
+         style="padding-left:0px;z-index=0; margin:0px;">
+         <div class="row">
+           <span class="col-sm-2 accord-text-mod">(~ host_subs.host_subscription_key ~)</span>
+           <span class="col-sm-2 accord-text-mod">(~ host_subs.host_subscription_description ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ host_subs.host_region.host_region_description ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ host_subs.system_network_set.system_network_set_name ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ host_subs.environment_type.environment_subscription_type.environment_subscription_type_name ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ host_subs.environment_type.environment_type_name ~)</span>
+         </div>
+       </a>
+     </li>
+   </ul>
+ </div>
+{% endblock %}

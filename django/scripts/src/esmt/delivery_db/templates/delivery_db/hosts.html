@@ -1,0 +1,47 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+<div class="accord panel panel-default" style="margin-top:20px;">
+    <div class="panel-heading">
+        <h2 class="panel-title text-center"><strong>List of Hosts</strong></h2>
+    </div>
+    <div class="panel-body">
+        <div class="container">
+            {% if error %}
+            <div class="ro">
+                <div class="alert alert-danger" role="alert" ng-cloak>{{ error }}</div>
+            </div>
+            {% else %}
+                <div class="row">
+                    <span class="col-xs-1"></span>
+                    <span class="table-head col-xs-2">Host ID</span>
+                    <span class="table-head col-xs-2">Host Name</span>
+                    <span class="table-head col-xs-2">No. of Instance</span>
+                    <span class="table-head col-xs-2">% of Instances</span>
+                </div>
+                {% for host in hosts %}
+                <div class="row">
+                    <span class="col-xs-1"></span>
+                    <span class="table-data col-xs-2"> {{ host.host_id }} </span>
+                    <span class="table-data col-xs-2"> {{ host.host_name }} </span>
+                    <span class="table-data col-xs-2"> {{ host.instance_cnt }} </span>
+                    <span class="table-data col-xs-2"> {{ host.instance_percent }} </span>
+                </div>
+                {% endfor %}
+                <div class="row">
+                    <span class="col-xs-1"></span>
+                    <span class="jumbotron col-xs-4" style="margin:5px 0px 10px 5px;">Total</span>
+                    <span class="jumbotron col-xs-2" style="margin:5px 0px 10px 5px;">{{ count }}</span>
+                    <span class="jumbotron col-xs-2" style="margin:5px 0px 10px 5px;">100%</span>
+                </div>                
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+

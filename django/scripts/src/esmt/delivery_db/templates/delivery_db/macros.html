@@ -1,0 +1,83 @@
+{% load macros %}
+{% load bootstrap3 %}
+{% macro nextview routeurl label objid top="160px" %}
+<div style="top: {{top}}; width:40;height:60; position: fixed; border-radius:8px; right:0; z-index:1000;">
+ <a  id="{{ objid }}" href="{% url routeurl %}" class="btn btn-primary">
+   <b style="color:white;"><span class="glyphicon glyphicon-plus-sign" style="top:2px;" aria-hidden="true"></span> {{label}}</b>
+  </a>
+</div>
+{% endmacro %}
+
+{% macro prevview routeurl label  objid top="160px" kwarg="default" %}
+<div style="top: {{top}}; width:40;height:60; position: fixed; border-radius:8px; left:0;">
+    {% if kwarg == "default" %}
+ <a id="{{objid}}" href="{% url routeurl  %}" class="btn btn-primary">
+     {% else %}
+ <a id="{{objid}}" href="{% url routeurl kwarg %}" class="btn btn-primary">
+     {% endif %}
+   <b style="color:white;"><span class="glyphicon glyphicon-menu-left" style="top:2px;" aria-hidden="true"></span> {{label}}</b>
+  </a>
+</div>
+{% endmacro %}
+
+{% macro columnSort colDesc col %}
+  <a href="#" ng-click="sortType = '{{ col }}'; sortReverse = !sortReverse">
+    <strong>{{ colDesc }}</strong>
+    <span ng-show="sortType == '{{ col }}' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+    <span ng-show="sortType == '{{ col }}' && sortReverse" class="glyphicon glyphicon-triangle-top"></span>
+  </a>
+{% endmacro %}
+
+{% macro columnFilter placeHolder filterText %}
+  <form>
+    <div class="form-group form-group-sm" style="margin-bottom:0px;">
+      <div class="input-group" style="padding:0px;">
+        <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+        <input type="text" class="form-control" placeholder="{{ placeHolder }}" ng-model="{{ filterText }}">
+      </div>
+    </div>
+  </form>
+{% endmacro %}
+
+{% macro renderFormField fieldName fieldClass labelClass="col-sm-2 control-label"  %}
+        {{ fieldName.errors }}
+        <label class="{{labelClass}}" for="{{ fieldName.id_for_label }}">{{ fieldName.label }}</label>
+        <div class="{{fieldClass}}">
+        {{ fieldName }}
+        {% if fieldName.help_text %}
+        <div class="help-block">{{ fieldName.help_text|safe }}</div>
+        {% endif %}
+        </div>
+{% endmacro %}
+
+{% macro bsrenderFormField field  %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+        {% if field.field.required %}
+        {% bootstrap_field field form_group_class="form-group required" label_class="col-sm-2" field_class="col-sm-4" %}
+        {% else %}
+        {% bootstrap_field field form_group_class="form-group" label_class="col-sm-2" field_class="col-sm-4" %}
+        {% endif %}
+    </div>    
+{% endmacro %}
+
+{% macro loading %}
+        <div class='sk-spinner sk-spinner-wave text-center' ng-show="initLoading || loading">
+            <div class='sk-rect1'></div>
+            <div class='sk-rect2'></div>
+            <div class='sk-rect3'></div>
+            <div class='sk-rect4'></div>
+        </div>
+        <div ng-if="reqFailed" class="alert alert-danger" role="alert" ng-cloak>(~ errMsg ~)
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div ng-if="reqSuccess" class="alert alert-success" role="alert" ng-cloak>(~ successMsg ~)
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+{% endmacro %}
+
+

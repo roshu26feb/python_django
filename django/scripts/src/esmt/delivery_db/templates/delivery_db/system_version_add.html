@@ -1,0 +1,133 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro nextview "delivery_db:system_add" "Add System" "system-form-id" %}
+{% usemacro prevview "delivery_db:systems" "Back" "system-list-id" %}
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Add System Version</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . " ng-init="getApiDetails('component_type'); removeComponent(); getComponents()">
+    {% csrf_token %}
+    {% usemacro bsrenderFormField form.system_name %}    
+    <div class="fieldWrapper" ng-show="system_versions.length > 0" ng-cloak>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label">Clone from Version</label>
+            <div class="col-sm-4">
+                <select name="system_ver" class="form-control" ng-model="system_version" 
+                        ng-options="sv.system_version_name for sv in system_versions|formatDate|orderBy:'creation_date':true track by sv.system_version_id"
+                        id="id_dd1" ng-change="removeSystemElement(-1);showAddComp=False">
+                    <option value="">-- Select --</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <div ng-disabled="!system_version" class="col-sm-offset-2 btn btn-success" style="margin-bottom:10px;" ng-click="removeSystemElement(-1);addSysVersionElementComponent(system_version); showAddComp = true">Clone</div>
+            </div>
+        </div>
+    </div>
+    {% usemacro bsrenderFormField form.system_version_name %}
+    {% usemacro bsrenderFormField form.creation_date %}
+    <div class="form-group" ng-show="system_versions.length <= 0 && !showAddComp && system_id" style="padding-left:15px;" ng-cloak>
+        <div class="col-sm-offset-2 btn btn-success" style="margin-bottom:10px;" ng-click="addSystemElement()">Add system Elements</div>
+    </div>
+    <!--div class="form-group" ng-show="system_versions.length <= 0 && showAddComp" style="padding-left:15px;" ng-cloak>
+        <div id="rm-cmp" class="col-sm-offset-2 btn btn-danger" ng-click="removeSysVerComp(-1);  showAddComp = !showAddComp">Remove Components</div>
+    </div-->
+    <div class="row" style="margin: 0px 15px;" ng-repeat="se in system_element" ng-cloak>
+        <fieldset class="cust-border" >
+            <legend class="cust-border">System Element (~ $index +1 ~)
+                <div id="rm-cmp" class="btn btn-danger" ng-click="removeSystemElement($index)">Remove Element</div>
+                <div class="btn btn-success" ng-click="addSystemElement()">Add Element</div>
+            </legend>
+            <div class="fieldWrapper" ng-init="getElementType();" ng-cloak>
+                <div class="form-group required">
+                    <label class="col-sm-2 control-label" for="id_system_element_name">System Element name</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="system_element_name-(~ $index ~)" autocomplete="off" class="form-control" required placeholder="System Element name" maxlength="255" title=""
+ng-change="IsSEExists(se);" ng-blur="isSENameExist(se);" ng-model="se.sys_element.sys_ele_name" id="id_system_element_name" />
+                        <input type="hidden" id="custId" name="system_element_id-(~ $index ~)" value="(~ se.system_element_id ~)">
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label class="col-sm-2 control-label" for="id_system_element_short_name" >System Element Short name</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="system_element_short_name-(~ $index ~)" pattern="^[a-zA-Z0-9_\-]+$" autocomplete="off" class="form-control" placeholder="System Element Short name" maxlength="5" title="" ng-model="se.sys_element.sys_ele_short_name" id="id_system_element_short_name" />
+                    </div>
+                </div>
+            
+                <div class="form-group required" >
+                    <label class="col-sm-2 control-label" for="id_system_element_type">System Element Type</label>
+                    <div class="col-sm-4">
+                    <select name="system_element_type_id-(~ $index ~)" class="form-control" ng-model="se.sys_element.sys_ele_type"
+                        ng-options="e.system_element_type_name for e in system_element_types track by e.system_element_type_id"
+                        id="id_system_element_type" >
+                        <option value="">-- Select --</option>
+                    </select>
+                    </div>
+                </div>
+             </div>
+           <div class="row" style="margin-left:5px;">
+                <div class="col-sm-3 jumbotron">Component Type</div>
+                <div class="col-sm-3 jumbotron">Component Name</div>
+                <div class="col-sm-3 jumbotron">Component Version</div>
+                <div class="col-sm-3 jumbotron">Component Deployment Order</div>
+            </div>
+            <div class="fieldWrapper"  ng-repeat="sc in se.system_element_components">
+                <div class="form-group form-group-sm required" style="margin-left:5px;">
+                    <div class="col-sm-3 dd-width">
+                        <select name="comp_type-(~ $parent.$index ~)-(~ $index  ~)" class="form-control" ng-model="sc.comp_type" ng-change="sc.compDeployementOrder='';checkInfraComponentType(se,sc)" ng-options="ct.component_type_description for ct in apiResponse.component_types track by ct.component_type_description" 
+                         required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 dd-width">
+                        <select ng-disabled="!sc.comp_type" name="comp-(~ $parent.$index ~)-(~ $index  ~)" class="form-control" ng-model="sc.comp_name" ng-options="c.component_name for c in (
+components|filter:{component_type:{component_type_id:sc.comp_type.component_type_id}}) track by c.component_id " required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 dd-width">
+                        <select ng-disabled="!sc.comp_name" name="compVer-(~ $parent.$index ~)-(~ $index  ~)" class="form-control" ng-model="sc.comp_ver"
+ng-options="cv.component_version_name for cv in sc.comp_name.component_versions  track by cv.component_version_id"  ng-change="sc.sys_ele_comp_id = -1" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                        <input type="hidden" id="sys_ele_comp_id-(~ $parent.$index ~)-(~ $index  ~)" name="system_element_comp_id-(~ $parent.$index ~)(~ $index  ~)" ng-model="sc.sys_ele_comp_id" ng-value="(~ sc.sys_ele_comp_id ~)">
+                    </div>
+                    <div class="col-sm-2 dd-width" >                        
+                        <input min="0" ng-if='sc.comp_type.component_type_id != 3' ng-disabled="(!sc.comp_type) || (!sc.comp_name) || (!sc.comp_ver)"
+                         ng-blur="isDeploymentOrderPresent(se,sc)" id="compDeployementOrderId(~ $parent.$parent.$index ~)(~ $parent.$index  ~)"
+                          type="number" class="form-control" ng-model="sc.compDeployementOrder" name="compDeployementOrder-(~ $parent.$parent.$index ~)-(~ $parent.$index  ~)" required>
+                        
+                    </div>
+                    <div class="col-sm-1">
+                     <span ng-show="se.system_element_components.length >1" class="remove lead text-danger"  ng-click="removeSysEleComp($parent.$index,$index)" ng-cloak><span class="glyphicon glyphicon-minus-sign"
+                      style="padding-right:5px;"></span></span>
+                     <span ng-show="$last" class="addComp lead text-success" ng-click="addNewSysEleComp($parent.$index,$index)" ng-cloak><i class="text-success glyphicon glyphicon-plus-sign"></i></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="system-version-add-alert"  ng-show="showError" ng-cloak>
+        <span class="alert-text">(~errMsg~)</span>
+        <span class="alert-text cancel-alert" ng-click="showError=False">X</span>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" id="btn-system-version-save" name="system-version-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New System Successfully Created - ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+
+{% endblock %}

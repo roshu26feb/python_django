@@ -1,0 +1,33 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "delivery_db:instances" "Back" %}
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Update Instance</h3>
+</div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary" value="Save">Update</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New Instance Successfully Created - ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+
+{% endblock %}
+
+
+

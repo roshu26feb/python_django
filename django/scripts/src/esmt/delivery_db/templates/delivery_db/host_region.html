@@ -1,0 +1,53 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% block page_content %}
+{% usemacro nextview "delivery_db:host_region_add" "Add Host Region" "host-region-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getApiDetails('host_region')" ng-cloak>
+  <div class="row">
+    <span class="col-sm-10 jumbotron" style="margin-bottom:20px;">
+        <h3 class="lead text-center" style="margin:0px 5px">List of Host Regions</h3>
+    </span>
+  </div>
+  <div class="col-sm-10 text-center" ng-init="onLoading()">
+    {% usemacro loading %}
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Region Name" "host_region_name" %}
+    </span>
+    <span class="col-sm-4 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Region Description" "host_region_description" %}
+    </span>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Host Type" "host_type.host_name" %}
+    </span>
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Region Name" "searchCol.host_region_name" %}
+    </span>
+    <span class="col-sm-4" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Region Description" "searchCol.host_region_description" %}
+    </span>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Type" "searchCol.host_type.host_name" %}
+    </span>
+  </div>
+ </div>
+ <div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+   <ul class="accordion"  style="padding:0px; margin:0px;">
+     <li style="padding:0px; margin:0px;">
+       <a ng-repeat="host_region in apiResponse.host_regions | orderBy:sortType:sortReverse | filter:searchCol" class="row" href="javascript:void(0);"
+         style="padding-left:0px;z-index=0; margin:0px;">
+         <div class="row">
+           <span class="col-sm-3 accord-text-mod">(~ host_region.host_region_name ~)</span>
+           <span class="col-sm-4 accord-text-mod">(~ host_region.host_region_description ~)</span>
+           <span class="col-sm-3 accord-text-mod">(~ host_region.host_type.host_name ~)</span>
+         </div>
+       </a>
+     </li>
+   </ul>
+ </div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+{% load i18n static %}
+{% block css_js %}
+
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+    <script type="text/javascript" src="{% url 'delivery_db:jsi18n' %}"></script>
+    <script type="text/javascript" src="/static/admin/js/core.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script type="text/javascript" src="/static/admin/js/actions.js"></script>
+    <script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+    <script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+    <script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+
+    <link rel="stylesheet" href="{% static 'delivery_db/css/boostrap-select.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'delivery_db/css/styles.css' %}" />
+    <script src="{% static 'delivery_db/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'delivery_db/js/i18n/default-en_US.min.js' %}"></script>
+
+    <script src="{% static 'delivery_db/js/controller.js' %}"></script>
+
+{% endblock %}
+{% block sub_navbar %}
+<nav class="navbar navbar-inverse" role="navigation" id="submenu">
+     <ul class="nav navbar-nav" id="delivery_db">
+        <li {% if request.resolver_match.url_name in 'systemssystem_version_addsystem_add' %} class='active' {% endif %}><a href="{% url 'delivery_db:systems' %}">Systems</a></li>
+        <li {% if request.resolver_match.url_name in 'componentscomponent_version_addcomponent_add' %} class='active' {% endif %}><a href="{% url 'delivery_db:components' %}">Components</a></li>
+        <li {% if request.resolver_match.url_name in 'instancesinstance_addinstance_update' %} class='active' {% endif %}><a href="{% url 'delivery_db:instances' %}">Instances</a></li>
+        <li {% if request.resolver_match.url_name in 'infrastructureinfra_template_add' %} class='active' {% endif %}><a href="{% url 'delivery_db:infrastructure' %}">Infrastructure Templates</a></li>
+        <li {% if request.resolver_match.url_name in 'hosts' %} class='active' {% endif %}><a href="{% url 'delivery_db:hosts' %}">Hosts</a></li>
+        <li {% if request.resolver_match.url_name in 'host_region' %} class='active' {% endif %}><a href="{% url 'delivery_db:host_region' %}">Host Regions</a></li>
+        <li {% if request.resolver_match.url_name in 'host_subscription' %} class='active' {% endif %}><a href="{% url 'delivery_db:host_subscription' %}">Host Subscriptions</a></li>
+        <li {% if request.resolver_match.url_name in 'host_site' %} class='active' {% endif %}><a href="{% url 'delivery_db:host_site' %}">Host Sites</a></li>
+        <li {% if request.resolver_match.url_name in 'host_type' %} class='active' {% endif %}><a href="{% url 'delivery_db:host_type' %}">Host Types</a></li>
+        <li {% if request.resolver_match.url_name in 'network_set' %} class='active' {% endif %}><a href="{% url 'delivery_db:network_set' %}">Network Sets</a></li>
+    
+     </ul>
+</nav>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid" ng-controller="deliveryDBCtrl" style="background-color:white;z-index:8;">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "delivery_db:host_region" "Back" "host-region-list-id" %}
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Add Host Region</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" id="btn-host-region-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+
+{% endblock %}

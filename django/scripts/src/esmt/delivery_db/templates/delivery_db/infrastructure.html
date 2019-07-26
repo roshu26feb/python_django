@@ -1,0 +1,82 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro nextview "delivery_db:infra_template_add" "Add Infrastructure Template" "infra-add-form-id" %}
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getInfra()" ng-cloak>
+  <div class="row">
+    <span class="col-sm-12 jumbotron" style="margin-bottom:20px;">
+        <h3 class="lead text-center" style="margin:0px 5px">List of Infrastructure Templates</h3>
+    </span>
+  </div>
+  <div class="col-sm-12 text-center" ng-init="onLoading()">
+    {% usemacro loading %}
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-3 accord-title-mod bg-primary">
+        {% usemacro columnSort "Infra Template Name" "infra_template_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Infra Type" "infrastructure_type.infrastructure_type_name" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+        {% usemacro columnSort "Infra Template Description" "host_template_description" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "Memory Size" "memory_size" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "CPU" "cpu" %}
+    </span>
+    <span class="col-sm-1 accord-title-mod bg-primary">
+      {% usemacro columnSort "Max Disks" "max_no_disk" %}
+    </span>
+    <span class="col-sm-2 accord-title-mod bg-primary">
+      {% usemacro columnSort "Host Type" "host_type.host_name" %}
+    </span>
+  </div>
+  <div class="row" ng-show="show" ng-cloak>
+    <span class="col-sm-3" style="padding:0px;">
+      {% usemacro columnFilter "Search Infra Name" "searchCol.infra_template_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Infra Type" "searchCol.infrastructure_type.infrastructure_type_name" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Template Description" "searchCol.host_template_description" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Memory Size" "searchCol.memory_size" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search CPU" "searchCol.cpu" %}
+    </span>
+    <span class="col-sm-1" style="padding:0px;">
+      {% usemacro columnFilter "Search Max disks" "searchCol.max_no_disk" %}
+    </span>
+    <span class="col-sm-2" style="padding:0px;">
+      {% usemacro columnFilter "Search Host Type" "searchCol.host_type.host_name" %}
+    </span>
+ </div>
+ </div>
+ <div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px; z-index:5; overflow:auto;" ng-cloak>
+   <ul class="accordion"  style="padding:0px; margin:0px;">
+     <li style="padding:0px; margin:0px;">
+       <a ng-repeat="infraName in infraNames | orderBy:sortType:sortReverse | filter:searchCol" class="row" href="javascript:void(0);"
+         style="padding-left:0px;z-index=0; margin:0px;">
+         <div class="row">
+           <span class="col-sm-3 accord-text-mod">(~ infraName.infra_template_name ~)</span>
+           <span class="col-sm-2 accord-text-mod">(~ infraName.infrastructure_type.infrastructure_type_name ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ infraName.host_template_description ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ infraName.memory_size || "Null" ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ infraName.cpu || "Null" ~)</span>
+            <span class="col-sm-1 accord-text-mod">(~ infraName.max_no_disk || "Null" ~)</span>
+            <span class="col-sm-2 accord-text-mod">(~ infraName.host_type.host_name ~)</span>
+         </div>
+       </a>
+     </li>
+   </ul>
+ </div>
+{% endblock %}

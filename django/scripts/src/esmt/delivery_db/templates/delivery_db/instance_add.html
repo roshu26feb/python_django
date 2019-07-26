@@ -1,0 +1,70 @@
+{% extends 'delivery_db/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "delivery_db:instances" "Back" "instance-list-id" %}
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Add Instance</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . " ng-init="getDiskType()">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="form-group" ng-show="instance_disks.length <= 0 && infraID.max_no_disk >=1 && infraID.max_no_disk != 'null'" style="padding-left:15px;" ng-cloak>
+        <div class="col-sm-offset-2 btn btn-success" style="margin-bottom:10px;" ng-click="addInstanceDisk()">Add Instance Disk</div>
+    </div>
+    <div class="form-group" ng-show="instance_disks.length>0" style="padding-left:15px;" ng-cloak>
+        <div id="rm-cmp" class="col-sm-offset-2 btn btn-danger" ng-click="removeInstanceDisk(-1)">Remove Instance Disk</div>
+    </div>
+    <div ng-show="instance_disks.length>0" class="row" style="margin: 0px 15px;" ng-cloak>
+        <fieldset class="cust-border">
+            <legend class="cust-border">Instance Disks</legend>
+            <div class="row" style="margin-left:5px;">
+                <div class="col-sm-3 jumbotron">Disk Type</div>
+                <div class="col-sm-3 jumbotron">Disk Size</div>
+                <div class="col-sm-4 jumbotron">Disk Size Type</div>
+            </div>
+            <div class="fieldWrapper"  ng-repeat="insdisk in instance_disks">
+                <div class="form-group form-group-sm required" style="margin-left:5px;">
+                    <div class="col-sm-3 dd-width">
+                        <select name="disk_type_id-(~ $index ~)" class="form-control" ng-model="insdisk.disk_type_id" ng-options="dt.disk_type_description for dt in disk_types track by
+dt.disk_type_id" required ng-change="checkOSDisk($index)">
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="number" min="(~ insdisk.disk_type_id.min_size || 1 ~)" max="(~ insdisk.disk_type_id.max_size ~)" name="disk_size-(~ $index ~)" autocomplete="off" class="form-control" required placeholder="Disk Size" maxlength="255" title="" ng-model="insdisk.disk_size" />
+                    </div>
+                    <div class="col-sm-3 dd-width">
+                        <select ng-disabled="!insdisk.disk_type_id" name="disk_size_type-(~ $index ~)" class="form-control" ng-model="diskSizeType" ng-options="ds.desc for ds in disk_size_type track by ds.name" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                       <span ng-show="instance_disks.length >1" class="remove lead text-danger"  ng-click="removeInstanceDisk($index)"><span class="glyphicon glyphicon-minus-sign" style="padding-right:5px;"></span></span> 
+                       <span ng-show="$last && $index < infraID.max_no_disk-1" class="addComp lead text-success" ng-click="addNewInstanceDisk($index)"><i class="text-success glyphicon glyphicon-plus-sign"></i></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" id="btn-instance-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New Instance Successfully Created - ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+
+{% endblock %}
+
+
