@@ -1,0 +1,22 @@
+{% extends "base/env_base.html" %}
+{% load static %}
+{% block css_js %}
+<link rel="stylesheet" href="{% static 'booking/css/styles.css' %}" />
+{% endblock %}
+{% block title %}R3 Environment Management Tool{% endblock %}
+{% block level_3_navbar %}
+<nav class="navbar navbar-purple" role="navigation" id="level-3">
+     <ul class="nav navbar-nav" id="booking">
+        <li {% if request.resolver_match.url_name == 'r3' %} class='active' {% endif %}><a href="{% url 'booking:r3' %}">Soc R3</a></li>
+        <li {% if request.resolver_match.url_name == 'r2' %} class='active' {% endif %}><a href="{% url 'booking:r2' %}">Soc R2</a></li>
+        <li {% if request.resolver_match.url_name == 'plato' %} class='active' {% endif %}><a href="{% url 'booking:plato' %}">Plato</a></li>
+        <li {% if request.resolver_match.url_name == 'och' %} class='active' {% endif %}><a href="{% url 'booking:och' %}">OCH</a></li>
+    </ul>
+</nav>
+{% endblock %}
+{% block content %}
+    <div class="container">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}
