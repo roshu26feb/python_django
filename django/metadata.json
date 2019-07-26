@@ -1,0 +1,12 @@
+{
+  "buildtype": "esmt",
+  "buildtype_friendly_name": "ESMT",
+  "buildtype_short_name": "esmt",
+  "version": "0.2.73",
+  "description": "Environment Service Management Tool",
+  "author": "Specsavers Engineering Services",
+  "source": "https://gitlab.co.ad.specsavers.com/delivery_pipeline/esmt.git",
+  "project_page": "https://gitlab.co.ad.specsavers.com/delivery_pipeline/esmt",
+  "issues_url": "https://gitlab.co.ad.specsavers.com/delivery_pipeline/esmt/issues",
+  "changelog_url": "https://gitlab.co.ad.specsavers.com/delivery_pipeline/esmt/blob/master/CHANGELOG.md"
+}
