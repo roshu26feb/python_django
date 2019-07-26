@@ -1,0 +1,28 @@
+include MANIFEST.in
+recursive-include esmt/templates *
+recursive-include esmt/static *
+recursive-include esmt/env/templates *
+recursive-include esmt/env/static *
+recursive-include esmt/env_set/templates *
+recursive-include esmt/env_set/static *
+recursive-include esmt/booking/templates *
+recursive-include esmt/booking/static *
+prune env/static/env/data *
+recursive-include esmt/release/templates *
+recursive-include esmt/release/static *
+recursive-include esmt/deployment/templates *
+recursive-include esmt/deployment/static *
+recursive-include esmt/base/templates *
+recursive-include esmt/base/static *
+recursive-include esmt/delivery_db/templates *
+recursive-include esmt/delivery_db/static *
+recursive-include esmt/test_automation/templates *
+recursive-include esmt/test_automation/static *
+recursive-include esmt/reporting/templates *
+recursive-include esmt/reporting/static *
+recursive-include esmt/esmt_admin/templates *
+recursive-include esmt/esmt_admin/static *
+global-exclude __pycache__
+global-exclude *.py[co]
+
+
