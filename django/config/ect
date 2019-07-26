@@ -1,0 +1,51 @@
+#!/bin/bash
+# chkconfig: 2345 20 80
+# description: This service is used to start / stop / restart ECT Web Application
+
+# Source function library.
+. /etc/init.d/functions
+
+start() {
+  nohup python3.5 /export/ect/src/app.py > /export/ect/ect.log &
+  echo "ect service is running..."
+}
+
+stop() {
+
+    pidno=`ps -ef | grep /export/ect/src/app.py  | grep -v grep | awk '{print $2 }'`
+    if [ $pidno ]
+    then
+    kill -9 $pidno 2>/dev/null
+    echo "ect  service is stopped..."
+    fi
+}
+
+case "$1" in
+    start)
+       start
+       echo "started ECT" >/export/ect/ect.log
+       ;;
+    stop)
+       stop
+       echo "stopped ECT" >/export/ect/ect.log
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+    pidno=`ps -ef | grep /export/ect/src/app.py  | grep -v grep | awk '{print $2 }'`
+    if [ $pidno ]
+    then
+    echo "ECT service is running.."
+    else
+    echo "ECT service is not running.."
+    fi
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
+
+
