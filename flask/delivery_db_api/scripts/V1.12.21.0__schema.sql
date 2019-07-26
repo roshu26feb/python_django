@@ -1,0 +1,2 @@
+ALTER TABLE instance_allocation DROP FOREIGN KEY instance_allocation_ibfk_5;
+ALTER TABLE instance_allocation DROP COLUMN system_version_id;

@@ -1,0 +1,6 @@
+INSERT INTO environment_data_type(environment_data_type_id,environment_data_type_name) VALUES (1,'Manuractured'),(2,'Obfuscated'),(3,'Production');
+INSERT INTO environment_subscription_type(environment_subscription_type_id,environment_subscription_type_name) values (1,'Delivery'),(2,'Testing'),(3,'Acceptance'),(4,'Production');
+DELETE FROM environment_type;
+INSERT INTO environment_type (environment_type_id,environment_type_short_name,environment_type_name,environment_subscription_type_id) VALUES (1,'DEV','Development',1),(2,'TST','Testing',2),(3,'ACC','Acceptance',3),(4,'PRE','Pre-Production',3),(5,'PRD','Production',4);
+INSERT INTO environment_use(environment_use_id,environment_use_name,environment_use_short_name) VALUES (1,'Development','DEV'),(2,'Functional Testing','TST'),(3,'Integration Testing','SIT'),(4,'User Acceptance Testing','UAT'),(5,'Performance Testing','PVT'),(6,'Operational Acceptance Testing','OAT'),(7,'Training','TRN'),(8,'Security Testing','SEC'),(9,'Pre-Production','PRE'),(10,'Production','PRD');
+INSERT INTO parameter_type (parameter_type_id,parameter_type) VALUES (1,'Date Time'),(2,'Date'),(3,'Boolean'),(4,'FreeText'),(5,'List Single'),(6,'List Multi'),(7,'Free Text');

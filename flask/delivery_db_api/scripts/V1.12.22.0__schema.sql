@@ -1,0 +1,1 @@
+ALTER TABLE component_version ADD COLUMN test_set_url varchar(2000);

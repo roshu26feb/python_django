@@ -1,0 +1,6 @@
+INSERT INTO host_type (host_type_id,host_name) VALUES (1,"On-premise"),(2,"Azure"),(3,"Sungard"),(4,"AWS"),(5,"Oracle-Cloud");
+INSERT INTO artefact_store_type (artefact_store_type_id,artefact_store_type_desc) VALUES ("1","Nexus"),("2","Artifactory");
+INSERT INTO component_type (component_type_id,component_type_description) VALUES (1,"Application"),(2,"Infrastructure Config"),(3,"OS"),(4,"External");
+INSERT INTO status (status_id,status_description,status_type) VALUES (1,"Awaiting Approval","Deployment"),(2,"Approved ","Deployment"),(3,"In Progress","Deployment"),(4,"Completed","Deployment"),(5,"Failed","Deployment"),(11,"Awaiting Approval","Release"),(12,"Approved ","Release"),(21,"To be Approved","Booking");
+INSERT INTO disk_type (disk_type_id,disk_type_description,min_size,max_size,host_type_id)   VALUES (1,"OS disk",150,null,2),(2,"Standard disk",null,null,2),(3,"Premium",200,null,2);
+INSERT INTO infrastructure_template (infra_template_id, infra_template_name, host_template_description, memory_size, cpu, max_no_disk, host_type_id) VALUES (1,"small","Standard_DS1_v2",3.5,1,4,2),(2,"medium","Standard_DS2_v2",7,2,8,2),(3,"large","Standard_DS3_v2",14,4,16,2),(4,"x_large","Standard_DS4_v2",28,8,32,2),(5,"xx_large","Standard_DS5_v2",56,16,64,2);
