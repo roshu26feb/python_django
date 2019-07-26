@@ -1,0 +1,222 @@
+{% extends 'deployment/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+{% usemacro prevview "deployment:deployment" "Back" %}
+
+<div style="padding-bottom:5px; text-align:center;">
+    <h3 style="margin-top:0px;">Create Deployment</h3>
+</div>
+
+<form class="form-horizontal my-form" role="form" method="POST" data-url=" . ">
+    {% csrf_token %}
+    <div class="fieldWrapper" ng-init="get_release()">
+        <div class="form-group form-group-sm required">
+            <label class="col-sm-2 control-label" for="id_release_name">Release Name</label>
+            <div class="col-sm-3">
+                <select name="release_name" class="form-control" ng-model="release" ng-options="c.release_name for c in releases | orderBy: 'release_name' " id="id_release_name"
+ng-change="clearSelectedRelItem()" required>
+                    <option value="">--Select--</option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label" for="id_system_version_name">Release Note Url</label>
+            <div class="col-sm-3">
+                <p><a ng-href="(~ release.release_note_url ~)">(~ release.release_note_url ~)</a> </p>
+            </div>
+        </div>
+    </div>
+    <div class="fieldWrapper">
+        <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label" for="id_system_name">System Name</label>
+            <div class="col-sm-3">
+                <input type="text" value="(~ selectedRelItem.system_component.system_version.system.system_name ~)" class="form-control" id="id_system_name" disabled />
+            </div>
+            <label class="col-sm-2 control-label" for="id_system_version_name">System Version</label>
+            <div class="col-sm-3">
+                <input type="text" value="(~ selectedRelItem.system_component.system_version.system_version_name ~)" class="form-control" id="id_system_version_name" disabled />
+            </div>
+        </div>
+    </div>
+    <div class="fieldWrapper">
+        <div class="form-group required">
+            <label class="col-sm-2 control-label">Release Items</label>
+            <div class="col-sm-9">
+              <table class="table table-bordered table-condensed" id="release-item"  border="1">
+                <thead class="bg-warning">
+                  <th class="index">Step</th>
+                  <th><span>Component Name</span></th>
+                  <th><span>Component Version</span></th>
+                  <th><span>Component Type</span></th>
+                  <th><span>Logical Instance Name</span></th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="rel in release.release_items" style="cursor:move" ng-click="selItem($event, rel)" ng-class="{selected: isSelected(rel,$index+1)}">
+                      <td class="index"><span class="glyphicon glyphicon-menu-hamburger" style="top:2px;"><span class="step">(~ $index+1~)</span></span></td>
+                      <td><span>(~ rel.system_component.component_version.component.component_name ~)</span></td>
+                      <td><span>(~ rel.system_component.component_version.component_version_name ~)</span></td>
+                      <td><span>(~ rel.system_component.component_version.component.component_type.component_type_description ~)</span></td>
+                      <td><span>(~ rel.logical_instance_name ~)</span></td>
+
+                  </tr>
+                  <input type="hidden"  name="deployment_step" value="(~ $index+1 ~)" />
+                </tbody>
+              </table>
+             </div>
+        </div>
+    </div>
+    <div class="fieldWrapper">
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+    <div id="deploy" class="form-group container" ng-init="getInstances()">
+    <ul  class="nav nav-tabs">
+        <li class="active">
+            <a  href="#deploy-details" data-toggle="tab">Deployment Details</a>
+        </li>
+        <li>
+            <a href="#instance-details" data-toggle="tab">Instance Details</a>
+        </li>
+    </ul>
+    <div class="tab-content" style="border-left:1px solid #ddd;border-bottom:1px solid #ddd;border-right:1px solid #ddd;">
+        <div class="tab-pane active" id="deploy-details" style="padding-top:15px;">
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-3 control-label" for="id_deployment_name">Deployment Description</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="deployment_name" placeholder="Deployment Description" ng-model="selectedRelItem.deployment_state[0].deployment_name" class="form-control" required
+id="id_deployment_name" autocomplete="off" maxlength="255" title="" />
+                    </div>
+                </div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-3 control-label" for="id_user_name">Deployer Name</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="user_name" placeholder="Deployer Name" class="form-control" ng-model="selectedRelItem.deployment_state[0].deployer_name" required id="id_user_name"
+autocomplete="off" maxlength="255" title="" />
+                    </div>
+                </div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-3 control-label" for="id_planned_deployment_date_0">Planned deployment date</label>
+                    <div class="col-sm-2"><p class="datetime">
+                      <input type="text" name="planned_deployment_date_0" class="form-control vDateField" size="10" id="id_planned_deployment_date_0" required placeholder="YYYY-MM-DD"
+ng-model="planned_deployment_date"/>
+                      <input type="text" name="planned_deployment_date_1" class="form-control vTimeField" size="8" id="id_planned_deployment_date_1" required placeholder="HH:MI:SS"
+ng-model="planned_deployment_time" />
+                        </p>
+                    </div>
+                    <label class="col-sm-2 control-label" for="id_requested_date_0">Requested date</label>
+                    <div class="col-sm-2">
+                        <p class="datetime">
+                        <input type="text" name="requested_date_0" class="form-control vDateField" size="10" id="id_requested_date_0" title="" required placeholder="YYYY-MM-DD" /> <input type="text"
+name="requested_date_1" class="form-control vTimeField" size="8" id="id_requested_date_1" title="" required placeholder="HH:MI:SS" />
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% usemacro renderFormField form.remarks %}
+            <input type="hidden"  name="release_item_id" value="(~ selectedRelItem.release_item_id ~)" />
+            <input type="hidden"  name="deployment_step" value="(~ deployment_step ~)" />
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-3 control-label">Status</label>
+                    <div class="col-sm-4">
+                        <select name="status" class="form-control" ng-model="deploy_audit.deployment_status" ng-options="ds.status_description for ds in deploy_status  track by ds.status_id"
+required>
+                            <option value="" class="default-option">--Select--</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="instance-details" style="padding-top:15px">
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-2 control-label">Instance Name</label>
+                    <div class="col-sm-4">
+                        <select name="instance_name" class="form-control" ng-model="instance_detail" ng-options="i.instance_name for i in instances  track by i.instance_id"  required>
+                            <option value="" class="default-option">--Select--</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label" for="id_state">State</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="state" ng-model="instance_detail.instance_state" placeholder="State" class="form-control" required id="id_state" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-2 control-label" for="id_infra_name">Infra Name</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="infra_name" ng-model="instance_detail.infrastructure_template.host_template_description" placeholder="Infra Name" class="form-control"
+id="id_infra_name" disabled />
+                    </div>
+                    <label class="col-sm-1 control-label" for="id_host_type">Host Type</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="host_type" ng-model="instance_detail.infrastructure_template.host_type.host_name" placeholder="Host Type" class="form-control" id="id_host_type"
+disabled />
+                    </div>
+                    <label class="col-sm-2 control-label" for="id_description">Description</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="description" ng-model="instance_detail.host_instance_name" placeholder="Description" class="form-control" id="id_description" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group form-group-sm required">
+                    <label class="col-sm-2 control-label" for="id_assigned_ip">Assigned IP</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="assigned_ip" ng-model="instance_detail.assigned_ip" placeholder="Instance Name" class="form-control" id="id_assigned_ip" disabled />
+                    </div>
+                    <label class="col-sm-1 control-label" for="id_cpu">CPU</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="cpu"  value="(~ instance_detail.infrastructure_template.cpu ~)"  placeholder="CPU" class="form-control" id="id_cpu" disabled />
+                    </div>
+                    <label class="col-sm-2 control-label" for="id_memory_size">Memory Size</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="memory_size" ng-model="instance_detail.infrastructure_template.memory_size"  placeholder="Memory Size" class="form-control" id="id_memory_size"
+disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="fieldWrapper">
+                <div class="form-group required" style="margin: 0px 15px;">
+            <table class="table table-bordered table-condensed" ng-if="instance_detail">
+                <thead class="bg-warning">
+                  <th><span>Disk Type Description</span></th>
+                  <th><span>Disk Size</span></th>
+                  <th><span>Disk Size Type</span></th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="disk in instance_detail.instance_disks">
+                      <td><span>(~ disk.disk_type.disk_type_description ~)</span></td>
+                      <td><span>(~ disk.disk_size ~)</span></td>
+                      <td><span>(~ disk.disk_size_type ~)</span></td>
+                  </tr>
+                </tbody>
+            </table>
+            </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div></div></div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" class="btn btn-primary" value="Save" ng-disabled="!deployment_step">Save</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New Component Successfully Created ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+{% endblock %}
+

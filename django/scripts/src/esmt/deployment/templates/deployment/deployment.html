@@ -1,0 +1,212 @@
+{% extends 'deployment/base.html' %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %}
+
+<div class="accord container"
+    style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;"
+    ng-init="get_deployments()">
+    <div class="row">
+        <span class="col-sm-12 jumbotron" style="margin-bottom:20px;border-left:25px solid white;">
+            <h3 class="lead text-center" style="margin:0px 5px;">List of Deployments</h3>
+        </span>
+    </div>
+    <div class="row text-center" ng-init="onLoading()">
+        <span class="col-sm-12">{% usemacro loading %}</span>
+    </div>
+
+    <div class="row st" ng-show="show" ng-cloak>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-1 zplr"></span>
+                <span class="col-sm-2 accord-title-mod bg-primary">
+                    {% usemacro columnSort "ID" "deployment_id" %}
+                </span>
+                <span class="col-sm-5 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Deployment Name" "deployment_name" %}
+                </span>
+                <span class="col-sm-4 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Requestor" "deployment_audit_history[0].user_name" %}
+                </span>
+            </span>
+        </span>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-6 accord-title-mod bg-primary">
+                    {% usemacro columnSort "System" "system_element.system_version.system.system_name" %}
+                </span>
+                <span class="col-sm-6 accord-title-mod bg-primary">
+                    {% usemacro columnSort "System Element" "system_element.system_element_name" %}
+                </span>
+            </span>
+        </span>
+        <span class="col-sm-2 accord-title-mod bg-primary">
+            {% usemacro columnSort "Environment" "environment.environment_name" %}
+        </span>
+        <span class="col-sm-4 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-4 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Status" "deployment_audit_history[0].deployment_status.status_description" %}
+                </span>
+                <span class="col-sm-6 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Target Deploy Date" "planned_deployment_date" %}
+                </span>
+                <span class="col-sm-2 accord-title-mod bg-primary">
+                    {% usemacro columnSort "Action" "action" %}
+                </span>
+            </span>
+        </span>
+    </div>
+    <div class="row st" ng-show="show" ng-cloak>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-1 zplr"></span>
+                <span class="col-sm-2" style="padding:0px;">
+                    {% usemacro columnFilter "Search by ID" "searchCol.deployment_id" %}
+                </span>
+                <span class="col-sm-5" style="padding:0px;">
+                    {% usemacro columnFilter "Search by Deployment" "searchCol.deployment_name" %}
+                </span>
+                <span class="col-sm-4" style="padding:0px;">
+                    {% usemacro columnFilter "Search by Requestor" "searchCol.deployment_audit_history[0].user_name" %}
+                </span>
+            </span>
+        </span>
+        <span class="col-sm-3 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-6" style="padding:0px;">
+                    {% usemacro columnFilter "Search by System" "searchCol.system_element.system.system_name" %}
+                </span>
+                <span class="col-sm-6" style="padding:0px;">
+                    {% usemacro columnFilter "Search by System Element" "searchCol.system_element.system_element_name" %}
+                </span>
+            </span>
+        </span>
+        <span class="col-sm-2" style="padding:0px;">
+            {% usemacro columnFilter "Search by Environment" "searchCol.environment.environment_name" %}
+        </span>
+        <span class="col-sm-4 zplr">
+            <span class="row" style="margin:0px;">
+                <span class="col-sm-4" style="padding:0px;">
+                    {% usemacro columnFilter "Search by Status" "searchCol.deployment_audit_history[0].deployment_status.status_description" %}
+                </span>
+                <span class="col-sm-6" style="padding:0px;">
+                    {% usemacro columnFilter "Search by Target Deploy Date" "searchCol.planned_deployment_date" %}
+                </span>
+            </span>
+        </span>
+    </div>
+</div>
+<div class="accord container st"
+    style="margin-top:80px;margin-left:0px; padding-top:66px; padding-left:0px; padding-right:0px; z-index:5; overflow:auto;"
+    ng-cloak>
+    <ul class="accordion">
+        <li>
+            <a ng-repeat-start="deploy in deployments | orderBy:sortType:sortReverse| filter:searchCol"
+                class="accordion-toggle" href="javascript:void(0);" style="z-index=0; margin:0px;"
+                ng-init="checkDeploymentType(deploy);checkDeployStatus(deploy)">
+                <div class="row" style="margin:0px;">
+                    <span class="col-sm-3 zplr">
+                        <span class="row" style="margin:0px;">
+                            <span class="col-sm-1 text-right accord-icon zplr"><i
+                                    class="indicator glyphicon glyphicon-plus-sign top-5"></i></span>
+                            <span class="col-sm-2 accord-text-mod">(~ deploy.deployment_id ~)</span>
+                            <span class="col-sm-5 accord-text-mod">(~ deploy.deployment_name ~)</span>
+                            <span class="col-sm-4 accord-text-mod">(~
+                                deploy.deployment_audit_history[deploy.deployment_audit_history.length - 1].user_name
+                                ~)</span>
+                        </span>
+                    </span>
+                    <span class="col-sm-3 zplr">
+                        <span class="row" style="margin:0px;">
+                            <span class="col-sm-6 accord-text-mod">(~ deploy.system_element.system.system_name ~)</span>
+                            <span class="col-sm-6 accord-text-mod">(~ deploy.system_element.system_element_name
+                                ~)</span>
+                        </span>
+                    </span>
+                    <span class="col-sm-2 accord-text-mod">(~ deploy.environment.environment_name ~)</span>
+                    <span class="col-sm-4 zplr">
+                        <span class="row" style="margin:0px;">
+                            <span class="col-sm-4 accord-text-mod">(~ deploy.deployStatus ~)</span>
+                            <span class="col-sm-6 accord-text-mod">(~ deploy.planned_deployment_date | date:'yyyy-MM-dd
+                                HH:mm:ss Z' || "Null" ~)</span>
+                            <div
+                                ng-if="((deploy.environment.environment_type.environment_type_name == 'Development' && developmentView ) || ((deploy.environment.environment_type.environment_type_name == 'Testing' || deploy.environment.environment_type.environment_type_name == 'Acceptance') && acceptanceView ) || ((deploy.environment.environment_type.environment_type_name == 'Pre-Production' || deploy.environment.environment_type.environment_type_name == 'Production') && productionView ))">
+                                <span class="col-sm-2 text-center" style="padding:2px 5px;"><button type="submit"
+                                        class="btn btn-sm btn-primary" ng-if="deploy.autoDeploy"
+                                        ng-click="callJenkinsJob('M', deploy.deployment_id, '0')" value="deploy"
+                                        style="padding:2px 5px; font-size:8px;">Deploy</button></span>
+                                <span class="col-sm-2 text-center" style="padding:2px 5px;"><button type="submit"
+                                        class="btn btn-sm btn-primary" ng-if="deploy.manualDeploy"
+                                        ng-click="updateDeployCompSts('M', deploy.deployment_id, '0')" value="deploy"
+                                        style="padding:2px 5px; font-size:8px;">Complete All</button></span>
+                            </div>
+                        </span>
+                    </span>
+                </div>
+            </a>
+            <ul class="inner">
+                <li>
+                    <div class="row">
+                        <span class="col-sm-2 zplr">
+                            <span class="row" style="margin:0px;">
+                                <span class="col-sm-3"></span>
+                                <span class="col-sm-9 accord-title-mod bg-info">Component</span>
+                            </span>
+                        </span>
+                        <span class="col-sm-1 accord-title-mod bg-info">Version</span>
+                        <span class="col-sm-2 accord-title-mod bg-info">Component Type</span>
+                        <span class="col-sm-2 accord-title-mod bg-info">Deployment Type</span>
+                        <span class="col-sm-2 accord-title-mod bg-info">Component Deployment Order</span>
+                        <span class="col-sm-1 accord-title-mod bg-info">Status</span>
+                    </div>
+                    <a href="" ng-repeat="comp in deploy.deployment_components">
+                        <div class="row">
+                            <span class="col-sm-2 zplr">
+                                <span class="row" style="margin:0px;">
+                                    <span class="col-sm-3"></span>
+                                    <span class="col-sm-9 accord-inner-text-mod">(~
+                                        comp.system_element_component.component_version.component.component_name
+                                        ~)</span>
+                                </span>
+                            </span>
+                            <span class="col-sm-1 accord-inner-text-mod">(~
+                                comp.system_element_component.component_version.component_version_name ~)</span>
+                            <span class="col-sm-2 accord-inner-text-mod">(~
+                                comp.system_element_component.component_version.component.component_type.component_type_description
+                                ~)</span>
+                            <span class="col-sm-2 accord-inner-text-mod">(~
+                                comp.system_element_component.component_version.component.deployment_type.deployment_type_description
+                                ~)</span>
+                            <span class="col-sm-2 accord-inner-text-mod">(~ $index +1 ~)</span>
+                            <span class="col-sm-1 accord-inner-text-mod">(~
+                                comp.deployment_component_status.status_description ~)</span>
+                            <!-- temporary added button  -->
+                            <div
+                                ng-if="((deploy.environment.environment_type.environment_type_name == 'Development' && developmentView ) || ((deploy.environment.environment_type.environment_type_name == 'Testing' || deploy.environment.environment_type.environment_type_name == 'Acceptance') && acceptanceView ) || ((deploy.environment.environment_type.environment_type_name == 'Pre-Production' || deploy.environment.environment_type.environment_type_name == 'Production') && productionView ))">
+                                <span class="col-sm-1 text-center"
+                                    ng-if="deploy.autoDeploy && comp.system_element_component.component_version.component.deployment_type.deployment_type_description == 'Fully Automated'"
+                                    style="padding:2px 5px;"><button type="submit" class="btn btn-sm btn-primary"
+                                        ng-click="updateDeployCompSts('S', deploy.deployment_id, comp.deployment_component_id)"
+                                        value="deploy" style="padding:2px 5px; font-size:8px;">Complete</button></span>
+                                <span class="col-sm-1 text-center"
+                                    ng-if="!deploy.autoDeploy && comp.system_element_component.component_version.component.deployment_type.deployment_type_description == 'Fully Automated'"
+                                    style="padding:2px 5px;"><button type="submit" class="btn btn-sm btn-primary"
+                                        ng-click="callJenkinsJob('S', deploy.deployment_id, comp.deployment_component_id)"
+                                        value="deploy" style="padding:2px 5px; font-size:8px;">Deploy</button></span>
+                                <span class="col-sm-1 text-center"
+                                    ng-if="deploy.manualDeploy || comp.system_element_component.component_version.component.deployment_type.deployment_type_description != 'Fully Automated'"
+                                    style="padding:2px 5px;"><button type="submit" class="btn btn-sm btn-primary"
+                                        ng-click="updateDeployCompSts('S', deploy.deployment_id, comp.deployment_component_id)"
+                                        value="deploy" style="padding:2px 5px; font-size:8px;">Complete</button></span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div ng-repeat-end style="display:hidden;"></div>
+        </li>
+    </ul>
+</div>
+{% endblock %}

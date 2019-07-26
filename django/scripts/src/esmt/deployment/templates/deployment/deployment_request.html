@@ -1,0 +1,340 @@
+{% extends 'deployment/base.html' %} 
+{% load macros %} 
+{% load bootstrap3 %} 
+{% loadmacros 'delivery_db/macros.html' %}
+
+{% block page_content %} 
+{% usemacro prevview "deployment:deployment" "Back" %}
+
+<div style="padding:10px 10px; margin-top:0px; text-align:center;">
+    <h3>Create Deployment Request</h3>
+</div>
+
+<form class="container form-horizontal my-form col-sm-offset-2" data-toggle="validator" id="deploy-form" role="form" method="POST" ng-init="initializeForm()" data-url=" . " name="deployement_request_form">
+    {% csrf_token %} 
+    {{ form.system_id }} 
+    {{ form.system_version_id }} 
+    {{ form.system_element_id2 }} 
+    {% regroup form by field.group as field_group %} 
+
+        {% for group in field_group %}
+        {% if group.grouper == 1 or group.grouper == 2 or group.grouper == 3 or group.grouper == 9 %} 
+            {% for field in group.list %}
+                {% if group.grouper == 9 and field.html_name == 'available_infra_config' %}
+                <div class="row" ng-hide="!infraConf">
+                    <div class="col-sm-8" style="padding:0px;">
+                        <fieldset class="cust-border" style="padding-left:0px;">
+                            <legend class="cust-border">Available Infrastructure Configurations:</legend>
+                            <div class="fieldWrapper">
+                                <div class="form-group form-group-sm" ng-class="{required: infraConf}" style="margin-bottom:0px;">
+                                    <div class="form-group infra-config-comp" style="margin-left:15px;margin-right:0px;margin-bottom:0px;">{{ field }}</div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                {% endif %}  
+                {% if field.html_name == 'infra_template_id' %}
+                <div class="fieldWrapper" ng-if="fullyAutomatedData">
+                    <div class="form-group form-group-sm required">
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label">Infra Template</label>
+                            <div class="col-sm-6">
+                              
+
+                                <select labelerror="Infra Template is required." required name="infra_template_id" id="infra_template"  class="form-control" ng-model="infraID" ng-options="infra.host_template_description for infra in
+            (infraTemplates|filter:{host_type:{host_type_id:host}})  track by infra.infra_template_id"   ng-init="infraCnt=(infraTemplates|filter:{host_type:{host_type_id:host}}).length">
+                                    <option value=""  class="default-option infra-default">--Select--</option>
+                                </select>
+                                <span style="display:none;">(~ infraCnt ~)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% elif field.html_name == 'available_application' %}
+                <div class="row" ng-hide="!app">
+                    <div class="col-sm-8" style="padding:0px;">
+                        <fieldset class="cust-border" style="padding-left:0px;">
+                            <legend class="cust-border">Available Application:</legend>
+                            <div class="fieldWrapper">
+                                <div class="form-group form-group-sm" ng-class="{required: app}" style="margin-bottom:0px;">
+                                    <div class="form-group app-comp" style="margin-left:15px;margin-right:0px;margin-bottom:0px;">{{ field }}</div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                {% elif group.grouper != 9  %}
+                <div class="fieldWrapper">
+                    <div class="form-group form-group-sm">
+                        <div class="form-group {% if field.field.required %} required {% endif %}">{% usemacro renderFormField field "col-sm-6" %}</div>
+                    </div>
+                </div>
+                {% endif %} 
+            {% endfor %} 
+        {% endif %} 
+    {% if group.grouper == 5 %}
+    <div class="row" ng-cloak>
+        <fieldset class="col-sm-8" style="padding-left:0px;">
+            <legend>Deployment Component Types:</legend>
+            <div class="fieldWrapper col-sm-12" style="padding-left:0px;padding-right:0px;">
+                
+                <div class="table-responsive" style="margin-top: 2px;">
+                    <table class="table table-bordered table-condensed">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th style="text-align:center;">Infrastructure</th>
+                                <th style="text-align:center;">Infrastructure Config</th>
+                                <th style="text-align:center;">Application</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="text-align:center;">
+                                <td>
+                                    <div class="fieldWrapper">
+                                        {{ form.infra_code_flag.errors }}
+                                        {{ form.infra_code_flag }}
+
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fieldWrapper">
+                                        {{ form.infra_config_flag.errors }}
+                                        {{ form.infra_config_flag }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fieldWrapper">
+                                        {{ form.app_flag.errors }}
+                                        {{ form.app_flag }}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    {% endif %} 
+    {% if group.grouper == 4 %}
+    
+    <div class="fieldWrapper">
+        <!-- ng-class="{required: !infra}"  -->
+        <div class="form-group form-group-sm" >
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Instance</label>
+                <div class="col-sm-6">
+                    <!-- ng-required="!infra"  ng-readonly="infra|| !env"  -->
+                    <select name="instance_id" 
+                    id="checkId" class="form-control" ng-model="instance" ng-options="inst.value for inst in instanceList track by inst.key"
+                         ng-change="getInfraTemplateFromInstance(instance)"  sys_id="{{form.system_id.value}}" sys_version_id="{{form.system_version_id.value}}" sys_ele="{{form.system_element_id2.value}}" sys_ver="{{form.system_version.value}}" ng-required="!infra || (infra && !fullyAutomatedData)" data-internal-name="instance_id">
+                        <option value="" class="default-option instance-default">--Select--</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for field in group.list %}
+    <div class="fieldWrapper">
+        <div class="form-group form-group-sm">
+            <div class="form-group {% if field.field.required %} required {% endif %}">{% usemacro renderFormField field "col-sm-6" %}</div>
+        </div>
+    </div>
+    {% endfor %} 
+    {% endif %} 
+    {% if group.grouper == 6 %} 
+        {% for field in group.list %}
+        <div class="row" ng-cloak>
+            <fieldset class="col-sm-8 required" style="padding-left:0px;">
+                <legend>Comments</legend>
+                <div class="fieldWrapper">
+                    <div class="form-group form-group-sm">
+                        <div class="form-group {% if field.field.required %} required {% endif %}" style="margin-left:15px;margin-right:0px;">{{ field }}</div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        {% endfor %} 
+    {% endif %}
+    
+    <div class="row" ng-cloak>
+        {% if group.grouper == 7 %}
+        
+        <fieldset class="col-sm-8" style="padding-left:0px;" ng-if="infra">
+            <legend>User Defined Parameters for Infrastructure Component</legend>
+            <div class="fieldWrapper">
+                <div class="form-group" style="margin-left:0px;">
+                    <div class="table-responsive" style="margin-top: 2px;padding-left:0px;">
+                        <table class="table table-bordered table-condensed" id="id_parameters">
+                            <thead class="bg-warning">
+                                <tr>
+                                    <th>Parameter Name</th>
+                                    <th>Parameter Value</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-if="infraFullyAutomatedData">
+                               
+                                {% for field in group.list %} 
+                                {% if field.field.elem_comp_type == 'infra' or field.field.elem_comp_infra == True%}
+                                <tr {% if 'ngIf' in field.field.widget.attrs %}ng-if="{{field.field.widget.attrs.ngIf}}" {% endif %}>
+                                    <td class="control-label {% if field.field.required %} required {% endif %}" style="padding-top:12px;">{{ field.label_tag }} </td>
+                                    <td class="infra-class">{{ field }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+        <fieldset class="col-sm-8" style="padding-left:0px;" ng-if="infraConf">
+            <legend>User Defined Parameters for Infrastructure Configuration Component</legend>
+            <div class="fieldWrapper">
+                <div class="form-group" style="margin-left:0px;">
+                    <div class="table-responsive" style="margin-top: 2px;padding-left:0px;">
+                        <table class="table table-bordered table-condensed" id="id_parameters">
+                            <thead class="bg-warning">
+                                <tr>
+                                    <th>Parameter Name</th>
+                                    <th>Parameter Value</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-if="ICFullyAutomatedData">
+                                {% for field in group.list %}
+                                {% if field.field.elem_comp_type == 'infraConf' or field.field.elem_comp_infraConf == True %} 
+                                <tr {% if 'ngIf' in field.field.widget.attrs %}ng-if="{{field.field.widget.attrs.ngIf}}" {% endif %}>
+                                    <td class="control-label {% if field.field.required %} required {% endif %}" style="padding-top:12px;">{{ field.label_tag }} </td>
+                                    <td class="infraconfig-class">{{ field }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="col-sm-8" style="padding-left:0px;" ng-if="app">
+            <legend>User Defined Parameters for Application Component</legend>
+            <div class="fieldWrapper">
+                <div class="form-group" style="margin-left:0px;">
+                    <div class="table-responsive" style="margin-top: 2px;padding-left:0px;">
+                        <table class="table table-bordered table-condensed" id="id_parameters">
+                            <thead class="bg-warning">
+                                <tr>
+                                    <th>Parameter Name</th>
+                                    <th>Parameter Value</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-if="appFullyAutomatedData">
+                                {% for field in group.list %}
+                                {% if field.field.elem_comp_type == 'app' or field.field.elem_comp_app == True %}
+                                <tr {% if 'ngIf' in field.field.widget.attrs %}ng-if="{{field.field.widget.attrs.ngIf}}" {% endif %}>
+                                    <td class="control-label {% if field.field.required %} required {% endif %}" style="padding-top:12px;">{{ field.label_tag }} </td>
+                                    <td  class="app-class" >{{ field }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        {% endif %} 
+        {% if group.grouper == 8 %}
+        <fieldset class="col-sm-8" style="padding-left:0px;">
+            <legend>System Defined Parameter</legend>
+            <div class="fieldWrapper" ng-init="getHostName()">
+                <div class="form-group" style="margin-left:0px;">
+                    <div class="table-responsive" style="margin-top: 2px;padding-left:0px;">
+                        <table class="table table-bordered table-condensed" id="id_sysParameters">
+                            <thead class="bg-warning">
+                                <tr>
+                                    <th>Parameter Name</th>
+                                    <th>Parameter Value</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-if="fullyAutomatedData">
+                                {% for field in group.list %}
+                                <tr>
+                                    <td ng-if="infra" class="control-label" ng-required="infra" style="padding-top:12px;">{{ field.label_tag }} </td>
+                                    <td ng-if="infra">{{ field }}</td>
+                                    <td ng-if="!infra">Host Name</td>
+                                    <td ng-if="!infra">
+                                        <input name="host_name" class="form-control" readonly="readonly" value="Not Required">
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td>Network Set</td>
+                                    <td>
+                                        <input name="network_set" class="form-control" ng-model="network_set_name" readonly="readonly" required>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        {% endif %}
+    </div>
+   
+    {% endfor %}
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button type="submit" class="btn btn-primary" id="id-deploy-request" value="Save">Request</button>
+            <button ng-if="fullyAutomatedData" type="submit" class="btn btn-primary" id="generate-yaml" value="Generate Yaml"  
+            ng-click="generateYaml($event)"   >Generate Yaml</button>
+        </div>
+    </div>
+    
+    <!--
+    <pre>(~ deployement_request_form | json ~)</pre>
+
+    <ul ng-repeat="errs in deployement_request_form.$error">
+        <li ng-repeat="err in errs">(~err~)</li></ul>
+    --> 
+
+    <!--Yaml Modal Popup -->
+    <div class="modal fade" id="yamlPopup" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">YAML</h4>
+        </div>
+        <div class="modal-body" id="yamlOutput">
+            <pre class='yamldata'></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="copyClipboard()">Copy to Clipboard</button>
+        </div>
+      </div>
+      
+    </div>
+    </div>
+<!--// Yaml Modal Popup -->
+
+<input type="hidden" id="component_info" value="{{component_info}}" ng-model="component_info">
+</form>
+
+
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+    <span class="alert-text">New Deployment ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+    <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+{% endblock %}
