@@ -1,0 +1,10 @@
+/export/ect/ect.log {
+           copytruncate
+           compress
+		   missingok
+           notifempty
+           rotate 5
+           compress
+           daily
+           endscript
+}
