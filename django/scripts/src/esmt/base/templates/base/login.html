@@ -1,0 +1,66 @@
+{% load bootstrap3 %}
+{% block title %} {% endblock %}
+
+<!DOCTYPE html>
+{% load i18n static admin_urls admin_list %}
+{% load staticfiles %}
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="myApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Environment Service Management Tool</title>
+  <script src="{% static 'base/js/jquery.min.js' %}"></script>
+  <script src="{% static 'base/js/angular/angular.js' %}"></script>
+  <script src="{% static 'base/js/angular/angular-resource.js' %}"></script>
+  <script src="{% static 'base/js/app.js' %}"></script>
+  <script src="{% static 'base/js/base.js' %}"></script>
+  <script src="{% static 'base/js/validator.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'base/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'base/css/base.css' %}" />
+  <script src="{% static 'base/js/angular/user.service.js' %}"></script>
+  <script src="{% static 'base/js/angular/controller.js' %}"></script>
+  <script src="{% static 'base/js/angular/angular-cookies.js' %}"></script>
+  {% block css_js %}
+  {% endblock %}
+</head>
+
+{% block content %}
+<div class="container bg-success shadow" ng-controller="UserController"
+  style="position:absolute; height:350px; width:450px; top:50%; left: 50%; border:1px solid #019e59;transform: translate(-50%,-50%);border-radius:2%;">
+  <h2 class="text-center" style="padding-bottom:20px;">ESMT Login</h2>
+  <div class="row">
+
+    {% if message %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+
+    <form class="form-vertical ng-pristine ng-valid" method="POST" action=".">
+      {% csrf_token %}
+
+      <div class="fieldWrapper" style="padding:0px 10px;">
+        <div class="form-group required has-success"><label class="col-xs-12 control-label"
+            for="id_username">User Name</label>
+          <div class="col-xs-12"><input type="text" ng-model="userName" name="userName" value="q" title="" required=""
+              placeholder="Username" maxlength="254" class="form-control" autofocus="" id="id_username"></div>
+        </div>
+      </div>
+
+      <div class="fieldWrapper" style="padding:0px 10px;">
+        <div class="form-group required has-success"><label class="col-xs-12 control-label"
+            for="id_password">Password</label>
+          <div class="col-xs-12"><input type="password" ng-model="password" name="password" title="" required=""
+              placeholder="Password" class="form-control" id="id_password"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-offset-5 col-md-8">
+          <button type="submit" class="btn btn-primary" style="margin-top:20px" value="Login">Login</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block css_js %}
+<link rel="stylesheet" href="{% static 'env/css/style.css' %}" />
+{% endblock %}
+{% block title %}Environment Management Tool{% endblock %}
+{% block sub_navbar %}
+<nav class="navbar navbar-inverse" role="navigation" id="submenu">
+     <ul class="nav navbar-nav" id="environment">
+        <li {% if request.resolver_match.app_name == 'env' %} class='active' {% endif %}>
+            <a href="{% url 'env:all' %}" data-toggle="collapse" data-target="#env" >Environment</a>
+        </li>
+        <li {% if request.resolver_match.app_name == 'env_set' %} class='active' {% endif %}>
+            <a href="{% url 'env_set:all' %}" data-toggle="collapse" data-target="#env_set">Environment Set</a>
+        </li>
+        <li {% if request.resolver_match.app_name == 'booking' %} class='active' {% endif %}>
+            <a href="{% url 'booking:r3' %}" data-toggle="collapse" data-target="#booking">Bookings</a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+{% block level_3_navbar %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}
+

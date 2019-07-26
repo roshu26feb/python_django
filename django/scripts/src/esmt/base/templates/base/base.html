@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+    {% load i18n static admin_urls admin_list %}
+    {% load staticfiles %}
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="myApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Environment Service Management Tool</title>
+    <script src="{% static 'base/js/jquery.min.js' %}"></script>
+    <script src="{% static 'base/js/angular/angular.js' %}"></script>
+    <script src="{% static 'base/js/angular/angular-resource.js' %}"></script>
+    <script src="{% static 'base/js/app.js' %}"></script>
+    <script src="{% static 'base/js/base.js' %}"></script>
+    <script src="{% static 'base/js/validator.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'base/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'base/css/base.css' %}" />
+    <script src="{% static 'base/js/angular/angular-cookies.js' %}"></script>
+    <script src="{% static 'base/js/angular/user.service.js' %}"></script>
+    <script src="{% static 'base/js/angular/controller.js' %}"></script>
+  
+{% block css_js %}
+{% endblock %}
+</head>
+<body>
+{% block navbar %}
+    <nav class="navbar navbar-default navbar-fixed-top" id="sidebar-static" style="height:100px; background-color:white;">
+        <div class="navbar-header">
+            <a class="navbar-brand hidden-xs" href="{% url 'base:index' %}">
+                Environment Service Management Tool
+            </a>
+            <a class="navbar-brand visible-xs-block" href="{% url 'base:index' %}">
+                ESMT
+            </a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <img src="{% static 'base/resources/specsavers-logo.jpg' %}" style="width:126px;height:auto;" alt="">
+                </li>
+            </ul>
+        </div>
+        <nav class="navbar navbar-default" role="navigation" id="topmenu" style="position=fixed;">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="sidebar-collapse">
+                <ul class="nav navbar-nav">
+                    <li {% if request.resolver_match.app_name in 'envenv_setbooking' %} class='active' {% endif %}>
+                        <a href="{% url 'env:all' %}" data-toggle="collapse" data-target="#environment">Environments</a>
+                    </li>
+                    <li {% if request.resolver_match.app_name == 'release' %} class='active' {% endif %}>
+                        <a href="{% url 'release:releases' %}" data-toggle="collapse" data-target="#releases">Release</a>
+                    </li>
+                    <li {% if request.resolver_match.app_name == 'deployment' %} class='active' {% endif %}>
+                        <a href="{% url 'deployment:deployment' %}" data-toggle="collapse" data-target="#deployment">Deployment</a>
+                    </li>
+                    <li {% if request.resolver_match.app_name == 'delivery_db' %} class='active' {% endif %}>
+                        <a href="{% url 'delivery_db:systems' %}" data-toggle="collapse" data-target="#delivery_db">Delivery Database</a>
+                    </li>
+                    <li {% if request.resolver_match.app_name == 'test_automation' %} class='active' {% endif %}>
+                        <a href="{% url 'test_automation:test_runs' %}" data-toggle="collapse" data-target="#test_automation">Test Automation</a>
+                    </li>
+                    <li {% if request.resolver_match.app_name == 'reporting' %} class='active' {% endif %}>
+                        <a href="{% url 'reporting:dashboard' %}" data-toggle="collapse" data-target="#reporting">Reporting</a>
+                    </li>
+                    <li {% if request.resolver_match.app_name == 'esmt_admin' %} class='active' {% endif %}>
+                        <a href="{% url 'esmt_admin:user_roles' %}" data-toggle="collapse" data-target="#esmt_admin">Admin</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" ng-controller="UserController" ng-init="checkUser()">
+                  
+                        <li ng-if="userIsLogin"><a href="#">Welcome <b>(~userDisplayName~)</b></a></li>
+                   
+                    <li >
+                       
+                            <a ng-if="userIsLogin" href="{% url 'base:logout' %}">Logout</a>
+                        
+                            <a ng-if="!userIsLogin" href="{% url 'base:login' %}">Login</a>
+                        
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% block sub_navbar %}
+        {% endblock %}
+        {% block level_3_navbar %}
+        {% endblock %}
+    </nav>
+{% endblock%}
+{% block content %}
+{% endblock %}
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+</body>
+</html>

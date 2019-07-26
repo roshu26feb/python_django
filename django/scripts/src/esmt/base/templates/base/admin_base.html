@@ -1,0 +1,27 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block css_js %}
+<link rel="stylesheet" href="{% static 'env/css/styles.css' %}" />
+{% endblock %}
+{% block title %}Environment Management Tool{% endblock %}
+{% block sub_navbar %}
+<nav class="navbar navbar-inverse" role="navigation" id="submenu">
+     <ul class="nav navbar-nav" id="esmt_admin">
+        <li {% if request.resolver_match.url_name == 'user_roles' %} class='active' {% endif %}>
+            <a href="{% url 'esmt_admin:user_roles' %}" data-toggle="collapse" data-target="#user_roles" >Users and Roles</a>
+        </li>
+        <li {% if request.resolver_match.url_name == 'ref_data_manager' %} class='active' {% endif %}>
+            <a href="{% url 'esmt_admin:deploy_parameter' %}" data-toggle="collapse" data-target="#ref_data_manager">Reference Data Manager</a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+{% block level_3_navbar %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}
+
