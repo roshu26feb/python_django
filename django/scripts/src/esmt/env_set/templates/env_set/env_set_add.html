@@ -1,0 +1,65 @@
+{% extends 'env_set/base.html' %}
+{% load static %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+
+{% block css_js %}
+<script src="{% static 'env/js/controller.js' %}"></script>
+{% endblock %}
+
+{% block page_content %}
+{% usemacro prevview "env_set:all" "Back" "env-set-list" %}
+
+<div style="padding-bottom:20px; margin-top:120px;">
+    <h3 style="text-align:center;">Add Environment Set</h3>
+</div>
+
+<form class="container form-horizontal my-form" ng-controller="envController" data-toggle="validator" role="form" method="POST" data-url=" . " ng-init="getApiDetails('environment'); getSystem()">
+    {% csrf_token %}
+    {% include 'delivery_db/abstract_form.html' %}
+
+    <div ng-show="apiResponse.environments.length>0" class="row" style="margin: 0px 15px;" ng-cloak>
+        <fieldset class="cust-border">
+            <legend class="cust-border">Included Environments</legend>
+            <div class="row" style="margin-left:5px;">
+                <div class="col-sm-5 jumbotron" style="text-align:center;">System</div>
+                <div class="col-sm-5 jumbotron" style="text-align:center;">Environment</div>
+            </div>
+            <div class="fieldWrapper"  ng-repeat="env in inc_env_set">
+                <div class="form-group form-group-sm required" style="margin-left:5px;">
+                    <div class="col-sm-5 dd-width" style="padding:0px;">
+                        <select name="system" class="form-control" ng-model="system" ng-options="s.system_name for s in systems track by s.system_id" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5 dd-width" style="padding:0px;">
+                        <select ng-disabled="!system" name="environment_id-(~ $index ~)" class="form-control" ng-model="environment_id" ng-options="env.environment_name for env in (apiResponse.environments|filter:{system:{system_id:system.system_id}})  track by env.environment_id" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <span ng-show="inc_env_set.length >1" class="remove lead text-danger"  ng-click="removeIncEnvSet($index)"><span class="glyphicon glyphicon-minus-sign"
+style="padding-right:5px;"></span></span>
+                        <span ng-show="$last" class="addComp lead text-success" ng-click="addIncEnvSet($index)"><i class="text-success glyphicon glyphicon-plus-sign"></i></span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" id="btn-env-set-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+{% if resp_data %}
+<div class="alert alert-success fade in show" id="alert" role="alert">
+  <span class="alert-text">New Release Successfully Created - ID : {{resp_data}}</span>
+{% else %}
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text">{{resp_data}}</span>
+{% endif %}
+</div>
+
+{% endblock %}

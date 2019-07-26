@@ -1,0 +1,16 @@
+{% extends 'base/env_base.html' %}
+{% block level_3_navbar %}
+<nav class="navbar navbar-purple" role="navigation" id="level-3">
+    <ul class="nav navbar-nav" id="envset">
+      <li {% if request.resolver_match.url_name == 'all' %} class='active' {% endif %}><a href="{% url 'env_set:all' %}" >All</a></li>
+      <li {% if request.resolver_match.url_name == 'sit' %} class='active' {% endif %}><a href="{% url 'env_set:sit' %}" >SIT</a></li>
+      <li {% if request.resolver_match.url_name == 'two' %} class='active' {% endif %}><a href="{% url 'env_set:two' %}">SIT 2</a></li>
+      <li {% if request.resolver_match.url_name == 'uat' %} class='active' {% endif %}><a href="{% url 'env_set:uat' %}">UAT</a></li>
+      <li {% if request.resolver_match.url_name == 'pre_prod' %} class='active' {% endif %}><a href="{% url 'env_set:pre_prod' %}">Pre Prod</a></li>
+    </ul>
+</nav>
+{% endblock %}
+{% block content %}
+    {% block page_content %}
+    {% endblock %}
+{% endblock %}

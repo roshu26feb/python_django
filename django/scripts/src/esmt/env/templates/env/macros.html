@@ -1,0 +1,55 @@
+
+{% load macros %}
+{% macro nextview routeurl label %}
+<div style="top: 210px; width:40;height:60; position: fixed; border-radius:8px; right:0; z-index:1000;">
+ <a href="{% url routeurl %}" class="btn btn-primary">
+   <b style="color:white;"><span class="glyphicon glyphicon-plus-sign" style="top:2px;" aria-hidden="true"></span> {{label}}</b>
+  </a>
+</div>
+{% endmacro %}
+
+{% macro prevview routeurl label kwarg="default" %}
+<div style="top: 210px; width:40;height:60; position: fixed; border-radius:8px; left:0;">
+    {% if kwarg == "default" %}
+ <a href="{% url routeurl  %}" class="btn btn-primary">
+     {% else %}
+ <a href="{% url routeurl kwarg %}" class="btn btn-primary">
+     {% endif %}
+   <b style="color:white;"><span class="glyphicon glyphicon-menu-left" style="top:2px;" aria-hidden="true"></span> {{label}}</b>
+  </a>
+</div>
+{% endmacro %}
+
+
+{% macro loading %}
+        <div class='sk-spinner sk-spinner-wave text-center' ng-show="initLoading || loading">
+            <div class='sk-rect1'></div>
+            <div class='sk-rect2'></div>
+            <div class='sk-rect3'></div>
+            <div class='sk-rect4'></div>
+        </div>
+        <div ng-if="reqFailed" class="alert alert-danger" role="alert" ng-cloak>(~ errMsg ~)</div>
+{% endmacro %}
+{% macro modal ip2 modalName desc %}
+    <div class="modal fade" role=dialog id="{{ip2}}-{{modalName}}" tabindex=-1 aria-labelledby={{modalName}}Label>
+        <div class=modal-dialog role=document>
+            <div class=modal-content>
+                <div class=modal-header>
+                    <button type=button class=close data-dismiss=modal aria-label=Close><span aria-hidden=true>&times;</span></button>
+                    <h4 class=modal-title id={{modalName}}Label>{{desc}}</h4>
+                </div>
+                <div ng-show="modalLoading" class="modal-body text-center">{% usemacro loading %}</div>
+                <div ng-show="modalBody" class=modal-body>
+                   <ul style="list-style: none;">
+                    <li ng-repeat="log in {{modalName}} track by $index">
+                        (~log~)
+                    </li>
+                   </ul>
+                </div>
+                <div class=modal-footer>
+                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

@@ -1,0 +1,191 @@
+{% extends 'env/base.html' %}
+{% load env_filters %}
+{% load macros %}
+{% loadmacros 'env/macros.html' %}
+{% load static %}
+{% block page_content %}
+<div class="container">
+    <div class="row jumbotron" style="margin:10px 0px;">
+       <h3 class="lead text-center" style="margin: 0px 5px;">SOCRATES R3</h3>
+    </div>
+    <div ng-show="initLoading" ng-init="onLoading()">
+        {% usemacro loading %}
+    </div>
+    <div class="panel-group" id="storelist" role="tablist" aria-multiselectable="true" ng-show="show" ng-cloak>
+        {% for store in stores %}
+        {% with store|split2 as ip2 %}
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="{{ip2}}-heading">
+                <h4 class="panel-title">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="btn col-md-1 col-lg-1">
+                                <span ng-click="getStoreFacts('{{ip2}}','r3')"><b>{{ store }} </b></span>
+                            </div>
+                            <a href="#{{ip2}}" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-2 col-lg-2 btn btn-outline btn-danger" ng-init="checkServerStatus('{{ip2}}'{% if forloop.last %} ,'last-node' {% endif %})" ng-click="getServiceStatus('{{ip2}}')">Service Details</a>
+                            <a href="#{{ip2}}-mount-details" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-1 col-lg-1 btn btn-outline {{ mount|dict_val:ip2|mount_sts }}" ng-click="getMountDetail('{{ip2}}', 'r3')">Mount</a>
+                            <a href="#{{ip2}}-replication-status" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-2 col-lg-2 btn btn-outline btn-success" ng-click="getReplDetail('{{ip2}}','r3')">Processes</a>
+                            <a href="#{{ip2}}-utils" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-2 col-lg-2 btn btn-outline btn-success" ng-click="getUtilsDetail('{{ip2}}')">Utils Installed</a>
+                            <div class="btn col-md-3 col-lg-3 text-left" id="{{ip2}}-facts">
+                                {% if ip2 in facts %}
+                                    {% for factKey, factValue in facts|dict_val:ip2|dict_val:"facts"|dict_items %}
+                                        <span class="badge {{ factKey }}">{{factValue}}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </h4>
+            </div>
+            <div id="{{ip2}}-mount-details" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" >
+                         <thead class="thead-inverse">
+                            <tr>
+                              <th>Filesystem</th>
+                              <th>Size</th>
+                              <th>Used</th>
+                              <th>Avail</th>
+                              <th>Use%</th>
+                              <th>Mounted on</th>
+                            </tr>
+                         </thead>
+                         <tbody ng-show="mntshow">
+                            <tr ng-repeat="mnt in mountDetail" >
+                              <td>(~ mnt[0] ~) </td>
+                              <td>(~ mnt[1] ~) </td>
+                              <td>(~ mnt[2] ~) </td>
+                              <td>(~ mnt[3] ~) </td>
+                              <td class="(~ mntPercentStyle(mnt[4] | percentSplit | num) ~)">(~ mnt[4] ~) </td>
+                              <td>(~ mnt[5] ~) </td>
+                            </tr>
+                         </tbody>
+                    </table>
+                    <div ng-show="loading" class="text-center">{% usemacro loading %}</div>
+                    <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+                  </div>
+                </div>
+            </div>
+            <div id="{{ip2}}-replication-status" class="panel-collapse collapse">
+                <div ng-show="showRepl" class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                             <thead class="thead-inverse">
+                                <tr class="active">
+                                  <th colspan="3" style="background-color: grey;"><center>Process</center></th>
+                                  <th style="background-color: grey;"><center>Status</center></th>
+                                </tr>
+                             </thead>
+                            <tbody>
+                                <tr>
+                                    <th style="text-align:center;vertical-align:middle;">Replication</th>
+                                    <td><center>
+                                        {% if user.is_authenticated %}
+                                        <button type="button" class="btn btn-sm cell-buttons" data-toggle="tooltip" data-original-title="Click to trigger Force Replication" ng-disabled="false" ng-click="handleReplication( '{{ip2}}','run')" ><span>Run Replication</span></button>
+                                        {% else %}
+                                        <button type="button" class="btn btn-sm cell-buttons" data-toggle="tooltip" data-original-title="Click to trigger Force Replication" ng-disabled="true"><span>Run Replication Now</span></button>
+                                        {% endif %} </center>
+                                    </td>
+                                    <td>
+                                        <button type=button class="btn btn-sm cell-buttons" data-toggle=modal data-target=#{{ip2}}-repLogs ng-click="handleReplication( '{{ip2}}','status')">Get Replication Log </button>
+                                    </td>
+                                    <td>
+                                        <b>Last Store run time: </b> (~ repl["soc_log"] ~) <br><b>Last Plato run time: </b>(~ repl["plato_log"] ~)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:center;vertical-align:middle;">Store Comms</th>
+                                    <td><center>
+                                        {% if user.is_authenticated %}
+                                        <button type="button" class="btn btn-sm cell-buttons" data-toggle="tooltip" data-original-title="Click to trigger LOP Store Comms Fix" ng-disabled="false" ng-click="handleStoreCommsFix( '{{ip2}}','run')" ><span>Fix LOP Store Comms</span></button>
+                                        {% else %}
+                                        <button type="button" class="btn btn-sm cell-buttons" data-toggle="tooltip" data-original-title="Click to trigger LOP Store Comms fix" ng-disabled="true"><span>Fix LOP Store Comms</span></button>
+                                        {% endif %} </center>
+                                    </td>
+                                    <td>
+                                        <!--Store comms fix log-->
+                                        <button type=button class="btn btn-sm cell-buttons" data-toggle=modal data-target=#{{ip2}}-storeCommsFixLog ng-click="handleStoreCommsFix( '{{ip2}}','status')">Get Store Comms Fix Status</button>
+                                    </td>
+                                    <td><b>Last Run Time:</b></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align:center;vertical-align:middle;">EOD Logs</th>
+                                    <td></td>
+                                    <td>
+                                        <!--EOD log-->
+                                        <button type=button class="btn btn-sm cell-buttons" data-toggle=modal data-target=#{{ip2}}-eodLogs ng-click="handleEodLog( '{{ip2}}')">Get EOD Logs </button>
+                                    </td>
+                                    <td><b>Last Run Time:</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal Replication log -->
+                    {% usemacro modal ip2 "repLogs" "Replication Log" %}
+                    <!-- Modal EOD log -->
+                    {% usemacro modal ip2 "eodLogs" "End of Day - Log" %}
+                    <!-- Modal Store comms fix log -->
+                    {% usemacro modal ip2 "storeCommsFixLog" "LOP Store Comms Fix - Log" %}
+                </div>
+                <div ng-show="loading" class="text-center">{% usemacro loading %}</div>
+                <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+                <div ng-show="showRepStatus" style="margin: 2px;" class="alert alert-danger" role="alert">(~ repStatus ~)</div>
+                <div></div>
+            </div>
+            <div id="{{ip2}}-utils" class="panel-collapse collapse">
+                <div ng-show="showUtils" class="panel-body">
+                    <ul class="list-inline">
+                        <li ng-repeat="util in utils">(~ util ~)</li>
+                    </ul>
+                </div>
+                <div ng-show="loading" class="text-center">{% usemacro loading %}</div>
+                <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+            </div>
+            <div class="panel-collapse collapse" id="{{ip2}}" role="tabpanel" aria-labelledby="{{ip2}}-heading">
+                <div class="panel-body bg-success">
+                    <ul class="nav nav-tabs nav-justified" role="tablist">
+                    {% for client in env|dict_val:store %}
+                        <li role="presentation" class="{% if forloop.first %} active {% endif %}">
+                            <a href="#{{ip2}}-{{client}}" aria-controls="{{ip2}}-{{client}}" class="-bgDarkBlue" role="tab" data-toggle="tab">{{client}} <span class="glyphicon glyphicon-triangle-bottom text-danger" aria-hidden="true"></span><br>{% clientIp ip2 client "R3" %}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    <div ng-show="loading" class="text-center">{% usemacro loading %}</div>
+                    <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+                    <div ng-show="showTab" class="tab-content">
+                    {% for client in env|dict_val:store %}
+                        <div role="tabpanel" class="tab-pane {% if forloop.first %} active {% endif %}" id="{{ip2}}-{{client}}">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    {% for service in services|dict_val:client %}
+                                    <div class="btn-group col-xs-12 col-sm-4 col-md-3 col-lg-2 btn-group-sm {{service}}">
+                                      <button type="button" class="btn btn-success status col-xs-10 col-sm-9 col-md-9 col-lg-9" aria-status="running">{{service}}</button>
+                                        {% if user.is_authenticated %}
+                                        <button type="button" class="btn btn-outline btn-default action" data-toggle="tooltip" data-original-title="stop" ng-disabled="false" ng-click="startStopService( '{{ip2}}-{{client}}','{{service}}' , 'r3')" ><span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span></button>
+                                        {% else %}
+                                      <button type="button" class="btn btn-outline btn-default action" data-toggle="tooltip" data-original-title="stop" ng-disabled="true"><span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span></button>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
+
+

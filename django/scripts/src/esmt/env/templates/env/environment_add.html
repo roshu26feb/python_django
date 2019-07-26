@@ -1,0 +1,69 @@
+{% extends 'env/base.html' %}
+{% load bootstrap3 %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% load i18n static %}
+{% usemacro prevview "env:all" "Back" "environment-list" %}
+
+<head>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+    <script type="text/javascript" src="{% url 'delivery_db:jsi18n' %}"></script>
+    <script type="text/javascript" src="/static/admin/js/core.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script type="text/javascript" src="/static/admin/js/actions.js"></script>
+    <script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+    <script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+    <script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+
+</head>
+
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Add Environment</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . " ng-init="getSystem();">
+    {% csrf_token %}
+        <div class="fieldWrapper" ng-init="getApiDetails('environment_type');" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_environment_type">Environment Type</label>
+                <div class="col-sm-4">
+                    <select name="environment_type" class="form-control" ng-model="envType"
+                        ng-options="et.environment_type_name for et in apiResponse['environment_types'] track by et.environment_type_id"
+                        id="id_environment_type">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div> 
+           </div>
+        </div>
+         
+        <div class="fieldWrapper" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_system">System</label>
+                <div class="col-sm-4">
+                    <select name="system_id" class="form-control" ng-model="sys"
+                        ng-options="s.system_name for s in systems track by s.system_id"
+                        id="id_system">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div> 
+           </div>
+        </div>
+         
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" id="btn-env-save" class="btn btn-primary" value="Save">Save</button>
+        </div>
+    </div>
+</form>
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+</div>
+{% endblock %}

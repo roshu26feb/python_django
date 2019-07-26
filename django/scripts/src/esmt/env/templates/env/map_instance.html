@@ -1,0 +1,125 @@
+{% extends 'env/base.html' %}
+{% load bootstrap3 %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% load i18n static %}
+{% usemacro prevview "env:all" "Back" "environment-list" %}
+
+<head>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+    <script type="text/javascript" src="{% url 'delivery_db:jsi18n' %}"></script>
+    <script type="text/javascript" src="/static/admin/js/core.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script type="text/javascript" src="/static/admin/js/actions.js"></script>
+    <script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+    <script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+    <script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+
+    <link rel="stylesheet" href="{% static 'delivery_db/css/boostrap-select.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'delivery_db/css/styles.css' %}" />
+    <script src="{% static 'delivery_db/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'delivery_db/js/i18n/default-en_US.min.js' %}"></script>
+</head>
+
+
+<div style="padding-bottom:20px; margin-top:50px;">
+    <h3>Map Instance</h3>
+</div>
+
+<form class="form-horizontal my-form" data-toggle="validator" role="form" method="POST" data-url=" . " >
+    {% csrf_token %}
+        
+        
+        <div class="fieldWrapper" ng-cloak> <!-- ng-init="getApiDetails('environment_type');" -->
+            <div class="form-group required">
+                
+
+                <label class="col-sm-2 control-label" for="id_environment_type">Environment </label>
+
+                <div class="col-sm-4">
+                   <input type="hidden" name="environment_id" value="{{ data.env_id.0.environment_id }}" class="form-control" id=""  />
+                   <input type="text" id="environment_id" value="{{ data.env_id.0.environment_name }}" class="form-control" id="" readonly />
+                </div> 
+           </div>
+        </div>
+
+        <div class="fieldWrapper" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_system">System</label>
+                <div class="col-sm-4">
+                    <input type="hidden" name="system_id" value="{{ data.system_id.0.system_id }}" class="form-control"   />
+                    <input type="text" id="system_id" value="{{ data.system_id.0.system_name }}" class="form-control"  readonly />
+                </div> 
+           </div>
+        </div>
+
+        <!-- <div class="fieldWrapper" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_system">System version</label>
+                <div class="col-sm-4">
+                    <input type="hidden" name="system_version_id" ng-value="{{ data.system_version_id.0.system_version_id }}" class="form-control"   />
+                    <input type="text" id="system_version_id" value="{{ data.system_version_id.0.system_version_name }}" class="form-control"  readonly />
+                    
+                </div> 
+           </div>
+        </div> -->
+
+        <div class="fieldWrapper" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_system">System Element</label>
+                <div class="col-sm-4">
+                    <input type="hidden" name="system_element_id" ng-value="{{ data.system_element_id.0.system_element_id }}" class="form-control"   />
+                    <input type="text" id="system_element_id" value="{{ data.system_element_id.0.system_element_name }}" class="form-control"  readonly />
+                </div> 
+           </div>
+        </div>
+        <!-- 
+         <div class="fieldWrapper" ng-init="getApiDetails('instance');" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_instance">Instance</label>
+                <div class="col-sm-4">
+                    <select id="instance_id" name="instance_id" class="form-control" required="required" ng-model="instance"
+                        ng-options="inst.instance_name for inst in apiResponse['instances'] track by inst.instance_id"
+                        id="id_instance">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div> 
+           </div>
+        </div>  --> 
+       
+        
+        <div class="fieldWrapper" ng-init="getInstanceList();" ng-cloak>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="id_instance">Instance</label>
+                <div class="col-sm-4">
+                   <!-- <select id="instance_id" name="instance_id" class="form-control" required="required" ng-model="instance"
+                        ng-options="inst.instance_name for inst in instanceListApiResponse track by inst.instance_id"
+                        id="id_instance">
+                        <option value="">-- Select --</option>
+                    </select> -->
+                    <select name="instance_id" ng-options="inst.instance_name for inst in instanceListApiResponse | orderBy:'instance_name' track by inst.instance_id" data-live-search="true" title="" required="required" id="instance_id" class="form-control selectpicker ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" ng-model="system_id" tabindex="-98">
+                        <option value="" selected="selected">--Select--</option>
+                      </select> 
+                </div> 
+           </div>
+        </div>
+        
+    {% include 'delivery_db/abstract_form.html' %}
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" id="" class="btn btn-primary" value="Save">Map Instance</button>
+        </div>
+    </div>
+</form>
+
+<div class="alert fade in" id="alert" role="alert">
+  <span class="alert-text"></span>
+
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base/env_base.html" %}
+{% load static %}
+{% block css_js %}
+
+<link rel="stylesheet" href="{% static 'env/css/style.css' %}" />
+<script src="{% static 'env/js/controller.js' %}"></script>
+<script src="{% static 'env/js/env.js' %}"></script>
+{% endblock %}
+{% block title %}R3 Environment Management Tool{% endblock %}
+{% block level_3_navbar %}
+<nav class="navbar navbar-purple" role="navigation" id="level-3">
+    <ul class="nav navbar-nav" id="env">
+        <li {% if request.resolver_match.url_name == 'all' %} class='active' {% endif %}><a href="{% url 'env:all' %}">All</a></li>
+        <li {% if request.resolver_match.url_name == 'r3' %} class='active' {% endif %}><a href="{% url 'env:r3' %}">Soc R3</a></li>
+        <li {% if request.resolver_match.url_name == 'r2' %} class='active' {% endif %}><a href="{% url 'env:r2' %}">Soc R2</a></li>
+        <li {% if request.resolver_match.url_name == 'plato' %} class='active' {% endif %}><a href="{% url 'env:plato' %}">Plato</a></li>
+        <li {% if request.resolver_match.url_name == 'socAU' %} class='active' {% endif %}><a href="{% url 'env:socAU' %}">Soc AU</a></li>
+        <li {% if request.resolver_match.url_name == 'solar7' %} class='active' {% endif %}><a href="{% url 'env:solar7' %}">Solar7</a></li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <div ng-controller="envController" style="border-top:50px solid white;">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+{% endblock %}

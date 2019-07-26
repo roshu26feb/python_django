@@ -1,0 +1,1467 @@
+{% extends 'env_set/base.html' %}
+{% load static %}
+{% load macros %}
+{% loadmacros 'env_set/env_set_macros.html' %}
+{% block css_js %}
+<link rel="stylesheet" href="{% static 'env_set/css/env_set.css' %}" xmlns="http://www.w3.org/1999/html"/>
+<script src="{% static 'env_set/js/controller_sit.js' %}"></script>
+{% endblock %}
+{% load env_filters %}
+{% block page_content %}
+<div class="flex-column flex-center" ng-controller='envSetSitController' style="border-top:60px solid white;">
+    <div class="jumbotron" style="width: 1300px; margin-bottom: 5px">
+        <h2 class="lead text-center" style="margin: 0px; padding:0px;">SIT</h2>
+    </div>
+    <div id="container" ng-cloak>
+        <div ng-show="loading" ng-init="onLoading()" style="width: 1300px;">
+            {% usemacro loading %}
+        </div>
+        <!-- Socrates Environments -->
+        <div ng-show="show" class="flex-column">
+            <div style="margin: 0px; height:130px; width:80px">
+                <svg height="130" width="80">
+                    <g class="svg-grey soc-uk2osb">
+                        <line x1="60" y1="130" x2="60" y2="90" />
+                        <use xlink:href="#up-arrow" x="57" y="90"/>
+                        <circle r="10" cx="60" cy="80" fill="none" />
+                        <text  x="60" y="80" text-anchor="middle" font-size="10px" alignment-baseline="middle">O</text>
+                    </g>
+                </svg>
+            </div>
+            <!--Socrates regions -->
+            {% usemacro socrates_env store_list env services "soc-uk" %}
+            {% usemacro socrates_env store_list env services "soc-nl" %}
+            {% usemacro socrates_env store_list env services "soc-roi" %}
+            {% usemacro socrates_env store_list env services "soc-esp" %}
+
+            <!-- Socrates Australia-->
+            <div class="box-80x50 flex-center soc socaus dropdown soc-170-store bgred"><center>Socrates(Aus) <br> 10.84.170.1 </center></div>
+
+            <!-- Socrates Finland -->
+            {% usemacro socrates_env store_list env services "soc-fin" %}
+
+            <div class="box-80x50 flex-center soc socnz dropdown bggrey"><center>Socrates(NZ)</center></div>
+        </div>
+
+        <!-- Interface between Socrates to Plato -->
+        <div ng-show="show">
+            <div style="margin: 0px; height:900px; width:40px">
+                <svg width="40" height="900">
+                    <g class="svg-red soc-uk2plato-leg">
+                        <use xlink:href="#left-arrow" x="0" y="137"/>
+                        <line x1="6" y1="140" x2="15" y2="140" />
+                        <line x1="15" y1="140" x2="15" y2="200" />
+                        <line x1="15" y1="200" x2="34" y2="200" />
+                        <use xlink:href="#right-arrow" x="34" y="197"/>
+                    </g>
+                    <g class="svg-grey soc-uk2jocasta">
+                        <use xlink:href="#left-arrow" x="0" y="152"/>
+                        <line x1="6" y1="155" x2="12" y2="155" />
+                        <path d="M12,155  A3,3 0 0,1 18,155" style="fill:none;"/>
+                        <line x1="18" y1="155" x2="25" y2="155" />
+                        <line x1="25" y1="155" x2="25" y2="220" />
+                        <line x1="25" y1="220" x2="30" y2="220" />
+                        <line x1="30" y1="220" x2="30" y2="315" />
+                        <line x1="30" y1="315" x2="34" y2="315" />
+                        <use xlink:href="#right-arrow" x="34" y="312"/>
+                    </g>
+                    <g class="svg-red soc-nl2plato-leg">
+                        <use xlink:href="#left-arrow" x="0" y="212"/>
+                        <line x1="6" y1="215" x2="22" y2="215" />
+                        <path d="M22,215  A3,3 0 0,1 28,215" style="fill:none;"/>
+                        <line x1="28" y1="215" x2="34" y2="215" />
+                        <use xlink:href="#right-arrow" x="34" y="212"/>
+                    </g>
+                    <g class="svg-grey soc-nl2jocasta">
+                        <use xlink:href="#left-arrow" x="0" y="222"/>
+                        <line x1="6" y1="225" x2="23" y2="225" />
+                        <line x1="23" y1="225" x2="23" y2="325" />
+                        <line x1="23" y1="325" x2="34" y2="325" />
+                        <use xlink:href="#right-arrow" x="34" y="322"/>
+                    </g>
+                    <g class="svg-grey soc-roi2cdg">
+                        <line x1="0" y1="265" x2="10" y2="265" />
+                        <line x1="10" y1="265" x2="10" y2="255" />
+                        <use xlink:href="#up-arrow" x="7" y="255"/>
+                        <circle r="9" cx="10" cy="245" fill="none" />
+                        <text  x="10" y="245" text-anchor="middle" font-size="10px" alignment-baseline="middle">E</text>
+                    </g>
+                    <g class="svg-grey soc-roi2jocasta">
+                        <use xlink:href="#left-arrow" x="0" y="272"/>
+                        <line x1="6" y1="275" x2="10" y2="275" />
+                        <line x1="10" y1="275" x2="10" y2="335" />
+                        <line x1="10" y1="335" x2="34" y2="335" />
+                        <use xlink:href="#right-arrow" x="34" y="332"/>
+                    </g>
+                    <g class="svg-grey soc-esp2jocasta">
+                        <use xlink:href="#left-arrow" x="0" y="342"/>
+                        <line x1="6" y1="345" x2="34" y2="345" />
+                        <use xlink:href="#right-arrow" x="34" y="342"/>
+                    </g>
+                    <g class="svg-grey jocasta2epiphany">
+                        <use xlink:href="#right-arrow" x="34" y="352"/>
+                        <line x1="25" y1="355" x2="34" y2="355" />
+                        <line x1="25" y1="355" x2="25" y2="415" />
+                        <line x1="25" y1="415" x2="34" y2="415" />
+                        <use xlink:href="#right-arrow" x="34" y="412"/>
+                    </g>
+                    <g class="svg-grey soc-aus2plato7-aus">
+                        <use xlink:href="#left-arrow" x="0" y="582"/>
+                        <line x1="6" y1="585" x2="34" y2="585" />
+                        <use xlink:href="#right-arrow" x="34" y="582"/>
+                    </g>
+                    <g class="svg-red soc-fin2plato7-fin">
+                        <use xlink:href="#left-arrow" x="0" y="642"/>
+                        <line x1="6" y1="645" x2="34" y2="645" />
+                        <use xlink:href="#right-arrow" x="34" y="642"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Plato section-->
+        <div ng-show="show" class="flex-column">
+            <div style="margin: 0px; height:160px; width:80px" >
+                <svg width="80" height="160">
+                    <g class="svg-grey plato-leg2mft">
+                        <line x1="25" y1="120" x2="25" y2="160" />
+                        <use xlink:href="#up-arrow" x="22" y="120"/>
+                        <circle r="10" cx="25" cy="110" fill="none" />
+                        <text  x="25" y="110" text-anchor="middle" font-size="10px" alignment-baseline="middle">M</text>
+                    </g>
+                    <g class="svg-grey plato-leg2on-premise-soa-a">
+                        <line x1="40" y1="50" x2="80" y2="50" />
+                        <line x1="40" y1="50" x2="40" y2="160" />
+                    </g>
+                </svg>
+            </div>
+            {% usemacro plato_solar7_render store_list services "plato-leg" %}
+            <div style="margin: 0px; height:30px; width:80px" >
+                <svg width="80" height="30">
+                    <g class="svg-grey plato-leg2jocasta">
+                        <use xlink:href="#up-arrow" x="37" y="0"/>
+                        <line x1="40" y1="0" x2="40" y2="30" />
+                        <use xlink:href="#down-arrow" x="37" y="24"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="box-80x50 flex-center bggrey" id="jocasta"><center>Jocasta</center></div>
+            <div style="margin: 0px; height:30px; width:80px" >
+                <svg width="80" height="30">
+                    <g class="svg-grey jocasta2compiere">
+                        <use xlink:href="#up-arrow" x="37" y="0"/>
+                        <line x1="40" y1="0" x2="40" y2="30" />
+                        <use xlink:href="#down-arrow" x="37" y="24"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="box-80x50 flex-center bggrey" id="compiere"><center>Compiere</center></div>
+
+            <div class="box-80x50 flex-center bggrey" style="margin-top: 30px" id="epiphany"><center>Epiphany</center></div>
+            <!-- Plato 7 Australia -->
+            {% usemacro plato_solar7_render store_list services "plato-aus" %}
+            <!-- Plato 7 Finland -->
+            {% usemacro plato_solar7_render store_list services "plato-fin" %}
+        </div>
+
+        <!-- Interface between plato and aristotle/plato solar7-->
+        <div ng-show="show">
+            <div style="margin: 0px; height:900px; width:40px">
+                <svg width="40" height="900">
+                    <g class="svg-grey plato-leg2soa-a">
+                        <line x1="0" y1="50" x2="40" y2="50" />
+                    </g>
+                    <g class="svg-grey plato-leg2reddi">
+                        <line x1="0" y1="180" x2="20" y2="180" />
+                        <line x1="20" y1="180" x2="20" y2="83" />
+                        <line x1="20" y1="83" x2="34" y2="83" />
+                        <use xlink:href="#right-arrow" x="34" y="80"/>
+                    </g>
+                    <g class="svg-grey plato-leg2corporate-broker">
+                        <use xlink:href="#left-arrow" x="0" y="200"/>
+                        <line x1="6" y1="203" x2="30" y2="203" />
+                        <line x1="30" y1="203" x2="30" y2="146" />
+                        <line x1="30" y1="146" x2="34" y2="146" />
+                        <use xlink:href="#right-arrow" x="34" y="143"/>
+                    </g>
+                    <g class="svg-red plato-leg2aristotle">
+                        <use xlink:href="#arrow" x="0" y="220"/>
+                    </g>
+                    <g class="svg-grey jocasta2caw-lol">
+                        <use xlink:href="#left-arrow" x="0" y="312"/>
+                        <line x1="6" y1="315" x2="20" y2="315" />
+                        <line x1="20" y1="315" x2="20" y2="305" />
+                        <use xlink:href="#up-arrow" x="17" y="299"/>
+                        <circle r="10" cx="20" cy="289" fill="none" />
+                        <text  x="20" y="289" text-anchor="middle" font-size="10px" alignment-baseline="middle">C</text>
+                    </g>
+                    <g class="svg-grey jocasta2solar7-airways">
+                        <use xlink:href="#left-arrow" x="0" y="322"/>
+                        <line x1="6" y1="325" x2="30" y2="325" />
+                        <line x1="30" y1="325" x2="30" y2="330" />
+                        <line x1="30" y1="330" x2="34" y2="330" />
+                        <use xlink:href="#right-arrow" x="34" y="327"/>
+                    </g>
+                    <g class="svg-grey jocasta2solar7-nlrx">
+                        <use xlink:href="#left-arrow" x="0" y="332"/>
+                        <line x1="6" y1="335" x2="25" y2="335" />
+                        <line x1="25" y1="335" x2="25" y2="405" />
+                        <line x1="25" y1="405" x2="34" y2="405" />
+                        <use xlink:href="#right-arrow" x="34" y="402"/>
+                    </g>
+                    <g class="svg-grey jocasta2solar7-sok">
+                        <use xlink:href="#left-arrow" x="0" y="342"/>
+                        <line x1="6" y1="345" x2="20" y2="345" />
+                        <line x1="20" y1="345" x2="20" y2="465" />
+                        <line x1="20" y1="465" x2="34" y2="465" />
+                        <use xlink:href="#right-arrow" x="34" y="462"/>
+                    </g>
+                    <g class="svg-grey jocasta2solar7-vision">
+                        <use xlink:href="#left-arrow" x="0" y="352"/>
+                        <line x1="6" y1="355" x2="15" y2="355" />
+                        <line x1="15" y1="355" x2="15" y2="525" />
+                        <line x1="15" y1="525" x2="34" y2="525" />
+                        <use xlink:href="#right-arrow" x="34" y="522"/>
+                    </g>
+                    <g class="svg-grey compiere2solar7-airways">
+                        <use xlink:href="#left-arrow" x="0" y="397"/>
+                        <line x1="6" y1="400" x2="10" y2="400" />
+                        <line x1="10" y1="400" x2="10" y2="375" />
+                        <line x1="10" y1="375" x2="12" y2="375" />
+                        <path d="M12,375  A8.5,8.5 0 0,1 29,375" style="fill:none;"/>
+                        <line x1="29" y1="375" x2="30" y2="375" />
+                        <line x1="30" y1="375" x2="30" y2="345" />
+                        <line x1="30" y1="345" x2="34" y2="345" />
+                        <use xlink:href="#right-arrow" x="34" y="342"/>
+                    </g>
+                    <g class="svg-grey compiere2solar7-sok">
+                        <use xlink:href="#left-arrow" x="0" y="412"/>
+                        <line x1="6" y1="415" x2="12" y2="415" />
+                        <path d="M12,415  A3,3 0 0,1 23,415" style="fill:none;"/>
+                        <line x1="23" y1="415" x2="30" y2="415" />
+                        <line x1="30" y1="415" x2="30" y2="455" />
+                        <line x1="30" y1="455" x2="34" y2="455" />
+                        <use xlink:href="#right-arrow" x="34" y="452"/>
+                    </g>
+                    <g class="svg-grey compiere2solar7-vision">
+                        <use xlink:href="#left-arrow" x="0" y="422"/>
+                        <line x1="6" y1="425" x2="10" y2="425" />
+                        <line x1="10" y1="425" x2="10" y2="535" />
+                        <line x1="10" y1="535" x2="34" y2="535" />
+                        <use xlink:href="#right-arrow" x="34" y="532"/>
+                    </g>
+                    <g class="svg-red plato7-aus2solar7-aus">
+                        <line x1="0" y1="585" x2="34" y2="585" />
+                        <use xlink:href="#right-arrow" x="34" y="582"/>
+                    </g>
+                    <g class="svg-red plato7-fin2solar7-fin">
+                        <line x1="0" y1="645" x2="34" y2="645" />
+                        <use xlink:href="#right-arrow" x="34" y="642"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Aristotle and Solar 7 Section-->
+        <div ng-show="show" class="flex-column">
+           <div style="margin: 0px; height:60px; width:80px">
+                <svg width="80" height="60">
+                   <g class="svg-grey plato-leg2mft">
+                        <line x1="0" y1="131" x2="80" y2="131" />
+                    </g>
+                   <g class="svg-grey plato-leg2soa-a">
+                        <line x1="0" y1="50" x2="80" y2="50" />
+                    </g>
+                </svg>
+            </div>
+            <div class="box-80x50 flex-center bggrey" id="reddi"><center>Reddi</center></div>
+            <div class="box-80x50 flex-center bggrey" style="margin: 10px 0px 10px 0px;" id="corporate-broker"><center>Corporate Broker</center></div>
+            <div class="aristotle bgred flex-center dropdown" id="aristotle" ng-mouseenter="getServiceStatus('aristotle','49')" ng-mouseleave="stopUpdate()"><center>Aristotle Broker <br> (Transition Component)
+                <div class="dropdown-content">
+                    <div class="dropdown-row">
+                        <div class="dropdown-col"><center>Aristotle to Plato and Lab Connection</center></div>
+                    </div>
+                    <div class="dropdown-row">
+                        {% if user.is_authenticated %}
+                        <div class="dropdown-col"><b>Action</b></div>
+                        {% endif %}
+                        <div class="dropdown-col flex-3"><b>Active MQ Details</b></div>
+                        <div class="dropdown-col"><b>Status</b></div>
+                    </div>
+                    {% for service in services|dict_val:'aristotle'|dict_val:'activemq' %}
+                    <div class="dropdown-row {{service}}">
+                        {% if user.is_authenticated %}
+                        <div class="dropdown-col"><button type="button" class="btn btn-xs btn-outline btn-default action" ng-disabled="false" ng-click="handleAristoClick( 'aristotle','{{service}}')" >start</button></div>
+                        {% endif %}
+                        <div class="dropdown-col service flex-3">{{ service }}</div>
+                        <div class="dropdown-col status bgred">stopped</div>
+                    </div>
+                    {% endfor %}
+                </div></center>
+            </div>
+            <div class="box-80x50 flex-center bggrey" style="margin-top: 60px" id="solar7-airways"><center>Solar 7<br>Airways</center></div>
+            <div class="box-80x50 flex-center bggrey" style="margin-top: 10px" id="solar7-nlrx"><center>Solar 7<br>NLRX</center></div>
+            {% usemacro plato_solar7_render store_list services "solar7-sok" %}
+            <div class="box-80x50 flex-center bggrey" style="margin-top: 10px" id="solar7-vision"><center>Solar 7<br>Vision</center></div>
+            <!-- Solar7 -->
+            {% usemacro plato_solar7_render store_list services "solar7-aus" %}
+            {% usemacro plato_solar7_render store_list services "solar7-fin" %}
+            <div class="box-80x50 flex-center bggrey" style="margin-top: 10px" id="solar7-nz"><center>Solar 7<br>NZ</center></div>
+        </div>
+        <!-- Legacy to SOA interface -->
+        <div ng-show="show">
+            <div style="margin: 0px; height:700px; width:80px">
+                <svg height="900" width="80">
+                    <g class="svg-grey plato-leg2soa-a">
+                        <line x1="0" y1="50" x2="40" y2="50" />
+                        <line x1="40" y1="50" x2="40" y2="127" />
+                        <line x1="40" y1="127" x2="80" y2="127" />
+                    </g>
+                    <g class="svg-grey corporate-broker2soa-d">
+                        <line x1="0" y1="145" x2="67" y2="145" />
+                        <path d="M67,145  A3,3 0 0,1 73,145" style="fill:none;"/>
+                        <line x1="73" y1="145" x2="80" y2="145" />
+                    </g>
+                    <g class="svg-grey corporate-broker2soa-b">
+                        <line x1="0" y1="155" x2="67" y2="155" />
+                        <path d="M67,155  A3,3 0 0,1 73,155" style="fill:none;"/>
+                        <line x1="73" y1="155" x2="80" y2="155" />
+                    </g>
+                    <g class="svg-grey aristotle2on-premise-soa-a">
+                        <use xlink:href="#left-arrow" x="0" y="182"/>
+                        <line x1="6" y1="185" x2="70" y2="185" />
+                        <line x1="70" y1="185" x2="70" y2="137" />
+                        <line x1="70" y1="137" x2="80" y2="137" />
+                    </g>
+                    <g class="svg-grey aristotle2solar7-nz">
+                        <use xlink:href="#left-arrow" x="0" y="192"/>
+                        <line x1="6" y1="195" x2="70" y2="195" />
+                        <line x1="70" y1="195" x2="70" y2="700" />
+                        <line x1="6" y1="700" x2="70" y2="700" />
+                        <use xlink:href="#left-arrow" x="0" y="697"/>
+                    </g>
+                    <g class="svg-red aristotle2solar7-fin">
+                        <use xlink:href="#left-arrow" x="0" y="202"/>
+                        <line x1="6" y1="205" x2="60" y2="205" />
+                        <line x1="60" y1="205" x2="60" y2="645" />
+                        <line x1="6" y1="645" x2="60" y2="645" />
+                        <use xlink:href="#left-arrow" x="0" y="642"/>
+                    </g>
+                    <g class="svg-grey solar7-aus2osb">
+                        <use xlink:href="#left-arrow" x="0" y="572"/>
+                        <line x1="6" y1="575" x2="47" y2="575" />
+                        <path d="M47,575  A3,3 0 0,1 53,575" style="fill:none;"/>
+                        <line x1="53" y1="575" x2="57" y2="575" />
+                        <path d="M57,575  A3,3 0 0,1 63,575" style="fill:none;"/>
+                        <line x1="63" y1="575" x2="67" y2="575" />
+                        <path d="M67,575  A3,3 0 0,1 73,575" style="fill:none;"/>
+                        <line x1="73" y1="575" x2="80" y2="575" />
+                    </g>
+                    <g class="svg-red aristotle2solar7-aus">
+                        <use xlink:href="#left-arrow" x="0" y="212"/>
+                        <line x1="6" y1="215" x2="50" y2="215" />
+                        <line x1="50" y1="215" x2="50" y2="585" />
+                        <line x1="6" y1="585" x2="50" y2="585" />
+                        <use xlink:href="#left-arrow" x="0" y="582"/>
+                    </g>
+                    <g class="svg-grey aristotle2solar7-vision">
+                        <use xlink:href="#left-arrow" x="0" y="222"/>
+                        <line x1="6" y1="225" x2="40" y2="225" />
+                        <line x1="40" y1="225" x2="40" y2="525" />
+                        <line x1="6" y1="525" x2="40" y2="525" />
+                        <use xlink:href="#left-arrow" x="0" y="522"/>
+                    </g>
+                    <g class="svg-red aristotle2solar7-sok">
+                        <use xlink:href="#left-arrow" x="0" y="232"/>
+                        <line x1="6" y1="235" x2="30" y2="235" />
+                        <line x1="30" y1="235" x2="30" y2="465" />
+                        <line x1="6" y1="465" x2="30" y2="465" />
+                        <use xlink:href="#left-arrow" x="0" y="462"/>
+                    </g>
+                    <g class="svg-grey aristotle2solar7-nlrx">
+                        <use xlink:href="#left-arrow" x="0" y="242"/>
+                        <line x1="6" y1="245" x2="20" y2="245" />
+                        <line x1="20" y1="245" x2="20" y2="405" />
+                        <line x1="6" y1="405" x2="20" y2="405" />
+                        <use xlink:href="#left-arrow" x="0" y="402"/>
+                    </g>
+                    <g class="svg-grey aristotle2solar7-airways">
+                        <use xlink:href="#left-arrow" x="0" y="252"/>
+                        <line x1="6" y1="255" x2="10" y2="255" />
+                        <line x1="10" y1="255" x2="10" y2="345" />
+                        <line x1="6" y1="345" x2="10" y2="345" />
+                        <use xlink:href="#left-arrow" x="0" y="342"/>
+                    </g>
+                    <g class="svg-grey solar7-nz2osb">
+                        <use xlink:href="#left-arrow" x="0" y="712"/>
+                        <line x1="6" y1="715" x2="80" y2="715" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <div class="flex-column" ng-show="show">
+            <div style="height:800px; width:870px;">
+                <div class="flex-row">
+                    <!-- Oracle Fusion Middleware -->
+                    <div class="flex-column">
+                        <div class="flex-center black-font" style="font-size:10px; margin: 0px; height:40px; width:400px;"><b>On Premise Oracle Systems</b></div>
+                        <div class="fusion black-border">
+                            <!-- On-Premise Section 1 -->
+                            <div  style="margin: 0px; height:400px; width:90px">
+                                <div style="margin: 0px; height:270px; width:90px">
+                                    <svg height="270" width="90">
+                                        <g class="svg-grey plato-leg2soa-a">
+                                            <line x1="0" y1="86" x2="90" y2="86" />
+                                        </g>
+                                        <g class="svg-grey aristotle2on-premise-soa-a">
+                                            <line x1="0" y1="96" x2="90" y2="96" />
+                                        </g>
+                                        <g class="svg-grey corporate-broker2soa-d">
+                                            <line x1="0" y1="104" x2="35" y2="104" />
+                                            <line x1="35" y1="104" x2="35" y2="186" />
+                                            <line x1="35" y1="186" x2="42" y2="186" />
+                                            <path d="M42,186  A3,3 0 0,1 48,186" style="fill:none;"/>
+                                            <line x1="48" y1="186" x2="90" y2="186" />
+                                        </g>
+                                        <g class="svg-grey corporate-broker2soa-b">
+                                            <line x1="0" y1="114" x2="25" y2="114" />
+                                            <line x1="25" y1="114" x2="25" y2="231" />
+                                            <line x1="25" y1="231" x2="42" y2="231" />
+                                            <path d="M42,231  A3,3 0 0,1 48,231" style="fill:none;"/>
+                                            <line x1="48" y1="231" x2="90" y2="231" />
+                                        </g>
+                                        <g class="svg-grey on-premise-soa-a-admin2nordics-ebs">
+                                            <line x1="90" y1="106" x2="45" y2="106" />
+                                            <line x1="45" y1="106" x2="45" y2="264" />
+                                            <use xlink:href="#down-arrow" x="42" y="264"/>
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="flex-row">
+                                    <div class="nordics-ebs flex-center bgred fgwhite" id="nordics-ebs"><center>Nordics EBS</center></div>
+                                    <div style="margin: 0px; height:40px; width:20px">
+                                        <svg height="40" width="20">
+                                           <g class="svg-grey solar7-aus2osb">
+                                                <line x1="5" y1="6" x2="20" y2="6" />
+                                                <line x1="5" y1="6" x2="5" y2="40" />
+                                            </g>
+                                           <g class="svg-grey solar7-nz2osb">
+                                                <line x1="15" y1="16" x2="20" y2="16" />
+                                                <line x1="15" y1="16" x2="15" y2="40" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div style="margin: 0px; height:90px; width:90px">
+                                    <svg height="90" width="90">
+                                       <g class="svg-grey solar7-aus2osb">
+                                            <line x1="75" y1="0" x2="75" y2="35" />
+                                            <line x1="5" y1="35" x2="75" y2="35" />
+                                            <line x1="5" y1="35" x2="5" y2="90" />
+                                        </g>
+                                       <g class="svg-grey solar7-nz2osb">
+                                            <line x1="85" y1="0" x2="85" y2="45" />
+                                            <line x1="15" y1="45" x2="85" y2="45" />
+                                            <line x1="15" y1="45" x2="15" y2="90" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- End On-Premise Section 1 -->
+                            <!-- On-Premise Section 2 -->
+                            <div style="margin: 0px; height:400px; width:100px">
+                                <div class="fmw">
+                                    <div class="fmw-title flex-center black-font">
+                                        <center>Fusion Middle Ware</center>
+                                        <center>Oracle 11g</center>
+                                    </div>
+                                    <div class="flex-center black-font"  style="border:0px; height:30px; width:100px;">
+                                        <svg height="30" width="100">
+                                            <g class="svg-grey existing-pdh2soa-a">
+                                                <line x1="50" y1="10" x2="100" y2="10" />
+                                                <line x1="50" y1="10" x2="50" y2="24" />
+                                                <use xlink:href="#down-arrow" x="47" y="24"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="on-premise-fmw">
+                                        <div style="border:0px; height:230px; width:20px;">
+                                            <svg height="260" width="20">
+                                                <g class="svg-grey plato-leg2soa-a">
+                                                    <line x1="0" y1="5" x2="14" y2="5" />
+                                                    <use xlink:href="#right-arrow" x="14" y="2"/>
+                                                </g>
+                                                <g class="svg-grey aristotle2on-premise-soa-a">
+                                                    <line x1="0" y1="15" x2="14" y2="15" />
+                                                    <use xlink:href="#right-arrow" x="14" y="12"/>
+                                                </g>
+                                                <g class="svg-grey on-premise-soa-a-admin2nordics-ebs">
+                                                    <line x1="0" y1="25" x2="14" y2="25" />
+                                                    <use xlink:href="#right-arrow" x="14" y="22"/>
+                                                </g>
+                                                <g class="svg-grey corporate-broker2soa-d">
+                                                    <line x1="0" y1="105" x2="14" y2="105" />
+                                                    <use xlink:href="#right-arrow" x="14" y="102"/>
+                                                </g>
+                                                <g class="svg-grey corporate-broker2soa-b">
+                                                    <line x1="0" y1="150" x2="14" y2="150" />
+                                                    <use xlink:href="#right-arrow" x="14" y="147"/>
+                                                </g>
+                                                <g class="svg-grey solar7-aus2osb">
+                                                    <line x1="0" y1="195" x2="20" y2="195" />
+                                                </g>
+                                                <g class="svg-grey solar7-nz2osb">
+                                                    <line x1="0" y1="205" x2="20" y2="205" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div style="border:0px; height:230px; width:60px;">
+                                            <div class="box-60x30 flex-center dropdown bgred fgwhite" id="on-premise-soa-a">SOA A
+                                                <div class="dropdown-content">
+                                                    <div class="dropdown-lvl1 bgred flex-center dropdown-width" id="on-premise-soa-a-admin">SOA Admin Server</div>
+                                                    <div class="dropdown-lvl1 bgred flex-center dropdown-width" id="on-premise-soa-a-managed">SOA Managed Server</div>
+                                                    <div class="dropdown-lvl1 bgred flex-center dropdown-width" id="adf-managed-server">Adf Managed Server</div>
+                                                </div>
+                                            </div>
+                                            <div style="border:0px; height:15px; width:60px;">
+                                                <svg height="15" width="60">
+                                                    <g class="svg-grey on-premise-soa-a2on-premise-odi">
+                                                        <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                        <line x1="30" y1="6" x2="30" y2="9" />
+                                                        <use xlink:href="#down-arrow" x="27" y="9"/>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                            <div class="box-60x30 flex-center dropdown bgred" id="on-premise-odi">ODI
+                                                <div class="dropdown-content">
+                                                    <div class="dropdown-lvl1 bgred dropdown-width" id="on-premise-odi-admin">ODI Admin Server</div>
+                                                    <div class="dropdown-lvl1 bgred dropdown-width" id="on-premise-odi-server">ODI Server</div>
+                                                </div>
+                                            </div>
+                                            <div style="border:0px; height:15px; width:60px;">
+                                                <svg height="15" width="60">
+                                                    <g class="svg-grey on-premise-odi2on-premise-soa-d">
+                                                        <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                        <line x1="30" y1="6" x2="30" y2="9" />
+                                                        <use xlink:href="#down-arrow" x="27" y="9"/>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                            <div class="box-60x30 flex-center bggrey fgwhite" id="on-premise-soa-d"><center>SOA D</center></div>
+                                            <div class="box-60x30 flex-center bggrey fgwhite" style="margin-top: 15px;" id="on-premise-soa-b"><center>SOA B</center></div>
+                                            <div class="box-60x30 flex-center bggrey fgwhite" style="margin-top: 15px;" id="on-premise-osb"><center>OSB</center></div>
+                                            <div style="border:0px; height:20px; width:60px;">
+                                                <svg height="20" width="60">
+                                                    <g class="svg-grey osb2savs">
+                                                        <line x1="20" y1="0" x2="20" y2="20" />
+                                                    </g>
+                                                    <g class="svg-grey osb2genesys-nz">
+                                                        <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                        <line x1="30" y1="6" x2="30" y2="20" />
+                                                    </g>
+                                                    <g class="svg-grey osb2soc-uk">
+                                                        <use xlink:href="#up-arrow" x="37" y="0"/>
+                                                        <line x1="40" y1="6" x2="40" y2="20" />
+                                                    </g>
+                                                    <g class="svg-grey osb2mft-dmz">
+                                                        <use xlink:href="#up-arrow" x="47" y="0"/>
+                                                        <line x1="50" y1="6" x2="50" y2="20" />
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div style="border:0px; height:230px; width:20px;">
+                                            <svg height="230" width="20">
+                                                <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                                    <use xlink:href="#left-arrow" x="0" y="12"/>
+                                                    <line x1="6" y1="15" x2="20" y2="15" />
+                                                </g>
+                                                <g class="svg-grey on-premise-odi2mft-dmz">
+                                                    <use xlink:href="#left-arrow" x="0" y="57"/>
+                                                    <line x1="0" y1="60" x2="20" y2="60" />
+                                                </g>
+                                                <g class="svg-grey odi2msa">
+                                                    <use xlink:href="#left-arrow" x="0" y="67"/>
+                                                    <line x1="0" y1="70" x2="20" y2="70" />
+                                                </g>
+                                                <g class="svg-grey soa-d2och">
+                                                    <use xlink:href="#left-arrow" x="0" y="92"/>
+                                                    <line x1="0" y1="95" x2="20" y2="95" />
+                                                </g>
+                                                <g class="svg-grey soa-d2msa">
+                                                    <use xlink:href="#left-arrow" x="0" y="102"/>
+                                                    <line x1="0" y1="105" x2="20" y2="105" />
+                                                </g>
+                                                <g class="svg-grey soa-b2och">
+                                                    <use xlink:href="#left-arrow" x="0" y="137"/>
+                                                    <line x1="0" y1="140" x2="20" y2="140" />
+                                                </g>
+                                                <g class="svg-grey soa-b2msa">
+                                                    <use xlink:href="#left-arrow" x="0" y="147"/>
+                                                    <line x1="0" y1="150" x2="20" y2="150" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin: 0px; height:90px; width:100px">
+                                    <svg height="90" width="100">
+                                        <g class="svg-grey osb2savs">
+                                            <line x1="41" y1="0" x2="41" y2="20" />
+                                            <line x1="41" y1="20" x2="31" y2="20" />
+                                            <line x1="31" y1="20" x2="31" y2="90" />
+                                        </g>
+                                        <g class="svg-grey osb2genesys-nz">
+                                            <line x1="51" y1="0" x2="51" y2="30" />
+                                            <line x1="51" y1="30" x2="41" y2="30" />
+                                            <line x1="41" y1="30" x2="41" y2="90" />
+                                        </g>
+                                        <g class="svg-grey osb2soc-uk">
+                                            <line x1="61" y1="0" x2="61" y2="40" />
+                                            <line x1="61" y1="40" x2="56" y2="40" />
+                                            <line x1="56" y1="40" x2="56" y2="45" />
+                                            <circle r="10" cx="56" cy="55" fill="none" />
+                                            <text  x="56" y="55" text-anchor="middle" font-size="10px" alignment-baseline="middle">O</text>
+                                        </g>
+                                        <g class="svg-grey osb2mft-dmz">
+                                            <line x1="71" y1="0" x2="71" y2="90" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- End On-Premise Section 2 -->
+                            <!-- On Premise Section 3 -->
+                            <div style="border:0px; height:400px; width:90px;">
+                                <div style="border:0px; height:310px; width:90px;">
+                                    <svg height="310" width="90">
+                                        <g class="svg-grey existing-pdh2soa-a">
+                                            <line x1="0" y1="61" x2="90" y2="61" />
+                                        </g>
+                                        <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                            <line x1="0" y1="96" x2="90" y2="96" />
+                                        </g>
+                                        <g class="svg-grey on-premise-odi2mft-dmz">
+                                            <line x1="0" y1="141" x2="35" y2="141" />
+                                            <line x1="35" y1="141" x2="35" y2="300" />
+                                            <line x1="35" y1="300" x2="77" y2="300" />
+                                            <path d="M77,300  A3,3 0 0,1 83,300" style="fill:none;"/>
+                                            <line x1="83" y1="300" x2="90" y2="300" />
+                                        </g>
+                                        <g class="svg-grey odi2msa">
+                                            <line x1="0" y1="151" x2="19" y2="151" />
+                                            <line x1="19" y1="151" x2="19" y2="310" />
+                                        </g>
+                                        <g class="svg-grey soa-d2och">
+                                            <line x1="0" y1="176" x2="16" y2="176" />
+                                            <path d="M16,176  A3,3 0 0,1 22,176" style="fill:none;"/>
+                                            <line x1="22" y1="176" x2="32" y2="176" />
+                                            <path d="M32,176  A3,3 0 0,1 38,176" style="fill:none;"/>
+                                            <line x1="38" y1="176" x2="45" y2="176" />
+                                            <line x1="45" y1="176" x2="45" y2="126" />
+                                            <line x1="45" y1="126" x2="90" y2="126" />
+                                        </g>
+                                        <g class="svg-grey soa-d2msa">
+                                            <line x1="0" y1="186" x2="11" y2="186" />
+                                            <line x1="11" y1="186" x2="11" y2="310" />
+                                        </g>
+                                        <g class="svg-grey soa-b2och">
+                                            <line x1="0" y1="221" x2="9" y2="221" />
+                                            <path d="M9,221  A6,6 0 0,1 21,221" style="fill:none;"/>
+                                            <line x1="21" y1="221" x2="32" y2="221" />
+                                            <path d="M32,221  A3,3 0 0,1 38,221" style="fill:none;"/>
+                                            <line x1="38" y1="221" x2="55" y2="221" />
+                                            <line x1="55" y1="221" x2="55" y2="136" />
+                                            <line x1="55" y1="136" x2="90" y2="136" />
+                                        </g>
+                                        <g class="svg-grey soa-b2msa">
+                                            <line x1="0" y1="231" x2="3" y2="231" />
+                                            <line x1="3" y1="231" x2="3" y2="310" />
+                                        </g>
+                                        <g class="svg-grey msa2edw">
+                                            <use xlink:href="#right-arrow" x="84" y="197"/>
+                                            <line x1="80" y1="200" x2="84" y2="200" />
+                                            <line x1="80" y1="200" x2="80" y2="310" />
+
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="flex-row" style="border:0px; height:90px; width:90px;">
+                                    <div style="border:0px; height:90px; width:30px;">
+                                        <svg height="90" width="30">
+                                            <g class="svg-grey odi2msa">
+                                                <line x1="19" y1="0" x2="19" y2="5" />
+                                                <line x1="19" y1="5" x2="24" y2="5" />
+                                                <use xlink:href="#right-arrow" x="24" y="2"/>
+                                            </g>
+                                            <g class="svg-grey soa-d2msa">
+                                                <line x1="11" y1="0" x2="11" y2="20" />
+                                                <line x1="11" y1="20" x2="24" y2="20" />
+                                                <use xlink:href="#right-arrow" x="24" y="17"/>
+                                            </g>
+                                            <g class="svg-grey soa-b2msa">
+                                                <line x1="3" y1="0" x2="3" y2="35" />
+                                                <line x1="3" y1="35" x2="24" y2="35" />
+                                                <use xlink:href="#right-arrow" x="24" y="32"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="msa bggrey fgwhite flex-center" id="msa"><center>MSA</center></div>
+                                    <div style="border:0px; height:90px; width:20px;">
+                                        <svg height="90" width="20">
+                                            <g class="svg-grey msa2edw">
+                                                <use xlink:href="#left-arrow" x="0" y="17"/>
+                                                <line x1="6" y1="20" x2="10" y2="20" />
+                                                <line x1="10" y1="20" x2="10" y2="0" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End On Premise Section 3 -->
+                            <!-- On Premise Section 4 -->
+                            <div style="border:0px; height:400px; width:60px;">
+                                <div class="existing-pdh bggrey fgwhite flex-center" style="margin-top: 40px;" id="existing-pdh"><center>Existing PDH</center></div>
+                                <div style="border:0px; height:30px; width:60px;">
+                                    <svg height="30" width="60">
+                                        <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                            <line x1="0" y1="16" x2="60" y2="16" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="och bggrey fgwhite flex-center" id="och"><center>OCH</center></div>
+                                <div class="edw bgred fgwhite flex-center" style="margin-top: 30px;" id="edw"><center>EDW</center></div>
+                                <div style="border:0px; height:180px; width:60px;">
+                                    <svg height="180" width="60">
+                                        <g class="svg-grey on-premise-odi2mft-dmz">
+                                            <line x1="0" y1="80" x2="30" y2="80" />
+                                            <line x1="30" y1="80" x2="30" y2="180" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- End On Premise Section 4 -->
+                            <!-- On Premise Section 5 -->
+                            <div style="border:0px; height:400px; width:60px;">
+                                <div class="black-font" style="border:0px; height:40px; width:60px;"></div>
+                                <div style="border:0px; height:360px; width:60px;">
+                                    <svg height="360" width="60">
+                                        <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                            <line x1="0" y1="56" x2="60" y2="56" />
+                                        </g>
+                                        <g class="svg-grey on-premise-och2azure-odi">
+                                            <line x1="0" y1="90" x2="60" y2="90" />
+                                        </g>
+                                        <g class="svg-grey azure-ebs-pdh2on-premise-edw">
+                                            <use xlink:href="#left-arrow" x="0" y="142"/>
+                                            <line x1="6" y1="145" x2="30" y2="145" />
+                                            <circle r="10" cx="40" cy="145" fill="none" />
+                                            <text  x="40" y="145" text-anchor="middle" font-size="10px" alignment-baseline="middle">PD</text>
+                                        </g>
+                                        <g class="svg-grey on-premise-edw2azure-odi">
+                                            <line x1="0" y1="160" x2="60" y2="160" />
+                                        </g>
+                                        <g class="svg-grey on-premise-edw2reports">
+                                            <line x1="0" y1="175" x2="10" y2="175" />
+                                            <line x1="10" y1="175" x2="10" y2="190" />
+                                            <line x1="10" y1="190" x2="20" y2="190" />
+                                            <use xlink:href="#right-arrow" x="20" y="187"/>
+                                            <text  x="42" y="190" text-anchor="middle" stroke="black" stroke-width="1" alignment-baseline="middle">Reports</text>
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- End On Premise Section 5 -->
+                        </div>
+                    </div>
+                    <!-- On Premises to Azure -->
+                    <div style="margin: 40px 0px 0px 0px; height:400px; width:20px">
+                        <svg height="400" width="20">
+                            <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                <line x1="0" y1="97" x2="20" y2="97" />
+                            </g>
+                            <g class="svg-grey on-premise-och2azure-odi">
+                                <line x1="0" y1="131" x2="20" y2="131" />
+                            </g>
+                            <g class="svg-grey on-premise-edw2azure-odi">
+                                <line x1="0" y1="201" x2="20" y2="201" />
+                            </g>
+                        </svg>
+                    </div>
+                    <!-- Azure -->
+                    <div class="flex-column">
+                        <div class="flex-row" style="margin: 0px; height:40px; width:400px">
+                            <div style="margin: 0px; height:40px; width:300px" >
+                                <svg height="40" width="200">
+                                    <!--g class="svg-grey edw2ebs-pdh">
+                                        <line x1="0" y1="42" x2="201" y2="42" />
+                                        <line x1="201" y1="42" x2="201" y2="45" />
+                                    </g-->
+                                </svg>
+                            </div>
+                            <div class="flex-center black-font" style="font-size:10px; margin: 0px; height:40px; width:100px"><b>Azure</b></div>
+                        </div>
+                        <div id="azure">
+                            <div class="azure-sec-1"> <!-- section 1 -->
+                                <div style="margin-left: 20px;" class="demantra bggrey fgwhite flex-center">
+                                    <center>Demantra/<br>Hubble<br>repository</center>
+                                </div>
+
+                                <div style="margin: 0px; height:230px; width:60px">
+                                    <svg height="230" width="60">
+                                        <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                            <line x1="60" y1="30" x2="30" y2="30" />
+                                            <line x1="30" y1="30" x2="30" y2="16" />
+                                            <line x1="0" y1="16" x2="30" y2="16" />
+                                        </g>
+                                        <g class="svg-grey on-premise-och2azure-odi">
+                                            <line x1="30" y1="90" x2="60" y2="90" />
+                                            <line x1="30" y1="90" x2="30" y2="50" />
+                                            <line x1="0" y1="50" x2="30" y2="50" />
+                                        </g>
+                                        <g class="svg-grey on-premise-edw2azure-odi">
+                                            <line x1="30" y1="100" x2="60" y2="100" />
+                                            <line x1="30" y1="100" x2="30" y2="120" />
+                                            <line x1="0" y1="120" x2="30" y2="120" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div> <!-- end section 1 -->
+                            <div class="azure-sec-2">  <!-- section 2-->
+                                <div style="margin-top: 30px; height:50px; width:90px">
+                                    <div class="flex-row">
+                                        <div style="margin-top: 0px; height:50px; width:20px">
+                                            <svg height="50" width="20">
+                                                <g class="svg-grey soa-a2ebs-pdh">
+                                                    <use xlink:href="#right-arrow" x="14" y="7"/>
+                                                    <line x1="10" y1="10" x2="14" y2="10" />
+                                                    <line x1="10" y1="10" x2="10" y2="25" />
+                                                    <line x1="0" y1="25" x2="10" y2="25" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-column" style="margin-top: 0px; height:50px; width:40px">
+                                            <div class="box-40x20 dropdown bgred fgwhite flex-center" id="vcp">VCP
+                                                <div class="dropdown-content">
+                                                    <div class="dropdown-lvl1 bgred dropdown-width" id="azure-vcp-http">Http</div>
+                                                    <div class="dropdown-lvl1 bgred dropdown-width" id="azure-vcp-weblogic">WebLogic</div>
+                                                </div>
+                                            </div>
+                                            <div class="box-40x20 bggrey fgwhite flex-center top-10" id="ascp">ASCP</div>
+                                        </div>
+                                        <div style="margin-top: 0px; height:50px; width:30px">
+                                            <svg height="50" width="30">
+                                                <g class="svg-grey soa-a2ebs-pdh">
+                                                    <line x1="0" y1="10" x2="30" y2="10" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin: 0px; height:270px; width:90px">
+                                    <svg height="270" width="90">
+                                        <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                            <line x1="0" y1="30" x2="90" y2="30" />
+                                        </g>
+                                        <g class="svg-grey on-premise-och2azure-odi">
+                                            <line x1="0" y1="90" x2="27" y2="90" />
+                                            <path d="M27,90  A3,3 0 0,1 33,90" style="fill:none;"/>
+                                            <line x1="33" y1="90" x2="90" y2="90" />
+                                        </g>
+                                        <g class="svg-grey on-premise-edw2azure-odi">
+                                            <line x1="0" y1="100" x2="27" y2="100" />
+                                            <path d="M27,100  A3,3 0 0,1 33,100" style="fill:none;"/>
+                                            <line x1="33" y1="100" x2="90" y2="100" />
+                                        </g>
+                                        <g class="svg-grey azure-odi2genesys-nz">
+                                            <line x1="80" y1="50" x2="90" y2="50" />
+                                            <line x1="80" y1="50" x2="80" y2="60" />
+                                            <line x1="70" y1="60" x2="80" y2="60" />
+                                            <use xlink:href="#left-arrow" x="70" y="57"/>
+                                            <circle r="10" cx="60" cy="60" fill="none" />
+                                            <text  x="60" y="60" text-anchor="middle" font-size="10px" alignment-baseline="middle">S</text>
+                                        </g>
+                                        <g class="svg-grey azure-soa-a-admin2jda-wms">
+                                            <use xlink:href="#down-arrow" x="27" y="264"/>
+                                            <line x1="30" y1="264" x2="30" y2="40" />
+                                            <line x1="30" y1="40" x2="90" y2="40" />
+                                        </g>
+                                        <g class="svg-grey azure-soa-d-admin2jda-wms">
+                                            <use xlink:href="#down-arrow" x="37" y="264"/>
+                                            <line x1="40" y1="264" x2="40" y2="130" />
+                                            <line x1="40" y1="130" x2="90" y2="130" />
+                                        </g>
+                                        <g class="svg-grey plato-leg2azure-mft">
+                                            <line x1="70" y1="210" x2="90" y2="210" />
+                                            <circle r="10" cx="60" cy="210" fill="none" />
+                                            <text  x="60" y="210" text-anchor="middle" font-size="10px" alignment-baseline="middle">M</text>
+                                        </g>
+                                        <g class="svg-grey azure-mft-admin2jda-wms">
+                                            <use xlink:href="#down-arrow" x="47" y="264"/>
+                                            <line x1="50" y1="264" x2="50" y2="230" />
+                                            <line x1="50" y1="230" x2="90" y2="230" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="jda-wms fgwhite bgred flex-center" id="jda-wms"><center>JDA WMS</center></div>
+                            </div> <!-- end section 2 -->
+                            <div class="azure-sec-3"><!-- section 3-->
+                                <div style="margin: 0px; height:15px; width:140px">
+                                    <svg height="15" width="140">
+                                        <g class="svg-grey ebs-pdh2edw">
+                                            <line x1="70" y1="0" x2="70" y2="15" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="flex-row">
+                                    <div style="margin: 0px; height:40px; width:20px">
+                                        <svg height="40" width="20">
+                                            <g class="svg-grey ebs-pdh2edw">
+                                                <line x1="0" y1="25" x2="20" y2="25" />
+                                                <use xlink:href="#right-arrow" x="14" y="22"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="ebs-pdh dropdown bgred fgwhite flex-center" id="ebs"><span style="font-size: 12px;">EBS + PDH</span>
+                                        <span><div class="dropdown-content">
+                                            <div class="dropdown-lvl1 bgred dropdown-width" id="azure-ebs-http">Http</div>
+                                            <div class="dropdown-lvl1 bgred dropdown-width" id="azure-ebs-weblogic">WebLogic</div>
+                                        </div></span>
+                                    </div>
+                                </div>
+                                <div  style="margin: 0px; height:20px; width:140px">
+                                    <svg height="20" width="140">
+                                        <g class="svg-grey azure-soa-a2ebs-pdh">
+                                            <use xlink:href="#up-arrow" x="87" y="0"/>
+                                            <line x1="90" y1="6" x2="90" y2="20" />
+                                        </g>
+                                        <g class="svg-grey azure-odi2ebs-pdh">
+                                            <use xlink:href="#up-arrow" x="97" y="0"/>
+                                            <line x1="100" y1="6" x2="100" y2="20" />
+                                        </g>
+                                        <g class="svg-grey azure-soa-d2ebs-pdh">
+                                            <use xlink:href="#up-arrow" x="107" y="0"/>
+                                            <line x1="110" y1="6" x2="110" y2="20" />
+                                        </g>
+                                        <g class="svg-grey azure-osb2ebs-pdh">
+                                            <use xlink:href="#up-arrow" x="117" y="0"/>
+                                            <line x1="120" y1="6" x2="120" y2="20" />
+                                        </g>
+                                        <g class="svg-grey azure-mft2ebs-pdh">
+                                            <use xlink:href="#up-arrow" x="127" y="0"/>
+                                            <line x1="130" y1="6" x2="130" y2="20" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="blue-border flex-center" style="margin: 0px; height:270px; width:140px">
+                                    <div style="margin: 0px; height:270px; width: 20px">
+                                        <svg height="270" width="20">
+                                            <g class="svg-grey on-premise-soa-a-admin2azure-soa-a-admin">
+                                                <line x1="0" y1="35" x2="14" y2="35" />
+                                                <use xlink:href="#right-arrow" x="14" y="32"/>
+                                            </g>
+                                            <g class="svg-grey azure-soa-a-admin2jda-wms">
+                                                <line x1="0" y1="45" x2="14" y2="45" />
+                                                <use xlink:href="#right-arrow" x="14" y="42"/>
+                                            </g>
+                                            <g class="svg-grey azure-soa-a2genesys-nz">
+                                                <line x1="0" y1="55" x2="14" y2="55" />
+                                                <use xlink:href="#right-arrow" x="14" y="52"/>
+                                            </g>
+                                            <g class="svg-grey on-premise-och2azure-odi">
+                                                <line x1="0" y1="95" x2="14" y2="95" />
+                                                <use xlink:href="#right-arrow" x="14" y="92"/>
+                                            </g>
+                                            <g class="svg-grey on-premise-edw2azure-odi">
+                                                <line x1="0" y1="105" x2="14" y2="105" />
+                                                <use xlink:href="#right-arrow" x="14" y="102"/>
+                                            </g>
+                                            <g class="svg-grey azure-soa-d-admin2jda-wms">
+                                                <line x1="0" y1="135" x2="14" y2="135" />
+                                                <use xlink:href="#right-arrow" x="14" y="132"/>
+                                            </g>
+                                            <g class="svg-grey plato-leg2azure-mft">
+                                                <line x1="0" y1="215" x2="10" y2="215" />
+                                                <line x1="10" y1="215" x2="10" y2="225" />
+                                                <line x1="10" y1="225" x2="14" y2="225" />
+                                                <use xlink:href="#right-arrow" x="14" y="222"/>
+                                            </g>
+                                            <g class="svg-grey azure-mft-admin2jda-wms">
+                                                <line x1="0" y1="235" x2="14" y2="235" />
+                                                <use xlink:href="#right-arrow" x="14" y="232"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div style="margin: 0px; height:270px; width: 60px">
+                                        <div class="flex-center black-font box-60x30"><center>Fusion Middleware</center></div>
+
+                                        {% usemacro azure_components "azure-soa-a" "SOA A" "0px" %}
+
+                                        <div style="margin: 0px; height:20px; width: 60px">
+                                            <svg height="20" width="60">
+                                                <g class="svg-grey azure-soa-a2azure-odi">
+                                                    <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                    <line x1="30" y1="6" x2="30" y2="14" />
+                                                    <use xlink:href="#down-arrow" x="27" y="14"/>
+                                                </g>
+                                            </svg>
+                                        </div>
+
+                                        {% usemacro azure_components "azure-odi" "ODI" "0px" %}
+
+                                        {% usemacro azure_components "azure-soa-d" "SOA D" "10px" %}
+
+                                        <div style="margin: 0px; height:20px; width: 60px">
+                                            <svg height="20" width="60">
+                                                <g class="svg-grey azure-soa-d2azure-mft">
+                                                    <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                    <line x1="30" y1="6" x2="30" y2="10" />
+                                                    <line x1="30" y1="10" x2="60" y2="10" />
+                                                </g>
+                                            </svg>
+                                        </div>
+
+                                        {% usemacro azure_components "azure-osb" "OSB" "0px" %}
+
+                                        <div style="margin: 0px; height:20px; width: 60px">
+                                            <svg height="20" width="60">
+                                                <g class="svg-grey azure-osb2azure-mft">
+                                                    <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                    <line x1="30" y1="6" x2="30" y2="14" />
+                                                    <use xlink:href="#down-arrow" x="27" y="14"/>
+                                                </g>
+                                            </svg>
+                                        </div>
+
+                                        {% usemacro azure_components "azure-mft" "MFT" "0px" %}
+
+                                        <div style="margin: 0px; height:20px; width: 60px">
+                                            <svg height="20" width="60">
+                                                <g class="svg-grey azure-mft2portfolio-plus">
+                                                    <use xlink:href="#up-arrow" x="27" y="0"/>
+                                                    <line x1="30" y1="6" x2="30" y2="20" />
+                                                </g>
+                                                <g class="svg-grey azure-proxy-mft2azure-mft">
+                                                    <use xlink:href="#up-arrow" x="52" y="0"/>
+                                                    <line x1="55" y1="6" x2="55" y2="20" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div style="margin: 0px; height:270px; width: 60px">
+                                        <svg height="270" width="60">
+                                            <g class="svg-grey azure-soa-a2ebs-pdh">
+                                                <use xlink:href="#left-arrow" x="0" y="42"/>
+                                                <line x1="0" y1="45" x2="10" y2="45" />
+                                                <line x1="10" y1="45" x2="10" y2="0" />
+                                            </g>
+                                            <g class="svg-grey azure-odi2ebs-pdh">
+                                                <use xlink:href="#left-arrow" x="0" y="82"/>
+                                                <line x1="0" y1="85" x2="20" y2="85" />
+                                                <line x1="20" y1="85" x2="20" y2="0" />
+                                            </g>
+                                            <g class="svg-grey azure-odi2azure-mft">
+                                                <use xlink:href="#left-arrow" x="0" y="92"/>
+                                                <line x1="0" y1="95" x2="20" y2="95" />
+                                                <line x1="20" y1="95" x2="20" y2="235" />
+                                                <line x1="4" y1="235" x2="20" y2="235" />
+                                                <use xlink:href="#left-arrow" x="0" y="232"/>
+                                            </g>
+                                            <g class="svg-grey azure-soa-d2ebs-pdh">
+                                                <use xlink:href="#left-arrow" x="0" y="132"/>
+                                                <line x1="0" y1="135" x2="17" y2="135" />
+                                                <path d="M17,135  A3,3 0 0,1 23,135" style="fill:none;"/>
+                                                <line x1="23" y1="135" x2="30" y2="135" />
+                                                <line x1="30" y1="135" x2="30" y2="0" />
+                                            </g>
+                                            <g class="svg-grey azure-osb2ebs-pdh">
+                                                <use xlink:href="#left-arrow" x="0" y="182"/>
+                                                <line x1="0" y1="185" x2="7" y2="185" />
+                                                <path d="M7,185  A3,3 0 0,1 13,185" style="fill:none;"/>
+                                                <line x1="13" y1="185" x2="17" y2="185" />
+                                                <path d="M17,185  A3,3 0 0,1 23,185" style="fill:none;"/>
+                                                <line x1="23" y1="185" x2="40" y2="185" />
+                                                <line x1="40" y1="185" x2="40" y2="0" />
+                                            </g>
+                                            <g class="svg-grey azure-mft2azure-soa-d">
+                                                <use xlink:href="#left-arrow" x="0" y="222"/>
+                                                <line x1="0" y1="225" x2="10" y2="225" />
+                                                <line x1="10" y1="225" x2="10" y2="160" />
+                                                <line x1="0" y1="160" x2="10" y2="160" />
+                                            </g>
+                                            <g class="svg-grey azure-mft2ebs-pdh">
+                                                <use xlink:href="#left-arrow" x="0" y="242"/>
+                                                <line x1="0" y1="245" x2="50" y2="245" />
+                                                <line x1="50" y1="245" x2="50" y2="0" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div style="margin: 0px; height:55px; width:140px">
+                                    <div class="flex-row">
+                                        <div style="margin: 0px; height:55px; width:60px">
+                                            <svg height="55" width="140">
+                                                <g class="svg-grey azure-mft2portfolio-plus">
+                                                    <line x1="50" y1="0" x2="50" y2="55" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div style="margin: 0px; height:55px; width:80px">
+                                            <div class="flex-column">
+                                                <div style="margin: 0px; height:10px; width:80px">
+                                                    <svg height="10" width="140">
+                                                        <g class="svg-grey azure-proxy-mft2azure-mft">
+                                                            <line x1="15" y1="0" x2="15" y2="10" />
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                                <div class="flex-center green-border black-font box-30x20">Proxy<br>MFT</div>
+                                                <div style="margin: 0px; height:25px; width:80px">
+                                                    <svg height="25" width="140">
+                                                        <g class="svg-grey baseware2azure-proxy-mft">
+                                                            <use xlink:href="#up-arrow" x="12" y="0"/>
+                                                            <line x1="15" y1="6" x2="15" y2="25" />
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div><!-- end section 3-->
+                            <div class="azure-sec-4"><!-- section 4-->
+                                <div style="margin: 0px; height:270px; width: 110px">
+                                    <svg height="270" width="110">
+                                        <g class="svg-grey ebs-pdh2on-premise-edw">
+                                            <line x1="0" y1="35" x2="20" y2="35" />
+                                            <use xlink:href="#right-arrow" x="20" y="32"/>
+                                            <circle r="10" cx="36" cy="35" fill="none" />
+                                            <text  x="36" y="35" text-anchor="middle" font-size="10px" alignment-baseline="middle">PD</text>
+                                        </g>
+                                    </svg>
+                                </div>
+                                <div class="flex-center green-border black-font box-50x30" id="hyperion" style="margin: 0px 20px 10px 40px;">Hyperion</div>
+                                <div class="flex-center green-border black-font box-30x20" id="oid" style="margin: 0px 20px 10px 60px;">OID</div>
+                                <div class="flex-row black-font" style="margin: 0px; height:20px; width: 110px">
+                                    <div class="flex-center green-border box-30x20" id="bam" style="margin: 0px 0px 10px 20px;">BAM</div>
+                                    <div class="flex-center green-border box-30x20" id="oam" style="margin: 0px 20px 10px 10px;">OAM</div>
+                                </div>
+                                <div class="flex-row black-font" style="margin-top: 10px; height:20px; width: 110px">
+                                    <div class="flex-center green-border box-30x20" id="adf" style="margin: 0px 0px 10px 20px;">ADF</div>
+                                    <div class="flex-center green-border box-30x20" id="oem" style="margin: 0px 20px 10px 10px;">OEM</div>
+                                </div>
+
+                            </div><!-- end section 4-->
+                        </div>
+                    </div>
+                    <div style="margin: 0px; height:400px; width:50px"></div>
+                </div>
+                <!--3rd Party Interface -->
+                <div class="flex-column" style="font-size:10px; margin-top: 0px; height:500px; width:870px;">
+                    <div style="margin: 0px; height:40px; width:870px">
+                        <svg height="40" width="870">
+                            <g class="svg-grey on-premise-osb2solar7-aus">
+                                <line x1="6" y1="0" x2="6" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-osb2solar7-nz">
+                                <line x1="16" y1="0" x2="16" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-osb2savs">
+                                <line x1="122" y1="0" x2="122" y2="10" />
+                                <line x1="65" y1="10" x2="122" y2="10" />
+                                <line x1="65" y1="10" x2="65" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-osb2genesys-nz">
+                                <line x1="132" y1="0" x2="132" y2="20" />
+                                <line x1="125" y1="20" x2="132" y2="20" />
+                                <line x1="125" y1="20" x2="125" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-osb2mft-dmz">
+                                <line x1="162" y1="0" x2="162" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-odi2mft-dmz">
+                                <line x1="311" y1="0" x2="311" y2="10" />
+                                <line x1="225" y1="10" x2="311" y2="10" />
+                                <line x1="225" y1="10" x2="225" y2="34" />
+                                <use xlink:href="#down-arrow" x="222" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud">
+                                <line x1="265" y1="20" x2="845" y2="20" />
+                                <line x1="265" y1="20" x2="265" y2="40" />
+                            </g>
+                            <g class="svg-grey proxy-mft">
+                                <line x1="455" y1="10" x2="655" y2="10" />
+                                <line x1="646" y1="0" x2="646" y2="10" />
+                            </g>
+                            <g class="svg-grey proxy-mft2perplex">
+                                <line x1="455" y1="10" x2="455" y2="17" />
+                                <path d="M455,17  A3,3 0 0,1 455,23" style="fill:none;"/>
+                                <line x1="455" y1="23" x2="455" y2="40" />
+                            </g>
+                            <g class="svg-grey basware2proxy-mft">
+                                <line x1="655" y1="10" x2="655" y2="17" />
+                                <path d="M655,17  A3,3 0 0,1 655,23" style="fill:none;"/>
+                                <line x1="655" y1="23" x2="655" y2="40" />
+                            </g>
+                            <g class="svg-grey adobe-cloud2azure-mft">
+                                <line x1="621" y1="0" x2="621" y2="7" />
+                                <path d="M621,7  A3,3 0 0,1 621,13" style="fill:none;"/>
+                                <line x1="621" y1="13" x2="621" y2="20" />
+                            </g>
+                            <g class="svg-grey adobe-cloud2iview">
+                                <line x1="305" y1="20" x2="305" y2="34" />
+                                <use xlink:href="#down-arrow" x="302" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2gems">
+                                <line x1="365" y1="20" x2="365" y2="34" />
+                                <use xlink:href="#down-arrow" x="362" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2essendex">
+                                <line x1="395" y1="20" x2="395" y2="40" />
+                            </g>
+                            <g class="svg-grey adobe-cloud2portfolio-plus">
+                                <line x1="425" y1="20" x2="425" y2="34" />
+                                <use xlink:href="#down-arrow" x="422" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2open-accounts">
+                                <line x1="485" y1="20" x2="485" y2="34" />
+                                <use xlink:href="#down-arrow" x="482" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2pentaho">
+                                <line x1="545" y1="20" x2="545" y2="34" />
+                                <use xlink:href="#down-arrow" x="542" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2acuitas">
+                                <line x1="605" y1="20" x2="605" y2="34" />
+                                <use xlink:href="#down-arrow" x="602" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2basware">
+                                <line x1="665" y1="20" x2="665" y2="34" />
+                                <use xlink:href="#down-arrow" x="662" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2trintech">
+                                <line x1="725" y1="20" x2="725" y2="34" />
+                                <use xlink:href="#down-arrow" x="722" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2mapr">
+                                <line x1="785" y1="20" x2="785" y2="34" />
+                                <use xlink:href="#down-arrow" x="782" y="34"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud2esuite">
+                                <line x1="845" y1="20" x2="845" y2="34" />
+                                <use xlink:href="#down-arrow" x="842" y="34"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div style="margin: 0px; height:30px; width:870px">
+                        <div class="flex-row">
+                            <div style="margin: 0px; height:30px; width:200px">
+                                <svg height="30" width="200">
+                                    <g class="svg-grey on-premise-osb2solar7-aus">
+                                        <line x1="6" y1="0" x2="6" y2="30" />
+                                    </g>
+                                    <g class="svg-grey on-premise-osb2solar7-nz">
+                                        <line x1="16" y1="0" x2="16" y2="30" />
+                                    </g>
+                                    <g class="svg-grey on-premise-osb2savs">
+                                        <line x1="65" y1="0" x2="65" y2="30" />
+                                    </g>
+                                    <g class="svg-grey on-premise-osb2genesys-nz">
+                                        <line x1="125" y1="0" x2="125" y2="30" />
+                                    </g>
+                                    <g class="svg-grey on-premise-osb2mft-dmz">
+                                        <line x1="162" y1="0" x2="162" y2="15" />
+                                        <line x1="162" y1="15" x2="194" y2="15" />
+                                        <use xlink:href="#right-arrow" x="194" y="12"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="box-50x30 flex-center green-border bggrey">MFT<br>(DMZ)</div>
+                            <div style="margin: 0px; height:30px; width:30px">
+                                <svg height="30" width="30">
+                                    <g class="svg-grey on-premise-osb2solar7-aus">
+                                        <line x1="15" y1="0" x2="15" y2="30" />
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="box-50x30 flex-center green-border bggrey">iView</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">GEMS</div>
+                            <div style="margin: 0px; height:30px; width:10px">
+                                <svg height="30" width="30">
+                                    <g class="svg-grey on-premise-osb2solar7-aus">
+                                        <line x1="5" y1="0" x2="5" y2="30" />
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="box-50x30 flex-center green-border bggrey">Portfolio<br>Plus</div>
+                            <div style="margin: 0px; height:30px; width:10px">
+                                <svg height="30" width="30">
+                                    <g class="svg-grey on-premise-osb2solar7-aus">
+                                        <line x1="5" y1="0" x2="5" y2="30" />
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="box-50x30 flex-center green-border bggrey">Open Accounts</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">Pentaho</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">Acuitas</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">Basware</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">Trintech</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">MAPR</div>
+                            <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">ESuite</div>
+                        </div>
+                    </div>
+                    <div style="margin: 0px; height:40px; width:870px">
+                        <svg height="40" width="870">
+                            <g class="svg-grey on-premise-osb2solar7-aus">
+                                <line x1="6" y1="0" x2="6" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-osb2solar7-nz">
+                                <line x1="16" y1="0" x2="16" y2="40" />
+                            </g>
+                            <g class="svg-grey on-premise-osb2savs">
+                                <line x1="65" y1="0" x2="65" y2="34" />
+                                <use xlink:href="#down-arrow" x="62" y="34"/>
+                            </g>
+                            <g class="svg-grey on-premise-osb2genesys-nz">
+                                <line x1="125" y1="0" x2="125" y2="34" />
+                                <use xlink:href="#down-arrow" x="122" y="34"/>
+                            </g>
+                            <g class="svg-grey azure-soa-a2genesys-nz">
+                                <circle r="10" cx="140" cy="11" fill="none" />
+                                <text  x="140" y="11" text-anchor="middle" font-size="10px" alignment-baseline="middle">S</text>
+                                <use xlink:href="#up-arrow" x="137" y="21"/>
+                                <line x1="140" y1="26" x2="140" y2="34" />
+                                <use xlink:href="#down-arrow" x="137" y="34"/>
+                            </g>
+                            <g class="svg-grey mft-dmz2unipro">
+                                <use xlink:href="#up-arrow" x="202" y="0"/>
+                                <line x1="205" y1="6" x2="205" y2="20" />
+                                <line x1="185" y1="20" x2="205" y2="20" />
+                                <line x1="185" y1="20" x2="185" y2="34" />
+                                <use xlink:href="#down-arrow" x="182" y="34"/>
+                            </g>
+                            <g class="svg-grey mft-dmz2adobe-cloud">
+                                <use xlink:href="#up-arrow" x="222" y="0"/>
+                                <line x1="225" y1="6" x2="225" y2="40" />
+                            </g>
+                            <g class="svg-grey mft-dmz2gems">
+                                <use xlink:href="#up-arrow" x="232" y="0"/>
+                                <line x1="235" y1="0" x2="235" y2="30" />
+                                <line x1="235" y1="30" x2="365" y2="30" />
+                                <line x1="365" y1="0" x2="365" y2="30" />
+                                <use xlink:href="#up-arrow" x="362" y="0"/>
+                            </g>
+                            <g class="svg-grey mft-dmz2iview">
+                                <use xlink:href="#up-arrow" x="242" y="0"/>
+                                <line x1="245" y1="0" x2="245" y2="15" />
+                                <line x1="245" y1="15" x2="305" y2="15" />
+                                <line x1="305" y1="0" x2="305" y2="15" />
+                                <use xlink:href="#up-arrow" x="302" y="0"/>
+                            </g>
+                            <g class="svg-grey adobe-cloud">
+                                <line x1="265" y1="0" x2="265" y2="12" />
+                                <path d="M265,12  A3,3 0 0,1 265,18" style="fill:none;"/>
+                                <line x1="265" y1="18" x2="265" y2="27" />
+                                <path d="M265,27  A3,3 0 0,1 265,33" style="fill:none;"/>
+                                <line x1="265" y1="33" x2="265" y2="40" />
+                            </g>
+                            <g class="svg-grey adobe-cloud2essendex">
+                                <line x1="395" y1="0" x2="395" y2="40" />
+                            </g>
+                            <g class="svg-grey porfolio-plus2eq">
+                                <line x1="425" y1="0" x2="425" y2="34" />
+                                <use xlink:href="#down-arrow" x="422" y="34"/>
+                            </g>
+                            <g class="svg-grey perplex2proxy-mft">
+                                <line x1="455" y1="0" x2="455" y2="40" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="flex-row" style="margin: 0px; height:30px; width:870px">
+                        <div style="margin: 0px; height:30px; width:40px">
+                            <svg height="30" width="220">
+                                <g class="svg-grey on-premise-osb2solar7-aus">
+                                    <line x1="6" y1="0" x2="6" y2="25" />
+                                    <line x1="0" y1="25" x2="6" y2="25" />
+                                </g>
+                                <g class="svg-grey azure-osb2solar7-nz">
+                                    <line x1="16" y1="0" x2="16" y2="30" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="box-50x30 flex-center green-border bggrey">SAVS</div>
+                        <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">Genesys NZ</div>
+                        <div class="box-50x30 flex-center green-border bggrey" style="margin-left: 10px;">Unipro</div>
+                        <div style="margin: 0px; height:30px; width:200px">
+                            <svg height="30" width="200">
+                                <g class="svg-grey mft-dmz2adobe-cloud">
+                                    <line x1="15" y1="0" x2="15" y2="30" />
+                                </g>
+                                <g class="svg-grey adobe-cloud">
+                                    <line x1="55" y1="0" x2="55" y2="30" />
+                                </g>
+                                <g class="svg-grey adobe-cloud2essendex">
+                                    <line x1="185" y1="0" x2="185" y2="30" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="box-30x20 flex-center green-border bggrey">EQ</div>
+                        <div style="margin: 0px; height:30px; width:90px">
+                            <svg height="30" width="90">
+                                <g class="svg-grey perplex2proxy-mft">
+                                    <line x1="15" y1="0" x2="15" y2="30" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="box-50x30 flex-center green-border bggrey">Adaptive Planning</div>
+                        <div style="margin: 0px; height:30px; width:180px"></div>
+                        <div class="box-50x30 flex-center green-border bggrey">Tableau</div>
+                    </div>
+                    <div class="flex-row" style="margin: 0px; height:160px; width:870px">
+                        <div style="margin: 0px; height:30px; width:40px">
+                            <svg height="160" width="220">
+                                <g class="svg-grey on-premise-osb2solar7-nz">
+                                    <line x1="16" y1="0" x2="16" y2="135" />
+                                    <line x1="0" y1="135" x2="16" y2="135" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="bggrey flex-center green-border" style="margin-left:175px; height:100px; width:300px">3rd Party Interface</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- common SVG symbols -->
+    <svg>
+        <symbol id="left-arrow">
+            <polygon points="0,3, 6,6, 6,0, 0,3" />
+        </symbol>
+        <symbol id="line">
+            <line x1="6" y1="3" x2="34" y2="3" />
+        </symbol>
+        <symbol id="right-arrow">
+            <polygon points="0,0 0,6, 6,3, 0,0" />
+        </symbol>
+        <symbol id="down-arrow">
+            <polygon points="0,0 3,6, 6,0, 0,0" />
+        </symbol>
+        <symbol id="up-arrow">
+            <polygon points="3,0 6,6, 0,6, 3,0" />
+        </symbol>
+        <symbol id="arrow">
+            <g>
+                <use xlink:href="#left-arrow" x="0" y="0" />
+                <use xlink:href="#line" x="0" y="0" />
+                <use xlink:href="#right-arrow" x="34" y="0" />
+            </g>
+        </symbol>
+    </svg>
+</div>
+{% endblock %}
+
+
+
+

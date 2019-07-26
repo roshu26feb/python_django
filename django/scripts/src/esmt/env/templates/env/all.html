@@ -1,0 +1,215 @@
+{% extends 'env/base.html' %}
+{% load static %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% load i18n static %}
+{% usemacro nextview "env:environment_add" "Add Environment" "environment-form"  %}
+<head>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+    <script type="text/javascript" src="{% url 'delivery_db:jsi18n' %}"></script>
+    <script type="text/javascript" src="/static/admin/js/core.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+    <script type="text/javascript" src="/static/admin/js/actions.js"></script>
+    <script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+    <script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+    <script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+    <script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+
+    <link rel="stylesheet" href="{% static 'delivery_db/css/boostrap-select.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'delivery_db/css/styles.css' %}" />
+    <script src="{% static 'delivery_db/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'delivery_db/js/i18n/default-en_US.min.js' %}"></script>
+
+</head>
+
+<div class="accord container" style="border-top:20px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getApiDetails('environment')">
+      <div class="row">
+        <span class="col-sm-1"></span>
+        <span class="col-sm-11 jumbotron" style="margin-bottom:20px;">
+            <h3 class="lead text-center" style="margin:0px 5px">List of Environments</h3>
+        </span>
+      </div>
+      <div class="col-sm-12 text-center" ng-init="onLoading()">
+        {% usemacro loading %}
+      </div>
+
+       <div class="row" ng-show="show" style="font-size:10px;" ng-cloak>
+           <span class="col-sm-1"></span>
+           <span class="col-sm-3 accord-title-mod bg-primary">
+               {% usemacro columnSort "Environment Name" "environment_name" %}
+           </span>
+            <span class="col-sm-2 accord-title-mod bg-primary">
+                {% usemacro columnSort "Environment Type" "environment_type.environment_type_name" %}
+            </span>
+            <span class="col-sm-2 accord-title-mod bg-primary">
+                {% usemacro columnSort "System Name" "system.system_name" %}
+            </span>
+            <span class="col-sm-1 accord-title-mod bg-primary">
+                {% usemacro columnSort "Known Version" "known_version" %}
+            </span>
+               <span class="col-sm-1 accord-title-mod bg-primary">
+                {% usemacro columnSort "Data Type" "environment_data_type.environment_data_type_name" %}
+            </span>
+           <span class="col-sm-1 accord-title-mod bg-primary">
+                {% usemacro columnSort "Status" "status" %}
+            </span>
+            <span class="col-sm-1 accord-title-mod bg-primary">
+                {% usemacro columnSort "Availability" "availability" %}
+            </span>
+       </div>
+       <div class="row" ng-show="show" style="font-size:10px;" ng-cloak>
+            <span class="col-sm-1"></span>
+            <span class="col-sm-3" style="padding:0px;">
+                {% usemacro columnFilter "Search Env Name" "searchEnv.environment_name" %}
+            </span>
+            <span class="col-sm-2" style="padding:0px;">
+                {% usemacro columnFilter "Search Env Type" "searchEnv.environment_type.environment_type_name" %}
+            </span>
+            <span class="col-sm-2" style="padding:0px;">
+                {% usemacro columnFilter "Search system Name" "searchEnv.system.system_name" %}
+            </span>
+            <span class="col-sm-1" style="padding:0px;">
+                {% usemacro columnFilter "Search Known Version" "searchEnv.known_version" %}
+            </span>
+            <span class="col-sm-1" style="padding:0px;">
+                {% usemacro columnFilter "Search Data type" "searchEnv.environment_data_type.environment_data_type_name" %}
+            </span>
+            <span class="col-sm-1" style="padding:0px;">
+                {% usemacro columnFilter "Search Status" "searchEnv.status" %}
+            </span>
+            <span class="col-sm-1" style="padding:0px;">
+                {% usemacro columnFilter "Search Availability" "searchEnv.availability" %}
+            </span>
+       </div>
+</div>
+<div class="accord container" style="margin-top:90px;margin-left:0px; padding-top:60px;z-index:5; overflow:auto; font-size:10px;" ng-cloak>
+    <ul class="accordion">
+        <li>
+            <a ng-repeat-start="env in apiResponse.environments | orderBy:sortType:sortReverse | filter:searchEnv" class="accordion-toggle" href="javascript:void(0);" style="z-index=0; margin:0px;">
+                <div class="row">
+
+                   <span class="col-sm-1 text-right accord-icon" ng-if="env.system.system_versions.length >0"><i class="indicator glyphicon glyphicon-plus-sign top-5" ng-click="getSystemElementByEnvNew(env.system.system_id, env.environment_id)"></i></span>
+                    <span class="col-sm-1" ng-if="!env.system.system_versions.length >0"></span>
+
+                    <span class="col-sm-3 accord-text-mod">(~ env.environment_name ~)</span>
+                    <span class="col-sm-2 accord-text-mod">(~ env.environment_type.environment_type_name ~)</span>
+                    <span class="col-sm-2 accord-text-mod">(~ env.system.system_name ~)</span>
+                    <span class="col-sm-1 accord-text-mod">(~ env.known_version ~)</span>
+                    <span class="col-sm-1 accord-text-mod">(~ env.environment_data_type.environment_data_type_name ~)</span>
+                    <span class="col-sm-1 accord-text-mod">(~ env.status ~)</span>
+                    <span class="col-sm-1 accord-text-mod">(~ env.availability ~)</span>
+                </div>
+            </a>
+            <ul class="inner">
+                <li  ng-if="env.system.system_versions.length > 0">
+                    <div class="row">
+                        <span class="col-sm-1"></span>
+                        <span class="col-sm-2 accord-title bg-info"><strong>System Element</strong></span>
+                        <span class="col-sm-1 accord-title bg-info"><strong>Element Type</strong></span>
+                        <span class="col-sm-2 accord-title bg-info"><strong>Deployed to Instance</strong></span>
+                        <span class="col-sm-1 accord-title bg-info"><strong>IP</strong></span>
+                        <span class="col-sm-1 accord-title bg-info"><strong>Status</strong></span>
+                        <span class="col-sm-1 accord-title bg-info"><strong>Known Version</strong></span>
+                        <span class="col-sm-1 accord-title bg-info"><strong>System Version</strong></span>
+                        
+                    </div>
+                    
+                    <a ng-repeat-start="deploy in deployed_sys_element track by $index"  class="accordion-toggle" style="padding-left:0px;z-index=15; margin:0px;" ng-cloak>
+                            <div> <!-- ng-if="deploy.instances.length>0" -->
+                                <div><!-- ng-repeat="instance in deploy.instances track by $index" -->
+                                
+                                    <div class="row" ng-if="(deploy.system_id == env.system.system_id ) && (deploy.env_id == env.environment_id)">
+                                    <!-- <span class="col-sm-1">(~ deploy.system_id ~)-test(~ env.environment_id ~)</span>  -->
+                                    <span class="col-sm-1 text-right accord-icon test" ><i class="indicator glyphicon glyphicon-plus-sign top-5" ng-click="getSystemElementComponentsById(deploy.system_version_id, deploy.system_element_id, env.environment_id, deploy.instance_id)"></i>
+                                    </span> 
+                                        <span class="col-sm-2 text-left accord-inner-text">(~ deploy.system_element_name ~)</span>
+                                        <span class="col-sm-1 text-left accord-inner-text">(~ deploy.system_element_type_name ~)</span>
+                                        <span class="col-sm-2 text-left accord-inner-text">(~ deploy.instance_name ~)</span>
+                                        <span class="col-sm-1 text-left accord-inner-text">(~ deploy.assigned_ip ~)</span>
+                                        <span class="col-sm-1 text-left accord-inner-text">(~ deploy.instance_state ~)</span>
+                                        <span class="col-sm-1 text-left accord-inner-text"></span>
+                                        <span class="col-sm-1 text-left accord-inner-text">(~ deploy.system_version_name ~)</span>
+                                        <span class="col-sm-1 text-left accord-inner-text mapBtn"><button class="btn btn-primary" ng-disabled="checkdisabledmap( deploy.system_version_id, deploy.system_element_id)" ng-click="requestMapInstance(
+                                            env.environment_id, 
+                                            env.system.system_id, 
+                                            deploy.system_element_id)" id="MapInstance"> Map Instance</button></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- <div ng-if="deploy.instances.length==0">
+                                <div class="row">
+                                    <span class="col-sm-1"></span>
+                                    <span class="col-sm-2 text-left accord-inner-text">(~ deploy.system_element_name ~)</span>
+                                    <span class="col-sm-1 text-left accord-inner-text">(~ deploy.system_element_type_name ~)</span>
+                                    <span class="col-sm-2 text-left accord-inner-text"></span>
+                                    <span class="col-sm-1 text-left accord-inner-text"></span>
+                                    <span class="col-sm-1 text-left accord-inner-text">(~ system_ver.status ~)</span>
+                                    <span class="col-sm-1 text-left accord-inner-text">(~ system_ver.known_version ~)</span>
+                                    <span class="col-sm-1 text-left accord-inner-text"></span>
+                                    <span class="col-sm-1 text-left accord-inner-text"><button class="btn-primary">Map Instance</button></span>
+                                </div>
+                            </div> -->
+                    </a>
+                    <!-- <span>(~ sys_element_components ~)</span> -->
+                    <ul class="inner">
+                       <li ng-if="sys_element_components">
+                           <div class="row accordion-toggle">
+                                    <div  class="col-sm-1"></div>
+                                    <div class="col-sm-11 table-responsive" style="margin-top: 2px;">
+                                        <table class="table table-bordered table-condensed" >
+                                            <thead class="bg-warning">
+                                               <tr>
+                                                   <th>Component Name</th>
+                                                   <th>Component Version Name</th>
+                                                   <th>Component Short Name</th>
+                                                   <th>Component Type</th>
+                                                   <th>Artefact Store URL</th>
+                                                   <th>Artefact Store Type</th>
+                                                   <th>Code Repo URL</th>
+                                                   <th>Tag</th>
+                                                   <th>Stable Flag</th>
+                                                   <th>Creation Date</th>
+                                                   <th>Deployment Type</th>
+                                                   <th>Linked CI Flag</th>
+                                               </tr>
+                                            </thead>
+                                            <tbody>
+
+
+                                                <tr ng-repeat="comp_ver in sys_element_components |filter:{system_element_id: system_elem.system_element_id} ">
+                                                    <td>(~ comp_ver.component_name ~) </td>
+                                                    <td>(~ comp_ver.component_version_name ~) </td>
+                                                    <td>(~ comp_ver.component_short_name ~) </td>
+                                                    <td>(~ comp_ver.component_type_description ~) </td>
+                                                    <td>(~ comp_ver.artefact_store_url ~) </td>
+                                                    <td>(~ comp_ver.artefact_store_type_desc ~) </td>
+                                                    <td>(~ comp_ver.source_code_repository_url ~) </td>
+                                                    <td>(~ comp_ver.source_tag_reference ~) </td>
+                                                    <td>(~ comp_ver.stable_flag ~) </td>
+                                                    <td>(~ comp_ver.creation_date ~) </td>
+                                                    <td>(~ comp_ver.deployment_type_description ~) </td>
+                                                    <td>(~ comp_ver.linked_ci_flag ~) </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                       </li> 
+                    </ul>
+                    <div  ng-repeat-end style="display:hidden;"></div>
+                </li>
+            </ul>
+            <div ng-repeat-end  style="display:hidden;"></div>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+

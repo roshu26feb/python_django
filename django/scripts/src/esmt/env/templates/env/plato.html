@@ -1,0 +1,164 @@
+{% extends 'env/base.html' %}
+{% load env_filters %}
+{% load static %}
+{% block page_content %}
+<div class="container">
+    <div class="jumbotron" style="margin:10px 0px;">
+        <h3 class="lead text-center" style="margin: 0px 5px;">Plato</h3>
+    </div>
+        <div class="panel-group" id="storelist" role="tablist" aria-multiselectable="true">
+        {% for server in plato_env %}
+        {% with plato_env_details|dict_val:server|dict_val:"name" as sn %}
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="{{sn}}-heading">
+                <h4 class="panel-title">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="btn col-md-2 col-lg-2">
+                                <span><b>{{ server }} </b></span>
+                            </div>
+                            <a href="#{{sn}}" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-2 col-lg-2 btn btn-outline btn-danger" ng-click="getServiceStatus('{{sn}}')">Service Details</a>
+                            <a href="#{{sn}}-mount-details" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-1 col-lg-1 btn btn-outline {{ mount|dict_val:sn|mount_sts }}" ng-click="getMountDetail('{{sn}}', 'plato')">Mount</a>
+                            <a href="#{{sn}}-scripts" role="button" data-toggle="collapse" data-parent="#storelist" aria-expanded="false"
+                               aria-controls="server" class="col-md-2 col-lg-2 btn btn-outline btn-success">Scripts</a>
+                            <div class="btn col-md-3 col-lg-3 text-left" id="{{sn}}-facts">
+                                <span class="badge">{{plato_env_details|dict_val:server|dict_val:"desc"}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </h4>
+            </div>
+            <div id="{{sn}}-mount-details" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped" >
+                         <thead class="thead-inverse">
+                            <tr>
+                              <th>Filesystem</th>
+                              <th>Size</th>
+                              <th>Used</th>
+                              <th>Avail</th>
+                              <th>Use%</th>
+                              <th>Mounted on</th>
+                            </tr>
+                         </thead>
+                         <tbody ng-show="mntshow">
+                            <tr ng-repeat="mnt in mountDetail" >
+                              <td>(~ mnt[0] ~) </td>
+                              <td>(~ mnt[1] ~) </td>
+                              <td>(~ mnt[2] ~) </td>
+                              <td>(~ mnt[3] ~) </td>
+                              <td class="(~ mntPercentStyle(mnt[4] | percentSplit | num) ~)">(~ mnt[4] ~) </td>
+                              <td>(~ mnt[5] ~) </td>
+                            </tr>
+                         </tbody>
+                    </table>
+                    <div ng-show="loading" class="text-center"><img src="{% static 'env/resources/loading.gif' %}" class="rounded mx-auto d-block"></div>
+                    <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+                  </div>
+                </div>
+            </div>
+
+            <div id="{{sn}}-scripts" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% if user.is_authenticated %}
+                    <br><button type="button" class="btn btn-warning" data-toggle="tooltip" data-original-title="Click to trigger plato2eddi" ng-disabled="false" ng-click="handleScripts('{{sn}}','run')" ><span>Run plato2eddi Now</span></button>
+                    {% else %}
+                    <br><button type="button" class="btn btn-warning" data-toggle="tooltip" data-original-title="Click to trigger plato2eddi" ng-disabled="true"><span>Run plato2eddi Now</span></button>
+                    {% endif %}
+                    <button type=button class="btn btn-info btn-sm" data-toggle=modal data-target=#{{sn}}-myModal ng-click="handleReplication( '{{sn}}','status')">Get plato2eddi Log </button>
+                    <!-- Modal Replication log -->
+                    <div class="modal fade" role=dialog id="{{sn}}-myModal" tabindex=-1 aria-labelledby=myModalLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class=modal-header>
+                                    <button type=button class=close data-dismiss=modal aria-label=Close><span aria-hidden=true>&times;</span></button>
+                                    <h4 class=modal-title id=myModalLabel>Plato2eddi Log</h4>
+                                </div>
+                                <div ng-show="modalLoading" class="modal-body text-center"><img src="{% static 'env/resources/loading.gif' %}" class="rounded mx-auto d-block"></div>
+                                <div ng-show="modalBody" class=modal-body>
+                                   <ul style="list-style: none;">
+                                    <li ng-repeat="log in plato2eddiLogs track by $index">
+                                        (~log~)
+                                    </li>
+                                   </ul>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- Modal end-->
+                    <!-- Run syncCMS -->
+                    {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-warning" data-toggle="tooltip" data-original-title="Click to trigger syncCMS" ng-disabled="false" ng-click="handleScripts('{{sn}}','run')" ><span>Run syncCMS Now</span></button>
+                    {% else %}
+                    <button type="button" class="btn btn-warning" data-toggle="tooltip" data-original-title="Click to trigger syncCMS" ng-disabled="true"><span>Run syncCMS Now</span></button>
+                    {% endif %}
+                    <button type=button class="btn btn-info btn-sm" data-toggle=modal data-target=#{{ip2}}-syncCMSLog ng-click="handleScripts( '{{sn}}')">Get syncCMS Log </button>
+                    <!-- Modal syncCMS log -->
+                    <div class="modal fade" role=dialog id="{{ip2}}-syncCMSLog" tabindex=-1 aria-labelledby=syncCMSLogLabel>
+                        <div class=modal-dialog role=document>
+                            <div class=modal-content>
+                                <div class=modal-header>
+                                    <button type=button class=close data-dismiss=modal aria-label=Close><span aria-hidden=true>&times;</span></button>
+                                    <h4 class=modal-title id=syncCMSLogLabel>syncCMS - Log</h4>
+                                </div>
+                                <div ng-show="modalLoading" class="modal-body text-center"><img src="{% static 'env/resources/loading.gif' %}" class="rounded mx-auto d-block"></div>
+                                <div ng-show="modalBody" class=modal-body>
+                                   <ul style="list-style: none;">
+                                    <li ng-repeat="log in syncCMSLogs track by $index">
+                                        (~log~)
+                                    </li>
+                                   </ul>
+                                </div>
+                                <div class=modal-footer>
+                                    <button type=button class="btn btn-default" data-dismiss=modal>Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- Modal syncCMS Log end-->
+
+                </div>
+                <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+                <div ng-show="showRepStatus" style="margin: 2px;" class="alert alert-danger" role="alert">(~ repStatus ~)</div>
+            </div>
+
+            <div class="panel-collapse collapse" id="{{sn}}" role="tabpanel" aria-labelledby="{{sn}}-heading">
+                <div class="panel-body bg-success">
+                    <ul class="nav nav-tabs nav-justified" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#{{sn}}-panel" aria-controls="{{sn}}-panel" class="-bgDarkBlue" role="tab" data-toggle="tab">{{sn}} <span class="glyphicon glyphicon-triangle-bottom text-danger" aria-hidden="true"></span></a>
+                        </li>
+                    </ul>
+                    <div ng-show="loading" class="text-center"><img src="{% static 'env/resources/loading.gif' %}"></div>
+                    <div ng-show="reqFailed" style="margin: 2px;" class="alert alert-danger" role="alert">(~ errMsg ~)</div>
+                    <div ng-show="showTab" class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="{{sn}}-panel">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    {% for service in plato_env_details|dict_val:server|dict_val:"services" %}
+                                    <div class="btn-group col-xs-12 col-sm-4 col-md-3 col-lg-2 btn-group-sm {{service}}">
+                                      <button type="button" class="btn btn-success status col-xs-10 col-sm-9 col-md-9 col-lg-9" aria-status="running">{{service}}</button>
+                                        {% if user.is_authenticated %}
+                                        <button type="button" class="btn btn-outline btn-default action" data-toggle="tooltip" data-original-title="stop" ng-disabled="false" ng-click="startStopService( '{{sn}}','{{service}}' , 'plato')" ><span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span></button>
+                                        {% else %}
+                                      <button type="button" class="btn btn-outline btn-default action" data-toggle="tooltip" data-original-title="stop" ng-disabled="true"><span class="glyphicon glyphicon-stop text-danger" aria-hidden="true"></span></button>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+
+        </div>
+</div>
+{% endblock %}

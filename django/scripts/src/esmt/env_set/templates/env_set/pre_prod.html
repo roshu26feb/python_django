@@ -1,0 +1,10 @@
+{% extends 'env_set/base.html' %}
+{% load static %}
+{% block css_js %}
+<link rel="stylesheet" href="{% static 'env_set/css/env_set.css' %}" />
+{% endblock %}
+{% block page_content %}
+<div class='container'>
+    <p> This template is to handle Pre Prod Env </p>
+</div>
+{% endblock %}

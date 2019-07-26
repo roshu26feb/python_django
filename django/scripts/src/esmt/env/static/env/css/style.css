@@ -1,0 +1,134 @@
+body {
+  min-height: 2000px;
+  padding-top: 150px;
+}
+.btn-group{
+    margin:2px;
+    padding: 2px;
+    -border: 1px solid grey;
+}
+.nav-tabs {
+    font-size: 8;
+}
+.tab-pane {
+    --border: 1px solid grey;
+    padding: 2px;
+    margin: 10px;
+}
+.ss-panleclr{
+    background-color: #35052b;
+}
+.nav-pills {
+    margin: 2px;
+}
+.panel-title{
+    color: unset;
+    color: white;
+}
+.text-white{
+    color: white;
+}
+.bgDarkBlue{
+    background-color: #0c3042;
+}
+img {
+    width: 40px;
+    margin: 5px;
+}
+.text-orange{
+    color: #FF7F50;
+}
+.cell-buttons
+{
+   display: inline-block;
+   width: 100%;       /* set to 100% */
+   height: 100%;      /* set to 100% */
+   margin-bottom: 0.5em;
+   padding-top: .6em;
+   padding-bottom: .6em;
+   color: #fff;
+   background-color: #20b2aa;
+   border-radius: 5px;
+   border: solid #cccccc 1px;
+   box-shadow: 2px 2px 1px #888888;
+   clear:right;
+   float:right;
+}
+/* related to accordion tree*/
+.accord-title{
+    border: 1px solid grey;
+    padding: 5px; 
+    text-align:center;
+    margin:2px;
+    border-radius:5px;"
+}
+.accord-icon {
+     padding: 5px;
+}
+.accord-text, .table-data {
+     margin: 2px;
+     padding: 5px;
+     border-left: 6px solid green;
+     background:#E5F7E4;
+}
+.accord-inner-text {
+     margin: 2px;
+     padding: 5px;
+     border-left: 6px solid #828282;
+     background: #EDEDED;
+}
+.accord-title-mod{
+    border: 1px solid white;
+    padding: 5px;
+    text-align:center;
+    white-space: nowrap;
+    margin-bottom:2px;
+}
+.accord-text-mod{
+     padding: 5px;
+     border-left: 6px solid green;
+     background:#E5F7E4;
+     margin-bottom: 2px; 
+}
+.table-head {
+     margin: 2px;
+     padding: 5px;
+     border-bottom: 4px solid #00688B;
+     background:#00BFFF;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul.inner {
+        padding-left: 1em;
+        overflow: hidden;
+        display: none;
+}
+
+ul>li {
+         #margin: .5em 0;
+}
+
+ul>li a.accordion-toggle {
+    width: 100%;
+    display: block;
+    #background: rgba(0,0,0,0.78);
+    #color: #fefefe;
+    #padding: .75em;
+    border-radius: 0.15em;
+    transition: background .3s ease;
+    text-decoration: none;
+}
+ul>li a.accordion-toggle:hover {
+   #background: rgba(0, 0, 0, 0.9);
+}
+
+.accord-inner-text.mapBtn {padding: 0 5px;background: transparent;border: none;}
+button#MapInstance {padding: 3px 10px;height: auto;font-size: 11px;border-radius: 3px; font-weight: normal}

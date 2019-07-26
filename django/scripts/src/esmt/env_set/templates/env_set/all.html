@@ -1,0 +1,102 @@
+{% extends 'env_set/base.html' %}
+{% load static %}
+{% load macros %}
+{% loadmacros 'delivery_db/macros.html' %}
+{% loadmacros 'env/macros.html' %}
+{% block page_content %}
+{% load i18n static %}
+{% usemacro nextview "env_set:env_set_add" "Add Env Set" "env-set-form" %}
+<head>
+    <script src="{% static 'delivery_db/js/controller.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'env/css/style.css' %}" />
+</head>
+<div ng-controller="deliveryDBCtrl" style="border-top:50px solid white;background-color:white;">
+<div class="accord container" style="border-top:30px solid white;position:fixed;z-index:10;background-color:white;padding-bottom:5px;" ng-init="getApiDetails('environment_set')">
+      <div class="row">
+        <span class="col-sm-1"></span>
+        <span class="col-sm-11 jumbotron" style="margin-bottom:20px;">
+            <h3 class="lead text-center" style="margin:0px 5px">List of Environment Set</h3>
+        </span>
+      </div>
+      <div class="col-sm-12 text-center" ng-init="onLoading()">
+        {% usemacro loading %}
+      </div>
+
+       <div class="row" ng-show="show" style="font-size:10px;" ng-cloak>
+           <span class="col-sm-1"></span>
+           <span class="col-sm-3 accord-title-mod bg-primary">
+               {% usemacro columnSort "Environment Set Name" "environment_set_name" %}
+           </span>
+            <span class="col-sm-2 accord-title-mod bg-primary">
+                {% usemacro columnSort "Environment Type" "env_type" %}
+            </span>
+            <span class="col-sm-2 accord-title-mod bg-primary">
+                {% usemacro columnSort "No. of Environment" "env_cnt" %}
+            </span>
+            <span class="col-sm-2 accord-title-mod bg-primary">
+                {% usemacro columnSort "Data Type" "env_data_type" %}
+            </span>
+               <span class="col-sm-2 accord-title-mod bg-primary">
+                {% usemacro columnSort "Availability" "availability" %}
+            </span>
+       </div>
+       <div class="row" ng-show="show" style="font-size:10px;" ng-cloak>
+            <span class="col-sm-1"></span>
+            <span class="col-sm-3" style="padding:0px;">
+                {% usemacro columnFilter "Search Env Set Name" "searchEnv.environment_set_name" %}
+            </span>
+            <span class="col-sm-2" style="padding:0px;">
+                {% usemacro columnFilter "Search Env Type" "searchEnv.env_type" %}
+            </span>
+            <span class="col-sm-2" style="padding:0px;">
+                {% usemacro columnFilter "Search No. of Env" "searchEnv.env_cnt" %}
+            </span>
+            <span class="col-sm-2" style="padding:0px;">
+                {% usemacro columnFilter "Search Data Type" "searchEnv.env_data_type" %}
+            </span>
+            <span class="col-sm-2" style="padding:0px;">
+                {% usemacro columnFilter "Search Availability" "searchEnv.availability" %}
+            </span>
+       </div>
+</div>
+<div class="accord container" style="margin-top:95px;margin-left:0px; padding-top:60px;z-index:5; overflow:auto; font-size:10px;" ng-cloak>
+    <ul class="accordion">
+        <li>
+            <a ng-repeat-start="env_set in apiResponse.environment_sets | orderBy:sortType:sortReverse | filter:searchEnv" class="accordion-toggle" href="javascript:void(0);" style="z-index=0;margin:0px;">
+                <div class="row" ng-init="manipulateEnvSet(env_set)">
+                   <span class="col-sm-1 text-right accord-icon" ng-if="env_set.environments_linked.length >0"><i class="indicator glyphicon glyphicon-plus-sign top-5"></i></span>
+                    <span class="col-sm-1" ng-if="!env_set.environments_linked.length >0"></span>
+                    <span class="col-sm-3 accord-text-mod">(~ env_set.environment_set_name ~)</span>
+                    <span class="col-sm-2 accord-text-mod">(~ env_set.env_type ~)</span>
+                    <span class="col-sm-2 accord-text-mod">(~ env_set.env_cnt ~)</span>
+                    <span class="col-sm-2 accord-text-mod">(~ env_set.env_data_type ~)</span>
+                    <span class="col-sm-2 accord-text-mod">(~ env_set.availability ~)</span>
+                </div>
+            </a>
+            <ul class="inner">
+                <li  ng-if="env_set.environments_linked.length > 0">
+                    <div class="row">
+                        <span class="col-sm-1"></span>
+                        <span class="col-sm-3 accord-title bg-info"><strong>Environment Name</strong></span>
+                        <span class="col-sm-2 accord-title bg-info"><strong>System</strong></span>
+                        <span class="col-sm-2 accord-title bg-info"><strong>Data Type</strong></span>
+                        <span class="col-sm-2 accord-title bg-info"><strong>Status</strong></span>
+                    </div>
+                     <a ng-repeat-start="env in env_set.environments_linked" class="accordion-toggle"  style="padding-left:0px;z-index=15; margin:0px;">
+                        <div class="row">
+                            <span class="col-sm-1"></span>
+                            <span class="col-sm-3 text-left accord-inner-text">(~ env.environment.environment_name ~)</span>
+                            <span class="col-sm-2 text-left accord-inner-text">(~ env.environment.system.system_name ~)</span>
+                            <span class="col-sm-2 text-left accord-inner-text">(~ env.environment.environment_data_type.environment_data_type_name ~)</span>
+                            <span class="col-sm-2 text-left accord-inner-text">(~ env.environment.status ~)</span>
+                        </div>
+                     </a>
+                    <div  ng-repeat-end style="display:hidden;"></div>
+                </li>
+            </ul>
+            <div ng-repeat-end></div>
+        </li>
+    </ul>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% load macros %}
+{% load env_filters %}
+{% macro loading %}
+    <div class='sk-spinner sk-spinner-wave text-center'>
+        <div class='sk-rect1'></div>
+        <div class='sk-rect2'></div>
+        <div class='sk-rect3'></div>
+        <div class='sk-rect4'></div>
+    </div>
+{% endmacro %}
+
+{% macro socrates_env store_list env services env_region %}
+    {% for store in store_list|dict_val:env_region %}
+    {% with store|split2 as ip2 %}
+    <div class="box-80x50 flex-center soc dropdown {{env_region}}-store bgred" ng-mouseenter="getServiceStatus('{{env_region}}','')" ng-mouseleave="stopUpdate()"> {{ env_desc|dict_val:store|safe }}
+        <div class="dropdown-content">
+            {% for client in env|dict_val:env_region|dict_val:store %}
+            <div class="dropdown-lvl1 bgred" id="{{env_region}}-{{client}}">{{client}}
+                <div class="dropdown-content1">
+                    <div class="dropdown-row">
+                        <div class="dropdown-col">{{client}}</div>
+                    </div>
+                    <div class="dropdown-row">
+                        {% if user.is_authenticated %}
+                        <div class="dropdown-col"><b>Action</b></div>
+                        {% endif %}
+                        <div class="dropdown-col flex-3"><b>Service Name</b></div>
+                        <div class="dropdown-col"><b>Status</b></div>
+                    </div>
+                    {% for service in services|dict_val:env_region|dict_val:client %}
+                    <div class="dropdown-row {{service}}">
+                        {% if user.is_authenticated %}
+                        <div class="dropdown-col"><button type="button" class="btn btn-xs btn-outline btn-default action" ng-disabled="false" ng-click="startStopService( '{{env_region}}-{{client}}','{{service}}', '{{env_region}}')">start</button></div>
+                        {% endif %}
+                        <div class="dropdown-col service flex-3">{{service}}</div>
+                        <div class="dropdown-col status bgred">stopped</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro plato_solar7_render store_list services env_region %}
+    {% for store in store_list|dict_val:env_region %}
+    <div class="box-80x50 flex-center dropdown {{env_region}} bgred" id="{{env_region}}" ng-mouseenter="getServiceStatus('{{env_region}}','')" ng-mouseleave="stopUpdate()">{{ env_desc|dict_val:store|safe }}
+        <div class="dropdown-content">
+            <div class="dropdown-row">
+                <div class="dropdown-col"><center>{{ env_desc|dict_val:store|safe }} Services</center></div>
+            </div>
+            <div class="dropdown-row">
+                {% if user.is_authenticated %}
+                <div class="dropdown-col"><b>Action</b></div>
+                {% endif %}
+                <div class="dropdown-col flex-3"><b>Service</b></div>
+                <div class="dropdown-col"><b>Status</b></div>
+            </div>
+            {% for service in services|dict_val:env_region|dict_val:'server' %}
+            <div class="dropdown-row {{service}}">
+                {% if user.is_authenticated %}
+                <div class="dropdown-col"><button type="button" class="btn btn-xs btn-outline btn-default action" ng-disabled="false" ng-click="handlePlatoClick( '{{env_region}}','{{service}}')" >start</button></div>
+                {% endif %}
+                <div class="dropdown-col service flex-3">{{ service }}</div>
+                <div class="dropdown-col status bgred">stopped</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro azure_components server_id server_desc top %}
+    <div class="dropdown bgred box-60x30 flex-center fgwhite black-border" style="margin-top: {{top}}" id="{{server_id}}">{{server_desc}}
+        <div class="dropdown-content">
+            <div class="dropdown-lvl1 bgred dropdown-width" id="{{server_id}}-admin">Admin Server</div>
+            <div class="dropdown-lvl1 bgred dropdown-width" id="{{server_id}}-server">{{server_desc}} Server</div>
+            <div class="dropdown-lvl1 bgred dropdown-width" id="{{server_id}}-wsm">WSM Server</div>
+        </div>
+    </div>
+{% endmacro %}
