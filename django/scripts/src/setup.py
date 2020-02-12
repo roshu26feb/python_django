@@ -13,7 +13,7 @@ setup(
     include_package_data=True,
     scripts=['manage.py', 'esmt.ini', 'esmt.sh'],
     python_requires='>=3',
-    install_requires=["Django==1.11.3",
+    install_requires=["Django==1.11.28",
                       "djangorestframework==3.6.3",
                       "django-bootstrap3==9.0.0",
                       "django-datetime-widget",
