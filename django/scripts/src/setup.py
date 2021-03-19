@@ -14,7 +14,7 @@ setup(
     scripts=['manage.py', 'esmt.ini', 'esmt.sh'],
     python_requires='>=3',
     install_requires=["Django==1.11.3",
-                      "djangorestframework==3.6.3",
+                      "djangorestframework==3.11.2",
                       "django-bootstrap3==9.0.0",
                       "django-datetime-widget",
                       "requests>=2.18.1",
